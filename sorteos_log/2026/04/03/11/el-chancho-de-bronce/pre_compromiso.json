@@ -1,0 +1,139 @@
+{
+  "version": "1.0.0",
+  "tipo": "PRE_COMPROMISO",
+  "descripcion": "Compromiso criptográfico publicado ANTES del cierre del sorteo. Garantiza que el resultado no puede ser manipulado después de este momento.",
+  "empresa": {
+    "nombre": "El Chancho Ganador C.A.",
+    "rif": "J-506703866"
+  },
+  "sorteo": {
+    "id": 1,
+    "titulo": "El Chancho de bronce",
+    "slug": "el-chancho-de-bronce",
+    "tipo_evento": "gratuito",
+    "certificacion_conalot": "no"
+  },
+  "horario": {
+    "fecha_vet": "2026-04-03",
+    "hora_vet": "11:00 AM",
+    "hora24_vet": 11,
+    "fecha_utc": "2026-04-03T15:00:00.000Z",
+    "zona": "VET (UTC-4) — Venezuela Standard Time"
+  },
+  "draw_id": "el-chancho-de-bronce:20260403:11",
+  "aleatoriedad": {
+    "fuente": "Protocolo simple: precompromiso + drand + hash de participantes",
+    "red": "drand-mainnet-g1-unchained-30s",
+    "endpoints": [
+      "https://drand.cloudflare.com/public/5993246",
+      "https://api.drand.sh/public/5993246"
+    ],
+    "ronda_comprometida": 5993246,
+    "regla_ronda": "first_round_after_draw_time_utc",
+    "formula_ronda": "round = floor((draw_time_utc_s - genesis_time_s)/30) + 1",
+    "genesis_time_s": 1595431050,
+    "period_s": 30,
+    "timestamp_publicacion_ronda_utc": "2026-04-03T15:00:00.000Z",
+    "clima": {
+      "fuente": "Open-Meteo current_weather (snapshot tomado al ejecutar el sorteo)",
+      "ciudades": [
+        {
+          "nombre": "Caracas",
+          "lat": 10.5,
+          "lon": -66.9167
+        },
+        {
+          "nombre": "Bogota",
+          "lat": 4.711,
+          "lon": -74.0721
+        },
+        {
+          "nombre": "Madrid",
+          "lat": 40.4168,
+          "lon": -3.7038
+        },
+        {
+          "nombre": "Tokyo",
+          "lat": 35.6762,
+          "lon": 139.6503
+        },
+        {
+          "nombre": "Sydney",
+          "lat": -33.8688,
+          "lon": 151.2093
+        }
+      ]
+    },
+    "qrng_anu": {
+      "endpoints": [
+        "https://qrng.anu.edu.au/API/jsonI.php"
+      ],
+      "parametros": {
+        "type": "hex16",
+        "length": 3,
+        "size": 32,
+        "required": false,
+        "internalFallback": true
+      },
+      "politica_fallo": "Si QRNG falla, se usa fallback interno con crypto.randomBytes y se deja constancia en auditoría."
+    },
+    "nist_beacon": {
+      "endpoints": [
+        "https://beacon.nist.gov/beacon/2.0/pulse/last"
+      ],
+      "parametros": {
+        "required": false
+      },
+      "politica_fallo": "Si NIST falla, se usa el marcador NIST_NO_DISPONIBLE y se deja constancia en auditoría."
+    },
+    "triple_beacon": null,
+    "pool_local": null,
+    "nota": "La entropía final se deriva de precompromiso hash + drand randomness + ronda + hash de participantes."
+  },
+  "participantes": {
+    "total": 0,
+    "hash_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "algoritmo_hash": "SHA-256(\"usuario|numero|timestamp_jugada\" por participante, ordenado por SHA-256(ticket) asc)",
+    "orden": "sort_asc(SHA-256(\"usuario|numero|timestamp_jugada\"))",
+    "canonicalizacion_timestamp": "timestamp_jugada => unix_epoch_ms (string)",
+    "texto_hasheado": "",
+    "lista": []
+  },
+  "compromiso": {
+    "hash_sha256": "e0ec06e1c9f778d90431a069d4d2772413ff1868d9e0c1708008a06fdd735f98",
+    "algoritmo": "SHA-256(payload_canonico_v3)",
+    "algoritmo_version": "3.0.0",
+    "payload_v3": {
+      "draw_id": "el-chancho-de-bronce:20260403:11",
+      "draw_time_utc": "2026-04-03T15:00:00.000Z",
+      "hash_participantes": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "drand_network": "drand-mainnet-g1-unchained-30s",
+      "drand_round": 5993246,
+      "algoritmo_version": "3.0.0",
+      "triple_beacon": null
+    },
+    "payload_canonico_v3": "draw_id:32:el-chancho-de-bronce:20260403:11\ndraw_time_utc:24:2026-04-03T15:00:00.000Z\nhash_participantes:64:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\ndrand_network:30:drand-mainnet-g1-unchained-30s\ndrand_round:7:5993246\nalgoritmo_version:5:3.0.0"
+  },
+  "commit_reveal": {
+    "enabled": true,
+    "seed_hash_sha256": "b8850a922362e0e15f892bc7b71fa173eb2aeca0b132121686290c377e8873cf",
+    "seed_bytes": 32,
+    "reveal_required": true,
+    "formula": "semilla_final = SHA-256(canonicalKVLen(seed_reveal,precompromiso_hash,beacon(s),hash_participantes))"
+  },
+  "tickets_commitment": {
+    "enabled": true,
+    "ticket_set_hash": "3640b5589d86e453907374d86a0955c410b032cbaab96bfd18206c68363b5c92",
+    "total_tickets": 0,
+    "total_players": 0,
+    "canonicalization": "SHA-256(bytes exactos de tickets_draw.json UTF-8)",
+    "hash_algorithm": "sha256",
+    "snapshot_file": "tickets_draw.json",
+    "snapshot_hash_file": "tickets_draw.json.sha256",
+    "reveal_required": true
+  },
+  "algoritmo_seleccion": "0. Se publica commit de semilla: seed_hash = SHA-256(seed)\n1. Se obtiene drand.randomness de la ronda 5993246\n2. precompromiso_hash = SHA-256(payload_canonico_v3)\n3. semilla_final = SHA-256(canonicalKVLen(domain_tag,seed_reveal,ticket_set_hash,precompromiso_hash,drand_randomness,round_drand,hash_participantes))\n4. idx = rejection_sampling(semilla_final, N=38)\n5. numeroGanador = numeros[idx]",
+  "estado": "COMPROMETIDO_PREVIO_AL_SORTEO",
+  "timestamp_generacion": "2026-04-03T14:40:03.816Z",
+  "instrucciones_verificacion": "Una vez realizado el sorteo, ejecuta:\n  node verificar.js\nO manualmente:\n  1. Descarga la ronda drand: https://drand.cloudflare.com/public/5993246\n  2. Verifica hash de participantes (SHA-256 del campo \"texto_hasheado\")\n  3. Ejecuta fórmula híbrida documentada en resultado.json/verificar.js"
+}

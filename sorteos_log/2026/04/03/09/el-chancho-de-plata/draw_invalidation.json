@@ -1,0 +1,28 @@
+{
+  "version": "1.0.0",
+  "type": "DRAW_INVALIDATION",
+  "draw_id": "el-chancho-de-plata:20260403:09",
+  "sorteo_slug": "el-chancho-de-plata",
+  "fecha_vet": "2026-04-03",
+  "hora_vet_24": "09",
+  "status": "INVALIDATED",
+  "reason_code": "seed_custody_missing",
+  "reason_message": "Draw invalidado por falta de custodia de seed privada para commit-reveal",
+  "timestamp_utc": "2026-04-03T14:39:58.213Z",
+  "protocol_version": "3.0.0",
+  "references": {
+    "pre_compromiso": "pre_compromiso.json",
+    "tickets_commitment": "tickets_commit.json",
+    "tickets_snapshot": "tickets_draw.json",
+    "tickets_snapshot_hash": "tickets_draw.json.sha256"
+  },
+  "details": {
+    "expected_seed_paths": [
+      "data/sorteos/seeds/el-chancho-de-plata:20260403:09.seed.json",
+      "sorteos_log/2026/04/03/09/el-chancho-de-plata/seed_privado.json"
+    ],
+    "root_cause": "precommit_orfano_sin_seed_custodiada",
+    "retry_policy": "no_retry_same_draw_id",
+    "operator_action": "invalidated_for_transparency"
+  }
+}
