@@ -83,3 +83,27 @@ Reglas operativas:
 
 - no se recalcula el mismo `draw_id`
 - cualquier repetición debe usar nuevo `draw_id` y nuevo precompromiso
+
+## Versionado y Releases
+
+Este repositorio mantiene historial de cambios con dos mecanismos:
+
+- `CHANGELOG.md` para el detalle cronológico de cambios
+- GitHub Releases (basados en tags) para marcar versiones publicadas
+
+Flujo recomendado por versión:
+
+1. actualizar `CHANGELOG.md` en la sección de la nueva versión
+2. hacer commit y push a `main`
+3. crear tag anotado (ejemplo: `v2026.04.03`)
+4. publicar GitHub Release usando ese tag y copiando el resumen del changelog
+
+Comandos típicos:
+
+- `git tag -a vYYYY.MM.DD -m "release vYYYY.MM.DD"`
+- `git push origin vYYYY.MM.DD`
+
+Sugerencia de esquema:
+
+- versión por fecha (`vYYYY.MM.DD`) para repositorio de evidencia diaria
+- opcionalmente SemVer (`v1.2.0`) cuando se introduzcan cambios de herramienta o formato
