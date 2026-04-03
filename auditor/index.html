@@ -66,6 +66,14 @@
       font-size: .95rem;
     }
     label { display: block; font-weight: 700; margin-bottom: 6px; }
+    input[type="text"], input[type="date"], select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--ink);
+    }
     input[type="file"] {
       width: 100%;
       padding: 10px;
@@ -139,6 +147,23 @@
       white-space: pre-wrap;
       word-break: break-word;
     }
+    .story {
+      margin: 18px 0;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(248,239,221,.92));
+      border: 1px solid var(--border);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    .story strong {
+      color: var(--accent);
+    }
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
+    }
   </style>
 </head>
 <body>
@@ -147,6 +172,41 @@
     <p class="lead">Carga los archivos publicados del sorteo y este HTML verifica relaciones básicas entre precompromiso, snapshot de tickets, hash del archivo y resultado final. Funciona localmente en el navegador y puede descargarse desde GitHub.</p>
 
     <div class="grid">
+      <section class="card">
+        <h2>Cargar Desde Publicación</h2>
+        <p>Usa fecha, hora y sorteo para cargar automáticamente los archivos publicados en GitHub Pages o desde el repo clonado.</p>
+        <div class="mini-grid">
+          <div>
+            <label for="fechaPublicada">Fecha</label>
+            <input id="fechaPublicada" type="date" value="2026-04-03">
+          </div>
+          <div>
+            <label for="horaPublicada">Hora</label>
+            <select id="horaPublicada">
+              <option value="08">08</option>
+              <option value="09">09</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+              <option value="13">13</option>
+              <option value="14">14</option>
+              <option value="15">15</option>
+              <option value="16">16</option>
+              <option value="17">17</option>
+              <option value="18">18</option>
+              <option value="19">19</option>
+            </select>
+          </div>
+          <div>
+            <label for="slugPublicado">Sorteo</label>
+            <select id="slugPublicado">
+              <option value="el-chancho-de-bronce">el-chancho-de-bronce</option>
+              <option value="el-chancho-de-plata">el-chancho-de-plata</option>
+              <option value="el-chancho-de-oro">el-chancho-de-oro</option>
+            </select>
+          </div>
+        </div>
+      </section>
       <section class="card">
         <h2>Precompromiso</h2>
         <p>Archivo <code>pre_compromiso.json</code>.</p>
@@ -180,11 +240,13 @@
     </div>
 
     <div class="actions">
+      <button id="loadPublishedBtn" class="secondary">Cargar datos publicados</button>
       <button id="verifyBtn">Verificar archivos</button>
       <button id="clearBtn" class="secondary">Limpiar</button>
     </div>
 
     <div class="summary" id="summary"></div>
+    <div class="story" id="story">Cuando cargues un resultado final, aquí aparecerá una explicación legible del número ganador verificado con los datos de auditoría.</div>
 
     <section class="results">
       <header>
@@ -212,7 +274,9 @@
       checks: document.getElementById('checks'),
       headline: document.getElementById('headline'),
       meta: document.getElementById('meta'),
+      story: document.getElementById('story'),
       verifyBtn: document.getElementById('verifyBtn'),
+      loadPublishedBtn: document.getElementById('loadPublishedBtn'),
       clearBtn: document.getElementById('clearBtn'),
     };
 
@@ -267,6 +331,22 @@
       }
     }
 
+    async function loadPublishedJson(relativePath) {
+      const response = await fetch(relativePath, { cache: 'no-store' });
+      if (!response.ok) {
+        throw new Error(`No se pudo cargar ${relativePath} (HTTP ${response.status})`);
+      }
+      return response.json();
+    }
+
+    async function loadPublishedText(relativePath) {
+      const response = await fetch(relativePath, { cache: 'no-store' });
+      if (!response.ok) {
+        throw new Error(`No se pudo cargar ${relativePath} (HTTP ${response.status})`);
+      }
+      return response.text();
+    }
+
     function extractSha256FileValue(text) {
       return String(text || '').trim().split(/\s+/)[0] || '';
     }
@@ -283,12 +363,70 @@
       checks.push({ title, status: 'warn', message });
     }
 
+    function renderStory(pre, resultado) {
+      if (!resultado) {
+        els.story.innerHTML = 'Si cargas <strong>resultado.json</strong>, aquí verás un resumen legible del sorteo validado.';
+        return;
+      }
+
+      const fecha = String(resultado?.horario?.fecha_vet || '').split('-').reverse().join('/');
+      const hora = String(resultado?.horario?.hora_vet || '');
+      const numero = String(resultado?.resultado?.numero_ganador || '').padStart(2, '0');
+      const producto = String(resultado?.resultado?.producto_ganador || 'Sin producto');
+      const sorteo = String(resultado?.sorteo?.titulo || pre?.sorteo?.titulo || 'Sorteo');
+      const drawId = String(pre?.draw_id || resultado?.draw_id || '');
+
+      els.story.innerHTML = [
+        `Para el día <strong>${fecha || '(sin fecha)'}</strong> en el sorteo <strong>${sorteo}</strong>,`,
+        `a la hora <strong>${hora || '(sin hora)'}</strong>,`,
+        `usando los datos de auditoría cargados, el número ganador verificado es <strong>${numero}</strong> (${producto}).`,
+        drawId ? `<br><br><strong>draw_id:</strong> ${drawId}` : '',
+      ].join(' ');
+    }
+
+    async function loadPublishedBundle() {
+      const fecha = document.getElementById('fechaPublicada').value;
+      const hora = document.getElementById('horaPublicada').value;
+      const slug = document.getElementById('slugPublicado').value;
+
+      if (!fecha || !hora || !slug) {
+        throw new Error('Debes indicar fecha, hora y sorteo para cargar la publicación.');
+      }
+
+      const [year, month, day] = fecha.split('-');
+      const base = `../sorteos_log/${year}/${month}/${day}/${hora}/${slug}`;
+
+      state.precompromiso = await loadPublishedJson(`${base}/pre_compromiso.json`);
+      state.ticketsCommit = await loadPublishedJson(`${base}/tickets_commit.json`);
+      state.ticketsDrawJsonText = await loadPublishedText(`${base}/tickets_draw.json`);
+      state.ticketsDrawJson = safeJsonParse(state.ticketsDrawJsonText, `${base}/tickets_draw.json`);
+      state.ticketsShaText = await loadPublishedText(`${base}/tickets_draw.json.sha256`);
+
+      try {
+        state.resultado = await loadPublishedJson(`${base}/resultado.json`);
+      } catch {
+        state.resultado = null;
+      }
+
+      els.meta.textContent = `Datos cargados desde publicación:\n${base}`;
+    }
+
     async function verifyAll() {
-      await loadFile('precompromiso', 'precompromiso', 'json');
-      await loadFile('ticketsCommit', 'ticketsCommit', 'json');
-      await loadFile('ticketsDraw', 'ticketsDrawJson', 'json+text');
-      await loadFile('ticketsSha', 'ticketsShaText', 'text');
-      await loadFile('resultado', 'resultado', 'json');
+      const hasManualFiles = [
+        'precompromiso',
+        'ticketsCommit',
+        'ticketsDraw',
+        'ticketsSha',
+        'resultado',
+      ].some((id) => document.getElementById(id).files?.length);
+
+      if (hasManualFiles) {
+        await loadFile('precompromiso', 'precompromiso', 'json');
+        await loadFile('ticketsCommit', 'ticketsCommit', 'json');
+        await loadFile('ticketsDraw', 'ticketsDrawJson', 'json+text');
+        await loadFile('ticketsSha', 'ticketsShaText', 'text');
+        await loadFile('resultado', 'resultado', 'json');
+      }
 
       const checks = [];
       let okCount = 0;
@@ -386,6 +524,7 @@
       ];
       setSummary(summaryItems);
       renderChecks(checks);
+      renderStory(pre, resultado);
       els.meta.textContent = [
         `draw_id: ${drawId || '(sin dato)'}`,
         `ticket_set_hash: ${commitHash || '(sin dato)'}`,
@@ -399,8 +538,21 @@
         els.headline.textContent = 'Error ejecutando la auditoría.';
         setSummary([{ text: 'Error', className: 'bad' }]);
         renderChecks([{ title: 'Excepción', status: 'bad', message: error.message }]);
+        els.story.textContent = 'No se pudo completar la auditoría.';
         els.meta.textContent = error.stack || error.message;
       });
+    });
+
+    els.loadPublishedBtn.addEventListener('click', () => {
+      loadPublishedBundle()
+        .then(() => verifyAll())
+        .catch((error) => {
+          els.headline.textContent = 'Error cargando publicación.';
+          setSummary([{ text: 'Carga fallida', className: 'bad' }]);
+          renderChecks([{ title: 'Carga desde publicación', status: 'bad', message: error.message }]);
+          els.story.textContent = 'No se pudieron cargar los archivos publicados para ese día/hora/sorteo.';
+          els.meta.textContent = error.stack || error.message;
+        });
     });
 
     els.clearBtn.addEventListener('click', () => {
@@ -409,6 +561,7 @@
       setSummary([]);
       renderChecks([]);
       els.headline.textContent = 'Carga archivos y ejecuta la verificación.';
+      els.story.textContent = 'Cuando cargues un resultado final, aquí aparecerá una explicación legible del número ganador verificado con los datos de auditoría.';
       els.meta.textContent = 'Sin datos cargados.';
     });
   </script>
