@@ -1,0 +1,9 @@
+[2026-04-03T12:05:04.311Z] INICIO EJECUCIÓN SORTEO
+[2026-04-03T12:05:04.311Z]   Sorteo  : El Chancho de bronce (el-chancho-de-bronce)
+[2026-04-03T12:05:04.311Z]   Hora VET: 08:00 AM — UTC: 2026-04-03T12:00:00.000Z
+[2026-04-03T12:05:04.311Z]   Ronda drand comprometida: 5992886
+[2026-04-03T12:05:05.974Z] BEACON drand OBTENIDO
+[2026-04-03T12:05:05.974Z]   Ronda     : 5992886
+[2026-04-03T12:05:05.974Z]   Randomness: ba836a307c716623249f65e4081a2c36ec1b4aec0441845615f3780bb1376ec2
+[2026-04-03T12:05:05.974Z]   Signature : a71d1dfab98d3db29b2a74785aaedd62...
+[2026-04-03T12:05:05.974Z]   Endpoint  : https://drand.cloudflare.com/public/5992886

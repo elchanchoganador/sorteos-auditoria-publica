@@ -1,0 +1,9 @@
+[2026-04-03T12:05:05.987Z] INICIO EJECUCIÓN SORTEO
+[2026-04-03T12:05:05.987Z]   Sorteo  : El Chancho de Plata (el-chancho-de-plata)
+[2026-04-03T12:05:05.987Z]   Hora VET: 08:00 AM — UTC: 2026-04-03T12:00:00.000Z
+[2026-04-03T12:05:05.987Z]   Ronda drand comprometida: 5992886
+[2026-04-03T12:05:06.177Z] BEACON drand OBTENIDO
+[2026-04-03T12:05:06.177Z]   Ronda     : 5992886
+[2026-04-03T12:05:06.177Z]   Randomness: ba836a307c716623249f65e4081a2c36ec1b4aec0441845615f3780bb1376ec2
+[2026-04-03T12:05:06.177Z]   Signature : a71d1dfab98d3db29b2a74785aaedd62...
+[2026-04-03T12:05:06.177Z]   Endpoint  : https://drand.cloudflare.com/public/5992886

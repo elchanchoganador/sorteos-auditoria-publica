@@ -1,0 +1,42 @@
+{
+  "valid_date": "2026-04-03",
+  "total": 4,
+  "public_keys": [
+    {
+      "key_id": "global:global:2026-04-03",
+      "signer_type": "global",
+      "signer_subject_id": "global",
+      "valid_date": "2026-04-03",
+      "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAKsUGnd7xHcQfE7okqATI8SiffJaVmrarFAEqjJU1WZ4=\n-----END PUBLIC KEY-----\n",
+      "public_key_fingerprint": "528ff19ee260286df35de015e43aa7012565aafd206ae097d16d3fef9ff8cfd4",
+      "created_at": "2026-04-03T12:23:13.865Z"
+    },
+    {
+      "key_id": "usuario:633830727766769684:2026-04-03",
+      "signer_type": "usuario",
+      "signer_subject_id": "633830727766769684",
+      "valid_date": "2026-04-03",
+      "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAhwOr3syLCuCrbONcFidXZveD12Bt7jor2p9KeRHrFB4=\n-----END PUBLIC KEY-----\n",
+      "public_key_fingerprint": "5a8ba05cd9e46c73e5a3d9a5167275188cb8e333424ec38657566f56fa691bbc",
+      "created_at": "2026-04-03T12:23:13.883Z"
+    },
+    {
+      "key_id": "usuario:aaa_first:2026-04-03",
+      "signer_type": "usuario",
+      "signer_subject_id": "aaa_first",
+      "valid_date": "2026-04-03",
+      "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAkKduBg1b+RHe6vGkcBp6QaSn9gKKosqGt6qsn9o8Z78=\n-----END PUBLIC KEY-----\n",
+      "public_key_fingerprint": "3050755ff8b75421771af198b71aaff4fc761b250aa63babc8683454dce36eb1",
+      "created_at": "2026-04-03T12:23:13.890Z"
+    },
+    {
+      "key_id": "usuario:mmm_mid:2026-04-03",
+      "signer_type": "usuario",
+      "signer_subject_id": "mmm_mid",
+      "valid_date": "2026-04-03",
+      "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA86fqG4VEICe1zBs/biGMvpR46NOMMkBD0bFbZOBylqc=\n-----END PUBLIC KEY-----\n",
+      "public_key_fingerprint": "ad1572f58b989de8b7bbc02bb909a237d0c343963064cda1cd5b0dff976e89e1",
+      "created_at": "2026-04-03T12:23:13.896Z"
+    }
+  ]
+}
