@@ -64,3 +64,22 @@ Resumen legible:
 
 - al cargar `resultado.json`, el HTML muestra un resumen tipo:
 	- para el día `DD/MM/AAAA`, en el sorteo y hora indicados, usando los datos publicados de auditoría, el número ganador verificado es `NN`
+
+## Draw Invalidation Policy
+
+Cuando un draw no puede completarse de forma verificable, se publica un estado formal de invalidación para transparencia operativa.
+
+Motivos de invalidación (reason_code):
+
+- `seed_custody_missing`: no existe la seed privada requerida para `commit-reveal`
+
+Evidencia pública de invalidación:
+
+- archivo consolidado diario: `sorteos_log/YYYY/MM/DD/draw_invalidations.ndjson`
+- archivo por draw: `sorteos_log/YYYY/MM/DD/HH/<sorteo-slug>/draw_invalidation.json`
+- traza operativa en `audit.log` del draw con evento `DRAW_INVALIDATED_EVENT`
+
+Reglas operativas:
+
+- no se recalcula el mismo `draw_id`
+- cualquier repetición debe usar nuevo `draw_id` y nuevo precompromiso
