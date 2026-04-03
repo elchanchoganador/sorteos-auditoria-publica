@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Auditor Publico de Sorteos</title>
+  <style>
+    :root {
+      --bg: #f5f1e7;
+      --panel: #fffaf2;
+      --ink: #1c140d;
+      --muted: #6f6255;
+      --accent: #8f1d14;
+      --accent-2: #d8a03a;
+      --ok: #1f7a3d;
+      --warn: #a05f00;
+      --bad: #a11d2a;
+      --border: #dfd1bd;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Georgia, 'Times New Roman', serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(216,160,58,.18), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(143,29,20,.12), transparent 32%),
+        linear-gradient(180deg, #f8f4ec 0%, var(--bg) 100%);
+    }
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 18px 40px;
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      line-height: 1.05;
+    }
+    .lead {
+      margin: 0 0 24px;
+      max-width: 72ch;
+      color: var(--muted);
+      font-size: 1.02rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(28,20,13,.05);
+    }
+    .card h2 {
+      margin: 0 0 8px;
+      font-size: 1.05rem;
+    }
+    .card p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+    label { display: block; font-weight: 700; margin-bottom: 6px; }
+    input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      background: #fff;
+    }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 18px 0 22px;
+    }
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 18px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button.secondary {
+      background: #ece1d0;
+      color: var(--ink);
+    }
+    .summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .pill {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--border);
+      font-size: .92rem;
+    }
+    .ok { color: var(--ok); }
+    .warn { color: var(--warn); }
+    .bad { color: var(--bad); }
+    .results {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .results header {
+      padding: 16px 18px;
+      background: linear-gradient(90deg, rgba(143,29,20,.95), rgba(216,160,58,.92));
+      color: #fff;
+    }
+    .checks { padding: 12px 18px 18px; }
+    .check {
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(111,98,85,.16);
+    }
+    .check:last-child { border-bottom: 0; }
+    .check strong { display: block; margin-bottom: 4px; }
+    code, pre {
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+      font-size: .92rem;
+    }
+    .meta {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.72);
+      border: 1px solid var(--border);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Auditor Publico de Sorteos</h1>
+    <p class="lead">Carga los archivos publicados del sorteo y este HTML verifica relaciones básicas entre precompromiso, snapshot de tickets, hash del archivo y resultado final. Funciona localmente en el navegador y puede descargarse desde GitHub.</p>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Precompromiso</h2>
+        <p>Archivo <code>pre_compromiso.json</code>.</p>
+        <label for="precompromiso">Selecciona archivo</label>
+        <input id="precompromiso" type="file" accept=".json,application/json">
+      </section>
+      <section class="card">
+        <h2>Commit de Tickets</h2>
+        <p>Archivo <code>tickets_commit.json</code>.</p>
+        <label for="ticketsCommit">Selecciona archivo</label>
+        <input id="ticketsCommit" type="file" accept=".json,application/json">
+      </section>
+      <section class="card">
+        <h2>Snapshot de Tickets</h2>
+        <p>Archivo <code>tickets_draw.json</code>.</p>
+        <label for="ticketsDraw">Selecciona archivo</label>
+        <input id="ticketsDraw" type="file" accept=".json,application/json">
+      </section>
+      <section class="card">
+        <h2>Hash del Snapshot</h2>
+        <p>Archivo <code>tickets_draw.json.sha256</code>.</p>
+        <label for="ticketsSha">Selecciona archivo</label>
+        <input id="ticketsSha" type="file" accept=".sha256,.txt,text/plain">
+      </section>
+      <section class="card">
+        <h2>Resultado Final</h2>
+        <p>Opcional: archivo <code>resultado.json</code>.</p>
+        <label for="resultado">Selecciona archivo</label>
+        <input id="resultado" type="file" accept=".json,application/json">
+      </section>
+    </div>
+
+    <div class="actions">
+      <button id="verifyBtn">Verificar archivos</button>
+      <button id="clearBtn" class="secondary">Limpiar</button>
+    </div>
+
+    <div class="summary" id="summary"></div>
+
+    <section class="results">
+      <header>
+        <strong>Resultado de auditoria</strong>
+        <div id="headline">Carga archivos y ejecuta la verificación.</div>
+      </header>
+      <div class="checks" id="checks"></div>
+    </section>
+
+    <div class="meta" id="meta">Sin datos cargados.</div>
+  </div>
+
+  <script>
+    const state = {
+      precompromiso: null,
+      ticketsCommit: null,
+      ticketsDrawText: null,
+      ticketsDrawJson: null,
+      ticketsShaText: null,
+      resultado: null,
+    };
+
+    const els = {
+      summary: document.getElementById('summary'),
+      checks: document.getElementById('checks'),
+      headline: document.getElementById('headline'),
+      meta: document.getElementById('meta'),
+      verifyBtn: document.getElementById('verifyBtn'),
+      clearBtn: document.getElementById('clearBtn'),
+    };
+
+    function setSummary(items) {
+      els.summary.innerHTML = items.map((item) => `<span class="pill ${item.className || ''}">${item.text}</span>`).join('');
+    }
+
+    function renderChecks(checks) {
+      els.checks.innerHTML = checks.map((check) => `
+        <div class="check">
+          <strong class="${check.status}">${check.title}</strong>
+          <div>${check.message}</div>
+        </div>
+      `).join('');
+    }
+
+    function statusBadge(okCount, warnCount, badCount) {
+      if (badCount > 0) return { text: `Errores: ${badCount}`, className: 'bad' };
+      if (warnCount > 0) return { text: `Advertencias: ${warnCount}`, className: 'warn' };
+      return { text: `Todo correcto: ${okCount}`, className: 'ok' };
+    }
+
+    async function sha256HexFromText(text) {
+      const bytes = new TextEncoder().encode(text);
+      const hash = await crypto.subtle.digest('SHA-256', bytes);
+      return Array.from(new Uint8Array(hash)).map((b) => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function safeJsonParse(text, fileLabel) {
+      try {
+        return JSON.parse(text);
+      } catch (error) {
+        throw new Error(`${fileLabel}: JSON inválido (${error.message})`);
+      }
+    }
+
+    async function loadFile(inputId, targetKey, parser = 'json') {
+      const input = document.getElementById(inputId);
+      const file = input.files?.[0];
+      if (!file) {
+        state[targetKey] = null;
+        return;
+      }
+      const text = await file.text();
+      if (parser === 'json') {
+        state[targetKey] = safeJsonParse(text, file.name);
+      } else if (parser === 'text') {
+        state[targetKey] = text;
+      } else if (parser === 'json+text') {
+        state[`${targetKey}Text`] = text;
+        state[targetKey] = safeJsonParse(text, file.name);
+      }
+    }
+
+    function extractSha256FileValue(text) {
+      return String(text || '').trim().split(/\s+/)[0] || '';
+    }
+
+    function addCheck(checks, title, passed, messageOk, messageBad) {
+      checks.push({
+        title,
+        status: passed ? 'ok' : 'bad',
+        message: passed ? messageOk : messageBad,
+      });
+    }
+
+    function addWarn(checks, title, message) {
+      checks.push({ title, status: 'warn', message });
+    }
+
+    async function verifyAll() {
+      await loadFile('precompromiso', 'precompromiso', 'json');
+      await loadFile('ticketsCommit', 'ticketsCommit', 'json');
+      await loadFile('ticketsDraw', 'ticketsDrawJson', 'json+text');
+      await loadFile('ticketsSha', 'ticketsShaText', 'text');
+      await loadFile('resultado', 'resultado', 'json');
+
+      const checks = [];
+      let okCount = 0;
+      let warnCount = 0;
+      let badCount = 0;
+
+      const pre = state.precompromiso;
+      const commit = state.ticketsCommit;
+      const draw = state.ticketsDrawJson;
+      const drawText = state.ticketsDrawJsonText;
+      const shaText = state.ticketsShaText;
+      const resultado = state.resultado;
+
+      if (!pre || !commit || !draw || !drawText || !shaText) {
+        els.headline.textContent = 'Faltan archivos obligatorios.';
+        els.meta.textContent = 'Debes cargar pre_compromiso.json, tickets_commit.json, tickets_draw.json y tickets_draw.json.sha256.';
+        renderChecks([{ title: 'Carga de archivos', status: 'bad', message: 'No se cargaron todos los archivos obligatorios.' }]);
+        setSummary([{ text: 'Archivos incompletos', className: 'bad' }]);
+        return;
+      }
+
+      const drawId = String(pre?.draw_id || '');
+      const commitDrawId = String(commit?.draw_id || '');
+      const drawDrawId = String(draw?.draw_id || '');
+      const drawIdConsistent = drawId && drawId === commitDrawId && drawId === drawDrawId;
+      addCheck(checks, 'Consistencia de draw_id', drawIdConsistent, `draw_id consistente: ${drawId}`, `draw_id inconsistente entre archivos: ${drawId} / ${commitDrawId} / ${drawDrawId}`);
+
+      const preParticipantesHash = String(pre?.participantes?.hash_sha256 || '');
+      const preTextoHasheado = String(pre?.participantes?.texto_hasheado || '');
+      const calcParticipantesHash = await sha256HexFromText(preTextoHasheado);
+      const participantesOk = preParticipantesHash === calcParticipantesHash;
+      addCheck(checks, 'Hash de participantes', participantesOk, 'El hash de participantes del precompromiso coincide con su texto canónico.', `Hash de participantes inválido. Esperado ${calcParticipantesHash} y encontrado ${preParticipantesHash}.`);
+
+      const expectedDrawSha = await sha256HexFromText(drawText);
+      const shaFileHash = extractSha256FileValue(shaText);
+      const shaOk = shaFileHash === expectedDrawSha;
+      addCheck(checks, 'Hash de tickets_draw.json', shaOk, 'El SHA-256 del archivo coincide con tickets_draw.json.sha256.', `SHA-256 inválido. Esperado ${expectedDrawSha} y encontrado ${shaFileHash}.`);
+
+      const commitmentHash = String(pre?.tickets_commitment?.ticket_set_hash || '');
+      const commitHash = String(commit?.ticket_set_hash || '');
+      const ticketHashesOk = commitmentHash === commitHash && commitHash === expectedDrawSha;
+      addCheck(checks, 'Compromiso de tickets', ticketHashesOk, 'El ticket_set_hash coincide entre precompromiso, commit y snapshot.', `ticket_set_hash inconsistente. pre=${commitmentHash} commit=${commitHash} archivo=${expectedDrawSha}`);
+
+      const totalTicketsPre = Number(pre?.tickets_commitment?.total_tickets ?? -1);
+      const totalTicketsCommit = Number(commit?.total_tickets ?? -1);
+      const totalTicketsDraw = Array.isArray(draw?.tickets) ? draw.tickets.length : -1;
+      const totalTicketsOk = totalTicketsPre === totalTicketsCommit && totalTicketsCommit === totalTicketsDraw;
+      addCheck(checks, 'Conteo de tickets', totalTicketsOk, `Conteo consistente: ${totalTicketsDraw} tickets.`, `Conteo inconsistente. pre=${totalTicketsPre} commit=${totalTicketsCommit} draw=${totalTicketsDraw}`);
+
+      if (resultado) {
+        const resultadoDrawId = `${resultado?.sorteo?.slug || ''}:${String(resultado?.horario?.fecha_vet || '').replace(/-/g, '')}:${String(resultado?.horario?.hora24_vet || '').padStart(2, '0')}`;
+        const resultadoDrawIdOk = resultadoDrawId === drawId;
+        addCheck(checks, 'Resultado asociado al mismo sorteo', resultadoDrawIdOk, 'resultado.json corresponde al mismo draw_id.', `resultado.json pertenece a ${resultadoDrawId} y no a ${drawId}.`);
+
+        const resultadoParticipantesHash = String(resultado?.participantes?.hash_sha256 || '');
+        const resultadoParticipantesOk = resultadoParticipantesHash === preParticipantesHash;
+        addCheck(checks, 'Participantes entre precompromiso y resultado', resultadoParticipantesOk, 'El hash de participantes se mantiene entre precompromiso y resultado.', `Hash de participantes distinto. pre=${preParticipantesHash} resultado=${resultadoParticipantesHash}`);
+
+        const concatenadoSemilla = String(resultado?.entropia?.semilla_final?.concatenado || '');
+        const hashSemilla = String(resultado?.entropia?.semilla_final?.hash_sha256 || '');
+        if (concatenadoSemilla && hashSemilla) {
+          const hashSemillaCalc = await sha256HexFromText(concatenadoSemilla);
+          addCheck(checks, 'Hash de semilla final', hashSemillaCalc === hashSemilla, 'La semilla final coincide con su concatenado publicado.', `Semilla final inválida. Esperado ${hashSemillaCalc} y encontrado ${hashSemilla}.`);
+        } else {
+          addWarn(checks, 'Hash de semilla final', 'resultado.json no trae concatenado/hash suficiente para validar este paso.');
+        }
+
+        const numeros = Array.isArray(resultado?.calculo?.todos_numeros) ? resultado.calculo.todos_numeros : [];
+        const idx = Number(resultado?.calculo?.indice_ganador ?? -1);
+        const numeroGanador = String(resultado?.resultado?.numero_ganador || '');
+        if (numeros.length > 0 && idx >= 0 && idx < numeros.length) {
+          addCheck(checks, 'Número ganador vs índice', String(numeros[idx]) === numeroGanador, 'El número ganador coincide con el índice publicado.', `El índice ${idx} apunta a ${numeros[idx]}, pero el resultado publicado es ${numeroGanador}.`);
+        } else {
+          addWarn(checks, 'Número ganador vs índice', 'No hay datos suficientes en resultado.json para validar índice vs número.');
+        }
+      } else {
+        addWarn(checks, 'Resultado final', 'No se cargó resultado.json. Se verificó solamente precompromiso y snapshot de tickets.');
+      }
+
+      for (const check of checks) {
+        if (check.status === 'ok') okCount += 1;
+        else if (check.status === 'warn') warnCount += 1;
+        else badCount += 1;
+      }
+
+      els.headline.textContent = badCount > 0
+        ? 'Se detectaron inconsistencias publicadas.'
+        : (warnCount > 0 ? 'Validación parcial completada con advertencias.' : 'Validación completada sin inconsistencias detectadas.');
+
+      const summaryItems = [
+        statusBadge(okCount, warnCount, badCount),
+        { text: `OK: ${okCount}`, className: 'ok' },
+        { text: `Advertencias: ${warnCount}`, className: 'warn' },
+        { text: `Errores: ${badCount}`, className: 'bad' },
+      ];
+      setSummary(summaryItems);
+      renderChecks(checks);
+      els.meta.textContent = [
+        `draw_id: ${drawId || '(sin dato)'}`,
+        `ticket_set_hash: ${commitHash || '(sin dato)'}`,
+        `hash participantes: ${preParticipantesHash || '(sin dato)'}`,
+        resultado ? `resultado cargado: sí` : 'resultado cargado: no',
+      ].join('\n');
+    }
+
+    els.verifyBtn.addEventListener('click', () => {
+      verifyAll().catch((error) => {
+        els.headline.textContent = 'Error ejecutando la auditoría.';
+        setSummary([{ text: 'Error', className: 'bad' }]);
+        renderChecks([{ title: 'Excepción', status: 'bad', message: error.message }]);
+        els.meta.textContent = error.stack || error.message;
+      });
+    });
+
+    els.clearBtn.addEventListener('click', () => {
+      document.querySelectorAll('input[type="file"]').forEach((input) => { input.value = ''; });
+      Object.keys(state).forEach((k) => { state[k] = null; });
+      setSummary([]);
+      renderChecks([]);
+      els.headline.textContent = 'Carga archivos y ejecuta la verificación.';
+      els.meta.textContent = 'Sin datos cargados.';
+    });
+  </script>
+</body>
+</html>

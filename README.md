@@ -5,6 +5,7 @@ Este repositorio publica solamente material verificable por terceros.
 Contenido esperado:
 
 - `scripts/` con verificadores públicos
+- `auditor/` con una interfaz HTML descargable para comprobaciones manuales
 - `sorteos_log/YYYY/MM/DD/` con resultados auditables del día
 - `ticket_keys/YYYY/MM/DD/public_keys.json` con claves públicas para verificar recibos históricos
 
@@ -19,3 +20,4 @@ Uso típico:
 
 - Verificar resultado: `node scripts/verificar_resultado.js <ruta-carpeta-sorteo>`
 - Verificar recibo: `node scripts/verificar_recibo_ticket_publico.js <recibo.json> <public_keys.json>`
+- Auditor manual: abrir `auditor/index.html` y cargar los archivos publicados del sorteo
