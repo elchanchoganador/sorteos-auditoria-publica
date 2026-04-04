@@ -6,6 +6,20 @@ Formato inspirado en Keep a Changelog.
 
 ## [Unreleased]
 
+## [v2026.04.04] - 2026-04-04
+
+### Added
+- Integracion de analisis de integridad con VirusTotal en `audit/virustotal_analyzer.js`.
+- Generacion de `virustotal_analysis.json` por sorteo para evidencia local/publicable.
+- Escaneo de URLs publicas y generacion de `virustotal_scan.json` en publicacion de auditoria.
+- Guia publica de verificacion paso a paso en `VERIFICAR_RESULTADO_PASO_A_PASO.md`.
+- Documentacion operativa de VirusTotal en `VIRUSTOTAL_INTEGRATION.md`.
+
+### Changed
+- `scripts/publicar_auditoria_publica.js` ahora realiza segundo commit/push para reportes de VirusTotal.
+- `auditor/index.html` validado sin rutas absolutas locales y listo para consumo publico.
+- Version de `package.json` actualizada a `1.1.0`.
+
 ## [v2026.04.03] - 2026-04-03
 
 ### Added
