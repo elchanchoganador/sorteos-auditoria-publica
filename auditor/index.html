@@ -295,79 +295,57 @@
     }
     .mode-panel { display: none; }
     .mode-panel.active { display: block; }
-    .tutorial-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-top: 12px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,.78);
-    }
-    .tutorial-switch {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 700;
-      color: var(--ink);
-      user-select: none;
-      cursor: pointer;
-    }
-    .tutorial-switch input {
-      width: 44px;
-      height: 24px;
-      appearance: none;
-      border-radius: 999px;
-      background: #d8c8b2;
-      border: 1px solid #c7b49a;
-      position: relative;
-      outline: none;
-      transition: background .2s ease;
-    }
-    .tutorial-switch input::after {
-      content: '';
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 2px 6px rgba(0,0,0,.2);
-      transition: transform .2s ease;
-    }
-    .tutorial-switch input:checked {
-      background: #2c8b4a;
-      border-color: #2c8b4a;
-    }
-    .tutorial-switch input:checked::after {
-      transform: translateX(20px);
-    }
-    .tutorial-panel {
-      margin-top: 12px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      background: linear-gradient(135deg, rgba(255,255,255,.94), rgba(248,239,221,.94));
+    .tutorial-modal {
+      position: fixed;
+      inset: 0;
       display: none;
+      z-index: 10000;
     }
-    .tutorial-panel.active { display: block; }
-    .tutorial-panel ol {
-      margin: 8px 0 0 18px;
-      padding: 0;
-      line-height: 1.5;
+    .tutorial-modal.open { display: block; }
+    .tutorial-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(8, 13, 27, .72);
+      backdrop-filter: blur(2px);
     }
-    .tutorial-highlight {
-      box-shadow: 0 0 0 3px rgba(216,160,58,.45), 0 0 0 6px rgba(143,29,20,.16) !important;
+    .tutorial-card {
+      position: relative;
+      z-index: 10001;
+      max-width: 620px;
+      margin: 8vh auto 0;
+      background: #fff;
+      border: 1px solid #d5ddec;
+      border-radius: 16px;
+      box-shadow: 0 22px 50px rgba(5, 18, 46, .35);
+      padding: 16px;
+    }
+    .tutorial-card h3 {
+      margin: 0 0 8px;
+      font-size: 1.2rem;
+    }
+    .tutorial-step-meta {
+      margin: 0 0 8px;
+      color: #3e547a;
+      font-size: .92rem;
+    }
+    .tutorial-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .tutorial-focus {
+      position: relative;
+      z-index: 10002 !important;
       border-radius: 12px;
-      animation: tutorialPulse 1.2s ease-in-out infinite;
+      box-shadow: 0 0 0 3px rgba(76, 129, 255, .55), 0 0 0 8px rgba(55, 108, 255, .22) !important;
+      animation: tutorialBluePulse 1.25s ease-in-out infinite;
     }
-    @keyframes tutorialPulse {
-      0% { box-shadow: 0 0 0 3px rgba(216,160,58,.35), 0 0 0 6px rgba(143,29,20,.12); }
-      50% { box-shadow: 0 0 0 4px rgba(216,160,58,.55), 0 0 0 8px rgba(143,29,20,.2); }
-      100% { box-shadow: 0 0 0 3px rgba(216,160,58,.35), 0 0 0 6px rgba(143,29,20,.12); }
+    @keyframes tutorialBluePulse {
+      0% { box-shadow: 0 0 0 3px rgba(76, 129, 255, .45), 0 0 0 8px rgba(55, 108, 255, .16); }
+      50% { box-shadow: 0 0 0 4px rgba(76, 129, 255, .75), 0 0 0 12px rgba(55, 108, 255, .28); }
+      100% { box-shadow: 0 0 0 3px rgba(76, 129, 255, .45), 0 0 0 8px rgba(55, 108, 255, .16); }
     }
   </style>
 </head>
@@ -382,6 +360,7 @@
     <div class="tabs">
       <button class="tab-btn active" data-tab="auditoria">Verificar Sorteo</button>
       <button class="tab-btn" data-tab="buscar">Buscar mi Participación</button>
+      <button class="tab-btn" id="openTutorialBtn" type="button">Tutorial guiado</button>
     </div>
 
     <div id="tab-auditoria" class="tab-panel active">
@@ -412,17 +391,6 @@
         </div>
       </div>
       <div class="links-box" id="publicLinks">Selecciona un sorteo o pega un <code>codigo_tecnico</code> para ver enlaces directos a los archivos públicos.</div>
-      <div class="tutorial-bar">
-        <label class="tutorial-switch" for="tutorialToggle">
-          <input id="tutorialToggle" type="checkbox">
-          Tutorial guiado
-        </label>
-        <small id="tutorialStatus" style="color:var(--muted)">Desactivado</small>
-      </div>
-      <div id="tutorialPanel" class="tutorial-panel" aria-live="polite">
-        <strong>Guía rápida</strong>
-        <ol id="tutorialSteps"></ol>
-      </div>
     </section>
     </div>
 
@@ -539,6 +507,20 @@
     <div id="buscarResultados" class="search-results" style="display:none;"></div>
   </div><!-- /tab-buscar -->
 
+  <div id="tutorialModal" class="tutorial-modal" aria-hidden="true">
+    <div class="tutorial-backdrop" id="tutorialBackdrop"></div>
+    <div class="tutorial-card" role="dialog" aria-modal="true" aria-labelledby="tutorialTitle">
+      <h3 id="tutorialTitle">Tutorial guiado</h3>
+      <p class="tutorial-step-meta" id="tutorialStepMeta">Paso 1 de 1</p>
+      <div id="tutorialStepBody"></div>
+      <div class="tutorial-actions">
+        <button class="secondary" id="tutorialPrevBtn" type="button">Anterior</button>
+        <button id="tutorialNextBtn" type="button">Siguiente</button>
+        <button class="secondary" id="tutorialCloseBtn" type="button">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
   </div><!-- /.wrap -->
 
   <script>
@@ -562,77 +544,116 @@
       clearBtn: document.getElementById('clearBtn'),
       drawIdInput: document.getElementById('drawIdInput'),
       publicLinks: document.getElementById('publicLinks'),
-      tutorialToggle: document.getElementById('tutorialToggle'),
-      tutorialStatus: document.getElementById('tutorialStatus'),
-      tutorialPanel: document.getElementById('tutorialPanel'),
-      tutorialSteps: document.getElementById('tutorialSteps'),
       quickVerifyBtn: document.getElementById('quickVerifyBtn'),
+      openTutorialBtn: document.getElementById('openTutorialBtn'),
+      tutorialModal: document.getElementById('tutorialModal'),
+      tutorialBackdrop: document.getElementById('tutorialBackdrop'),
+      tutorialPrevBtn: document.getElementById('tutorialPrevBtn'),
+      tutorialNextBtn: document.getElementById('tutorialNextBtn'),
+      tutorialCloseBtn: document.getElementById('tutorialCloseBtn'),
+      tutorialStepMeta: document.getElementById('tutorialStepMeta'),
+      tutorialStepBody: document.getElementById('tutorialStepBody'),
     };
 
     const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main';
-    const tutorialTargets = [
-      'drawIdInput',
-      'quickVerifyBtn',
-      'summary',
-      'story',
-      'headline',
-      'checks',
-      'meta',
-    ];
+    let tutorialIndex = 0;
+    let tutorialActiveTarget = null;
 
     function setSummary(items) {
       els.summary.innerHTML = items.map((item) => `<span class="pill ${item.className || ''}">${item.text}</span>`).join('');
     }
 
     function clearTutorialHighlights() {
-      tutorialTargets.forEach((id) => {
-        const el = document.getElementById(id);
-        if (el) el.classList.remove('tutorial-highlight');
-      });
+      if (tutorialActiveTarget) {
+        tutorialActiveTarget.classList.remove('tutorial-focus');
+        tutorialActiveTarget = null;
+      }
     }
 
-    function applyTutorialHighlights() {
+    function applyTutorialHighlightById(id) {
       clearTutorialHighlights();
-      const ids = ['drawIdInput', 'quickVerifyBtn', 'headline', 'summary', 'checks', 'meta'];
-      ids.forEach((id) => {
-        const el = document.getElementById(id);
-        if (el) el.classList.add('tutorial-highlight');
-      });
+      const el = document.getElementById(id);
+      if (!el) return;
+      tutorialActiveTarget = el;
+      tutorialActiveTarget.classList.add('tutorial-focus');
+      tutorialActiveTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-    function setTutorialSteps(lines) {
-      els.tutorialSteps.innerHTML = lines.map((line) => `<li>${line}</li>`).join('');
+    const tutorialSteps = [
+      {
+        targetId: 'drawIdInput',
+        text: 'Paso 1: Entra en Verificación rápida y escribe un código técnico válido, por ejemplo: <code>el-chancho-de-oro:20260404:19</code>.',
+      },
+      {
+        targetId: 'quickVerifyBtn',
+        text: 'Paso 2: Haz clic en <strong>Cargar y verificar</strong> para ejecutar la validación automática del sorteo.',
+      },
+      {
+        targetId: 'summary',
+        text: 'Paso 3: Revisa el resumen (OK / Advertencias / Errores) para saber si hay inconsistencias.',
+      },
+      {
+        targetId: 'checks',
+        text: 'Paso 4: Revisa el detalle de validaciones para confirmar cada punto de integridad del sorteo.',
+      },
+      {
+        targetId: 'meta',
+        text: 'Paso 5: Verifica los metadatos finales y guarda evidencia si necesitas soporte de auditoría.',
+      },
+      {
+        targetId: 'buscarUsuario',
+        text: 'Paso 6: Si quieres comprobar una jugada específica, abre la pestaña <strong>Buscar mi Participación</strong> y coloca el código de jugada.',
+      },
+    ];
+
+    function openTutorialModal() {
+      tutorialIndex = 0;
+      els.tutorialModal.classList.add('open');
+      els.tutorialModal.setAttribute('aria-hidden', 'false');
+      renderTutorialStep();
     }
 
-    function updateTutorialGuide() {
-      const enabled = !!els.tutorialToggle.checked;
-      if (!enabled) {
-        els.tutorialStatus.textContent = 'Desactivado';
-        els.tutorialPanel.classList.remove('active');
-        clearTutorialHighlights();
-        return;
-      }
+    function closeTutorialModal() {
+      els.tutorialModal.classList.remove('open');
+      els.tutorialModal.setAttribute('aria-hidden', 'true');
+      clearTutorialHighlights();
+    }
 
-      els.tutorialStatus.textContent = 'Activado';
-      els.tutorialPanel.classList.add('active');
+    function activateMainTab(tab) {
+      document.querySelectorAll('.tab-btn[data-tab]').forEach((b) => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
+      const tabBtn = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
+      const tabPanel = document.getElementById(`tab-${tab}`);
+      if (tabBtn) tabBtn.classList.add('active');
+      if (tabPanel) tabPanel.classList.add('active');
+    }
 
-      const parsed = parseDrawId(els.drawIdInput.value);
-      if (!parsed) {
-        setTutorialSteps([
-          'Ingresa un código técnico válido: <code>el-chancho-de-oro:20260404:19</code>.',
-          'Haz clic en <strong>Cargar y verificar</strong>.',
-          'Revisa abajo: estado general, resumen y detalle de validaciones.',
-        ]);
+    function activateMode(mode) {
+      document.querySelectorAll('.mode-btn').forEach((b) => b.classList.remove('active'));
+      document.querySelectorAll('.mode-panel').forEach((p) => p.classList.remove('active'));
+      const modeBtn = document.querySelector(`.mode-btn[data-mode="${mode}"]`);
+      const modePanel = document.getElementById(`mode-${mode}`);
+      if (modeBtn) modeBtn.classList.add('active');
+      if (modePanel) modePanel.classList.add('active');
+    }
+
+    function renderTutorialStep() {
+      const step = tutorialSteps[tutorialIndex];
+      if (!step) return;
+
+      if (step.targetId === 'buscarUsuario') {
+        activateMainTab('buscar');
       } else {
-        setTutorialSteps([
-          `Código detectado para <strong>${obtenerNombreSorteo(parsed.slug)}</strong>, ${parsed.fecha} a las ${parsed.hora}:00.`,
-          'Haz clic en <strong>Cargar y verificar</strong> para ejecutar la validación automática.',
-          'Resultado esperado: se mostrará el resumen (OK/Advertencias/Errores).',
-          'Verifica detalles en: resultado de auditoría, número ganador y panel de metadatos.',
-        ]);
+        activateMainTab('auditoria');
+        activateMode('rapida');
       }
 
-      applyTutorialHighlights();
+      els.tutorialStepMeta.textContent = `Paso ${tutorialIndex + 1} de ${tutorialSteps.length}`;
+      els.tutorialStepBody.innerHTML = step.text;
+      applyTutorialHighlightById(step.targetId);
+
+      els.tutorialPrevBtn.disabled = tutorialIndex === 0;
+      els.tutorialNextBtn.textContent = tutorialIndex === tutorialSteps.length - 1 ? 'Finalizar' : 'Siguiente';
     }
 
     function renderChecks(checks) {
@@ -1157,8 +1178,30 @@
       }
     });
 
-    els.tutorialToggle.addEventListener('change', updateTutorialGuide);
-    els.drawIdInput.addEventListener('input', updateTutorialGuide);
+    els.openTutorialBtn.addEventListener('click', openTutorialModal);
+    els.tutorialCloseBtn.addEventListener('click', closeTutorialModal);
+    els.tutorialBackdrop.addEventListener('click', closeTutorialModal);
+
+    els.tutorialPrevBtn.addEventListener('click', () => {
+      if (tutorialIndex > 0) {
+        tutorialIndex -= 1;
+        renderTutorialStep();
+      }
+    });
+
+    els.tutorialNextBtn.addEventListener('click', () => {
+      if (tutorialIndex >= tutorialSteps.length - 1) {
+        closeTutorialModal();
+        return;
+      }
+      tutorialIndex += 1;
+      renderTutorialStep();
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (!els.tutorialModal.classList.contains('open')) return;
+      if (event.key === 'Escape') closeTutorialModal();
+    });
 
     ['fechaPublicada', 'horaPublicada', 'slugPublicado'].forEach((id) => {
       document.getElementById(id).addEventListener('change', updatePublicLinks);
@@ -1198,7 +1241,6 @@
         }
       }
 
-      updateTutorialGuide();
     })();
   </script>
 </body>
