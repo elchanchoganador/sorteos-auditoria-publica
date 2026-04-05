@@ -202,7 +202,6 @@
     }
     @media (max-width: 860px) {
       .tutorial-card {
-        width: min(var(--tutorial-card-max-width, 360px), calc(100vw - 12px));
         border-radius: 14px;
         padding: 12px;
       }
@@ -215,7 +214,6 @@
       }
       #tutorialStepBody {
         font-size: .94rem;
-        max-height: min(46vh, 280px);
       }
       .tutorial-actions {
         justify-content: center;
@@ -230,14 +228,6 @@
       }
     }
     @media (max-width: 560px) {
-      .tutorial-card {
-        width: calc(100vw - 14px);
-        max-width: calc(100vw - 14px);
-        left: 7px;
-      }
-      #tutorialStepBody {
-        max-height: min(38vh, 230px);
-      }
       .tutorial-actions {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -255,12 +245,9 @@
     }
     @media (max-width: 640px) and (max-height: 760px) {
       .tutorial-card {
-        max-height: calc(100vh - 12px);
-        top: 6px;
         padding: 10px;
       }
       #tutorialStepBody {
-        max-height: min(32vh, 180px);
         font-size: .92rem;
       }
       .tutorial-step-meta {
@@ -432,31 +419,18 @@
     .mode-panel { display: none; }
     .mode-panel.active { display: block; }
     .tutorial-modal {
-      position: fixed;
-      inset: 0;
-      display: none;
-      z-index: 12000;
-      pointer-events: none;
-    }
-    .tutorial-modal.open { display: block; }
-    .tutorial-backdrop {
       display: none;
     }
     .tutorial-card {
-      position: fixed;
-      z-index: 10001;
-      pointer-events: auto;
-      width: min(var(--tutorial-card-max-width, 360px), calc(100vw - 24px));
-      max-width: var(--tutorial-card-max-width, 360px);
-      max-height: calc(100vh - 24px);
-      left: 12px;
-      top: 14px;
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 14px;
       background: #fff;
       border: 1px solid #d5ddec;
       border-radius: 16px;
-      box-shadow: 0 22px 50px rgba(5, 18, 46, .35);
+      box-shadow: 0 8px 28px rgba(5, 18, 46, .18);
       padding: 16px;
-      overflow: hidden;
     }
     .tutorial-card-layout {
       display: grid;
@@ -481,17 +455,12 @@
       object-fit: contain;
       filter: drop-shadow(0 8px 14px rgba(0,0,0,.2));
     }
-    .tutorial-modal[data-step-kind="button"] .tutorial-card-mascot {
-      display: none;
-    }
+
     
     
     
     
   
-    .tutorial-modal[data-step-kind="input"] .tutorial-pointer {
-      gap: 4px;
-    }
     .tutorial-help-label {
       display: inline-block;
       background: #7fb7b6;
@@ -516,8 +485,6 @@
     #tutorialStepBody {
       line-height: 1.42;
       font-size: 1rem;
-      max-height: min(55vh, 420px);
-      overflow: auto;
       min-height: 0;
       padding: 2px 4px 2px 0;
       overflow-wrap: anywhere;
@@ -550,31 +517,6 @@
       font-size: .9rem;
       min-height: 1em;
     }
-    .tutorial-step-inline-form {
-      display: none;
-      margin-top: 10px;
-      padding: 10px;
-      border: 1px solid #d9e2f3;
-      border-radius: 12px;
-      background: #f8fbff;
-      gap: 8px;
-    }
-    .tutorial-step-inline-form.is-visible {
-      display: grid;
-    }
-    .tutorial-step-inline-form label {
-      margin-bottom: 4px;
-      font-size: .9rem;
-    }
-    .tutorial-step-inline-actions {
-      display: flex;
-      align-items: end;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .tutorial-step-inline-actions button {
-      width: 100%;
-    }
     .tutorial-actions {
       display: flex;
       gap: 8px;
@@ -586,195 +528,22 @@
       margin-top: 12px;
       min-height: 40px;
     }
-    .tutorial-pointer {
-      position: fixed;
-      z-index: 10006;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 0;
-      pointer-events: none;
-      transform-origin: center;
-      overflow: visible;
-    }
-    .tutorial-pig {
-      display: block;
-      width: 108px;
-      height: 108px;
-      object-fit: contain;
-      filter: drop-shadow(0 8px 14px rgba(0,0,0,.28));
-      z-index: 3;
-    }
-    .tutorial-modal .tutorial-pointer {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0;
-    }
-    .tutorial-modal[data-step-kind="checks"] .tutorial-pointer {
-      display: flex;
-    }
-    .tutorial-modal[data-step-kind="checks"] #quickOutput {
+    .tutorial-pointer { display: none !important; }
+    body[data-tutorial-step="checks"] #quickOutput {
       background: rgba(255,255,255,.96);
       border-color: #7ea7f8;
     }
-    .tutorial-modal[data-step-kind="checks"] #quickOutput .check {
+    body[data-tutorial-step="checks"] #quickOutput .check {
       border-bottom-color: rgba(34, 52, 79, .14);
     }
-    .tutorial-modal[data-step-kind="checks"] #quickOutput .check div {
+    body[data-tutorial-step="checks"] #quickOutput .check div {
       color: #2d2d2d;
     }
-    .tutorial-modal[data-step-kind="checks"] #quickOutput .check strong {
+    body[data-tutorial-step="checks"] #quickOutput .check strong {
       color: #155a2f;
     }
-    @media (max-width: 760px) {
-      .tutorial-modal[data-step-kind="output"] .tutorial-card,
-      .tutorial-modal[data-step-kind="checks"] .tutorial-card {
-        z-index: 10005;
-      }
-      .tutorial-modal[data-step-kind="output"] #quickOutput,
-      .tutorial-modal[data-step-kind="checks"] #quickOutput {
-        margin-top: max(10px, calc(var(--tutorial-card-space, 250px) + 8px));
-        max-height: min(56vh, calc(100vh - var(--tutorial-card-space, 250px) - 12px));
-        overflow: auto;
-        overscroll-behavior: contain;
-        padding: 10px 10px 14px;
-        scroll-padding-bottom: 14px;
-      }
-      .tutorial-modal[data-step-kind="output"] #quickOutput #headline,
-      .tutorial-modal[data-step-kind="checks"] #quickOutput #headline {
-        font-size: .94rem;
-        line-height: 1.28;
-        margin-bottom: 6px;
-      }
-      .tutorial-modal[data-step-kind="output"] #quickOutput .summary,
-      .tutorial-modal[data-step-kind="checks"] #quickOutput .summary {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 6px;
-        margin-top: 8px;
-        margin-bottom: 10px;
-      }
-      .tutorial-modal[data-step-kind="output"] #quickOutput .pill,
-      .tutorial-modal[data-step-kind="checks"] #quickOutput .pill {
-        font-size: .82rem;
-        padding: 6px 8px;
-        text-align: center;
-      }
-      .tutorial-modal[data-step-kind="output"] #quickOutput .checks,
-      .tutorial-modal[data-step-kind="checks"] #quickOutput .checks {
-        padding: 8px 10px 10px;
-        max-height: min(36vh, 280px);
-        overflow: auto;
-      }
-      .tutorial-modal[data-step-kind="output"] #quickOutput .check,
-      .tutorial-modal[data-step-kind="checks"] #quickOutput .check {
-        padding: 9px 0;
-      }
-      .tutorial-modal[data-step-kind="output"] #quickOutput .check strong,
-      .tutorial-modal[data-step-kind="checks"] #quickOutput .check strong {
-        font-size: .92rem;
-        line-height: 1.24;
-      }
-      .tutorial-modal[data-step-kind="output"] #quickOutput .check div,
-      .tutorial-modal[data-step-kind="checks"] #quickOutput .check div {
-        font-size: .88rem;
-        line-height: 1.3;
-      }
-      .tutorial-modal[data-step-kind="checks"] #quickOutput .check-help {
-        width: 22px;
-        height: 22px;
-        flex: 0 0 22px;
-      }
-      .tutorial-modal[data-step-kind="output"] #quickOutput #meta,
-      .tutorial-modal[data-step-kind="checks"] #quickOutput #meta {
-        margin-top: 10px;
-        padding: 10px;
-        max-height: 120px;
-        overflow: auto;
-        font-size: .8rem;
-        line-height: 1.32;
-      }
-      .tutorial-modal[data-step-kind="output"] #quickOutput.tutorial-focus,
-      .tutorial-modal[data-step-kind="checks"] #quickOutput.tutorial-focus {
-        z-index: 10002 !important;
-        box-shadow: 0 0 0 2px rgba(76, 129, 255, .55), 0 0 0 6px rgba(55, 108, 255, .2) !important;
-      }
-    }
-    @media (max-width: 420px) {
-      .tutorial-modal[data-step-kind="output"] #quickOutput .summary,
-      .tutorial-modal[data-step-kind="checks"] #quickOutput .summary {
-        grid-template-columns: 1fr;
-      }
-      .tutorial-modal[data-step-kind="output"] #quickOutput .checks,
-      .tutorial-modal[data-step-kind="checks"] #quickOutput .checks {
-        max-height: min(33vh, 240px);
-      }
-      .tutorial-modal[data-step-kind="output"] #quickOutput #meta,
-      .tutorial-modal[data-step-kind="checks"] #quickOutput #meta {
-        max-height: 96px;
-      }
-    }
-    .tutorial-modal .tutorial-hand {
-      display: block;
-      margin-top: -24px;
-    }
-    .tutorial-hand {
-      width: 96px;
-      height: 96px;
-      object-fit: contain;
-      margin-top: 0;
-      transform-origin: 62% 35%;
-      --hand-transform: rotate(5deg);
-      animation: tutorialHandPoint 1.1s ease-in-out infinite;
-      filter: drop-shadow(0 6px 10px rgba(0,0,0,.35));
-      z-index: 4;
-    }
-    .tutorial-hand.point-left {
-      --hand-transform: scaleX(-1) rotate(5deg);
-    }
-    .tutorial-hand.point-down {
-      --hand-transform: rotate(92deg);
-    }
-    .tutorial-hand.point-down.point-left {
-      --hand-transform: scaleX(-1) rotate(92deg);
-    }
-    .tutorial-pig-step-2 {
-      display: none;
-    }
-    .tutorial-hand-step-2 {
-      width: 88px;
-      height: 88px;
-      margin-top: 0;
-    }
-    .tutorial-hand-step-2.point-left {
-      --hand-transform: scaleX(-1) rotate(22deg);
-    }
-    .tutorial-hand-step-2:not(.point-left) {
-      --hand-transform: rotate(22deg);
-    }
-    .tutorial-pig-step-3 {
-      display: none;
-    }
-    .tutorial-hand-step-3 {
-      margin-top: 0;
-      z-index: 5;
-    }
-    .tutorial-pig-step-4 {
-      display: none;
-    }
-    .tutorial-hand-step-4 {
-      margin-top: 0;
-      z-index: 5;
-    }
-    .tutorial-pig-step-5 {
-      display: none;
-    }
-    .tutorial-hand-step-5 {
-      margin-top: 0;
-      z-index: 5;
-    }
+
+
     .tutorial-check-explain {
       margin-top: 8px;
       display: grid;
@@ -808,17 +577,10 @@
       box-shadow: 0 0 0 3px rgba(76, 129, 255, .55), 0 0 0 8px rgba(55, 108, 255, .22) !important;
       animation: tutorialBluePulse 1.25s ease-in-out infinite;
     }
-    #drawIdInput.tutorial-focus {
-      margin-top: 18px;
-    }
     @keyframes tutorialBluePulse {
       0% { box-shadow: 0 0 0 3px rgba(76, 129, 255, .45), 0 0 0 8px rgba(55, 108, 255, .16); }
       50% { box-shadow: 0 0 0 4px rgba(76, 129, 255, .75), 0 0 0 12px rgba(55, 108, 255, .28); }
       100% { box-shadow: 0 0 0 3px rgba(76, 129, 255, .45), 0 0 0 8px rgba(55, 108, 255, .16); }
-    }
-    @keyframes tutorialHandPoint {
-      0%, 100% { transform: var(--hand-transform) translateY(0); }
-      50% { transform: var(--hand-transform) translateY(-3px); }
     }
   </style>
 </head>
@@ -978,25 +740,12 @@
   </div><!-- /tab-buscar -->
 
   <div id="tutorialModal" class="tutorial-modal" aria-hidden="true">
-    <div class="tutorial-backdrop" id="tutorialBackdrop"></div>
-    <div class="tutorial-pointer" id="tutorialPointer" aria-hidden="true">
-      <img class="tutorial-hand tutorial-hand-image" src="../images/mickey-mouse-hand.svg" alt="" onerror="this.style.display='none'">
-    </div>
     <div class="tutorial-card" role="dialog" aria-modal="true" aria-label="Tutorial guiado">
       <div class="tutorial-card-layout">
         <div class="tutorial-card-main">
           <span class="tutorial-help-label">AYUDA</span>
           <p class="tutorial-step-meta" id="tutorialStepMeta">Paso 1 de 1</p>
           <div id="tutorialStepBody"></div>
-          <div class="tutorial-step-inline-form" id="tutorialStepInlineForm">
-            <div>
-              <label for="tutorialInlineDrawId">Codigo tecnico del sorteo</label>
-              <input id="tutorialInlineDrawId" type="text" placeholder="Ej: el-chancho-de-oro:20260404:19">
-            </div>
-            <div class="tutorial-step-inline-actions">
-              <button id="tutorialInlineVerifyBtn" type="button">Cargar y verificar</button>
-            </div>
-          </div>
           <div class="tutorial-actions">
             <button class="secondary" id="tutorialPrevBtn" type="button">Anterior</button>
             <button id="tutorialNextBtn" type="button">Siguiente</button>
@@ -1039,20 +788,12 @@
       quickOutput: document.getElementById('quickOutput'),
       openTutorialBtn: document.getElementById('openTutorialBtn'),
       tutorialModal: document.getElementById('tutorialModal'),
-      tutorialBackdrop: document.getElementById('tutorialBackdrop'),
       tutorialCard: document.querySelector('.tutorial-card'),
-      tutorialPointer: document.getElementById('tutorialPointer'),
-      tutorialPig: document.querySelector('.tutorial-pig'),
-      tutorialHand: document.querySelector('.tutorial-hand'),
       tutorialPrevBtn: document.getElementById('tutorialPrevBtn'),
       tutorialNextBtn: document.getElementById('tutorialNextBtn'),
       tutorialCloseBtn: document.getElementById('tutorialCloseBtn'),
       tutorialStepMeta: document.getElementById('tutorialStepMeta'),
       tutorialStepBody: document.getElementById('tutorialStepBody'),
-      tutorialStepInlineForm: document.getElementById('tutorialStepInlineForm'),
-      tutorialInlineDrawId: document.getElementById('tutorialInlineDrawId'),
-      tutorialInlineVerifyBtn: document.getElementById('tutorialInlineVerifyBtn'),
-      tutorialStepDataPreview: document.getElementById('tutorialStepDataPreview'),
     };
 
     const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main';
@@ -1086,8 +827,14 @@
       if (!el) return;
       tutorialActiveTarget = el;
       tutorialActiveTarget.classList.add('tutorial-focus');
-      tutorialActiveTarget.scrollIntoView({ behavior: 'auto', block: 'center' });
-      positionTutorialOverlay();
+    }
+
+    function moveTutorialCardToAnchor(anchorSelector) {
+      if (!anchorSelector || !els.tutorialCard) return;
+      const anchorEl = document.querySelector(anchorSelector);
+      if (!anchorEl || !anchorEl.parentElement) return;
+      anchorEl.parentElement.insertBefore(els.tutorialCard, anchorEl);
+      anchorEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     const tutorialSteps = [
@@ -1095,72 +842,46 @@
         kind: 'input',
         cardMaxWidth: 420,
         targetId: 'drawIdInput',
+        anchorSelector: '#mode-rapida .mini-grid',
         text: `Paso 1: Entra en Verificacion rapida y escribe un codigo tecnico valido. Haz clic para copiar:<br><span class="tutorial-copy-token" role="button" tabindex="0" data-copy-text="${TUTORIAL_SAMPLE_DRAW_ID}">${TUTORIAL_SAMPLE_DRAW_ID}</span><span class="tutorial-copy-feedback" id="tutorialCopyFeedback"></span>`,
       },
       {
         kind: 'button',
         cardMaxWidth: 360,
         targetId: 'quickVerifyBtn',
+        anchorSelector: '#mode-rapida .mini-grid',
         text: 'Pulsa <strong>Cargar y verificar</strong> para que el sistema haga la comprobacion por ti.',
       },
       {
         kind: 'output',
         cardMaxWidth: 380,
         targetId: 'quickOutput',
+        anchorSelector: '#quickOutput',
         text: 'Revisa este bloque de salida: aqui veras <strong>error o resultado</strong> de la validacion para confirmar si todo salio bien.',
       },
       {
         kind: 'checks',
         cardMaxWidth: 420,
         targetId: 'quickOutput',
+        anchorSelector: '#quickOutput',
         text: () => buildTutorialChecksExplanationHtml(),
       },
       {
         kind: 'meta',
         cardMaxWidth: 360,
         targetId: 'meta',
+        anchorSelector: '#quickOutput',
         text: 'Revisa <strong>metadatos</strong> y conserva esa evidencia para tu respaldo de auditoria.',
       },
       {
         kind: 'search',
         cardMaxWidth: 360,
         targetId: 'buscarUsuario',
+        anchorSelector: '#tab-buscar .card',
         text: 'Quieres revisar una jugada puntual: ve a <strong>Buscar mi Participacion</strong> y pega su codigo.',
       },
     ];
 
-    function getTutorialLayoutProfile(step, vw) {
-      const tabsRect = document.querySelector('.tabs')?.getBoundingClientRect();
-      const menuBottom = tabsRect ? Math.max(0, tabsRect.bottom) : 0;
-      const kind = String(step?.kind || 'default');
-      const cardMaxWidth = Number(step?.cardMaxWidth || 360);
-      const isCompactViewport = vw <= 640;
-
-      const profile = {
-        kind,
-        cardMaxWidth,
-        safe: isCompactViewport ? 10 : 20,
-        minTop: 20,
-        reserveMenuSpace: false,
-        forcePointerAboveTarget: false,
-        pinCardTopLeft: false,
-      };
-
-      if (kind === 'input') {
-        profile.reserveMenuSpace = true;
-        profile.forcePointerAboveTarget = true;
-        profile.minTop = Math.max(20, Math.round(menuBottom + 14));
-      } else if (kind === 'button') {
-        profile.reserveMenuSpace = false;
-        profile.minTop = 20;
-      } else if (kind === 'output' || kind === 'checks') {
-        profile.pinCardTopLeft = true;
-        profile.minTop = kind === 'checks' ? Math.max(44, Math.round(menuBottom + 10)) : 20;
-      }
-
-      profile.cardMaxWidth = Math.min(profile.cardMaxWidth, Math.max(isCompactViewport ? 280 : 300, vw - 24));
-      return profile;
-    }
 
     function hasSeenTutorial() {
       try {
@@ -1181,16 +902,16 @@
     function openTutorialModal(options = {}) {
       if (options.markSeen) markTutorialSeen();
       tutorialIndex = 0;
-      els.tutorialModal.classList.add('open');
-      els.tutorialModal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('tutorial-active');
       renderTutorialStep();
     }
 
     function closeTutorialModal() {
-      els.tutorialModal.classList.remove('open');
-      els.tutorialModal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('tutorial-active');
+      document.body.removeAttribute('data-tutorial-step');
       if (els.checks) els.checks.classList.remove('tutorial-tooltips-active');
       clearTutorialHighlights();
+      if (els.tutorialModal && els.tutorialCard) els.tutorialModal.appendChild(els.tutorialCard);
     }
 
     function resetTutorialOutputViewport(stepKind) {
@@ -1207,392 +928,13 @@
       }
     }
 
-    function syncTutorialInlineForm(stepKind) {
-      if (!els.tutorialStepInlineForm || !els.tutorialInlineDrawId) return;
-      const showInline = stepKind === 'input';
-      els.tutorialStepInlineForm.classList.toggle('is-visible', showInline);
-      if (showInline) {
-        els.tutorialInlineDrawId.value = String(els.drawIdInput?.value || '').trim();
-      }
-    }
-
-    function escapeHtml(text) {
+function escapeHtml(text) {
       return String(text || '')
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
-    }
-
-    function renderTutorialDataPreview(stepKind) {
-      const preview = els.tutorialStepDataPreview;
-      if (!preview) return;
-
-      if (stepKind !== 'output') {
-        preview.style.display = 'none';
-        preview.innerHTML = '';
-        return;
-      }
-
-      const headline = String(els.headline?.textContent || '').trim();
-      const pills = Array.from((els.quickSummary || els.summary)?.querySelectorAll('.pill') || [])
-        .map((node) => String(node.textContent || '').trim())
-        .filter(Boolean)
-        .slice(0, 4);
-      const checks = Array.from(els.checks?.querySelectorAll('.check strong') || [])
-        .map((node) => String(node.textContent || '').trim())
-        .filter(Boolean)
-        .slice(0, 3);
-
-      const safeHeadline = headline
-        ? escapeHtml(headline)
-        : 'Aun no hay resultado cargado para mostrar.';
-
-      let html = '';
-      html += '<p class="tutorial-data-preview-title">Datos resaltados</p>';
-      html += `<div class="tutorial-data-preview-headline">${safeHeadline}</div>`;
-
-      if (pills.length) {
-        html += '<div class="tutorial-data-preview-pills">';
-        html += pills.map((pill) => `<span class="tutorial-data-pill">${escapeHtml(pill)}</span>`).join('');
-        html += '</div>';
-      }
-
-      if (checks.length) {
-        html += '<ul class="tutorial-data-preview-list">';
-        html += checks.map((item) => `<li>${escapeHtml(item)}</li>`).join('');
-        html += '</ul>';
-      }
-
-      preview.innerHTML = html;
-      preview.style.display = 'block';
-    }
-
-    function positionTutorialOverlay() {
-      if (!els.tutorialModal.classList.contains('open')) return;
-      if (!els.tutorialCard || !els.tutorialPointer) return;
-
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-      const isCompactViewport = vw <= 640;
-      const isShortViewport = vh <= 760;
-      const step = tutorialSteps[tutorialIndex] || {};
-      const layout = getTutorialLayoutProfile(step, vw);
-      const targetRect = tutorialActiveTarget?.getBoundingClientRect();
-      const isHandOnlyStep = ['button', 'output', 'checks', 'meta'].includes(layout.kind);
-      const pointerW = isHandOnlyStep ? (isCompactViewport ? 84 : 96) : (isCompactViewport ? 100 : 116);
-      const pointerH = isHandOnlyStep
-        ? (isCompactViewport ? (isShortViewport ? 78 : 84) : 96)
-        : (isCompactViewport ? (isShortViewport ? 132 : 146) : 170);
-      const safe = layout.safe;
-      const minTop = layout.minTop;
-
-      els.tutorialCard.style.setProperty('--tutorial-card-max-width', `${layout.cardMaxWidth}px`);
-
-      if (!targetRect) {
-        els.tutorialCard.classList.remove('arrow-left', 'arrow-right', 'arrow-top', 'arrow-bottom', 'arrow-none');
-        els.tutorialCard.classList.add('arrow-right');
-        if (els.tutorialHand) {
-          els.tutorialHand.classList.remove('point-left', 'point-down');
-        }
-        els.tutorialCard.style.width = '';
-        els.tutorialCard.style.minWidth = '';
-        els.tutorialCard.style.maxWidth = '';
-        els.tutorialCard.style.left = `${Math.max(safe, (vw - layout.cardMaxWidth) / 2)}px`;
-        els.tutorialCard.style.top = `${minTop}px`;
-        els.tutorialPointer.style.left = `${Math.max(safe, vw - pointerW - safe)}px`;
-        els.tutorialPointer.style.top = `${Math.max(minTop + 14, 36)}px`;
-        return;
-      }
-
-      let cardW = Math.min(layout.cardMaxWidth, vw - 24);
-      const targetCenterX = targetRect.left + (targetRect.width / 2);
-      const targetCenterY = targetRect.top + (targetRect.height / 2);
-
-      if (layout.kind === 'input') {
-        if (isCompactViewport) {
-          cardW = Math.min(vw - 24, Math.max(300, Math.round(vw * 0.92)));
-        } else {
-          const miniGridRect = document.querySelector('#mode-rapida .mini-grid')?.getBoundingClientRect();
-          if (miniGridRect && miniGridRect.width > 0) {
-            cardW = Math.min(vw - 24, Math.max(420, Math.round(miniGridRect.width)));
-          } else {
-            cardW = Math.min(vw - 24, Math.max(420, Math.round(targetRect.width) + 110));
-          }
-        }
-      }
-
-      els.tutorialCard.style.width = `${cardW}px`;
-  els.tutorialCard.style.minWidth = `${cardW}px`;
-  els.tutorialCard.style.maxWidth = `${cardW}px`;
-        const measuredCardH = Math.max(140, els.tutorialCard.offsetHeight || 280);
-        const maxCardHByViewport = Math.max(220, vh - minTop - safe - (isCompactViewport ? 8 : 16));
-        const cardH = Math.min(maxCardHByViewport, Math.min(420, measuredCardH));
-        els.tutorialModal.style.setProperty('--tutorial-card-space', `${Math.round(cardH + minTop + 18)}px`);
-
-      let cardLeft = Math.max(safe, targetCenterX - (cardW / 2));
-      if (cardLeft + cardW > vw - safe) cardLeft = vw - cardW - safe;
-
-      let cardTop = targetRect.top - cardH - 18;
-      if (cardTop < minTop) {
-        cardTop = Math.min(vh - cardH - safe, targetRect.bottom + 18);
-      }
-      cardTop = Math.max(minTop, cardTop);
-
-      els.tutorialCard.style.left = `${cardLeft}px`;
-      els.tutorialCard.style.top = `${cardTop}px`;
-
-      const targetIsOnLeftHalf = targetCenterX < (vw / 2);
-      let pointerAtRightOfTarget = targetIsOnLeftHalf;
-      if (pointerAtRightOfTarget && (vw - targetRect.right) < (pointerW + 10)) pointerAtRightOfTarget = false;
-      if (!pointerAtRightOfTarget && targetRect.left < (pointerW + 10)) pointerAtRightOfTarget = true;
-      const usesPinnedSideLayout = layout.pinCardTopLeft;
-      const isInputStep = layout.kind === 'input';
-      const isButtonStep = layout.kind === 'button';
-      const isOutputStep = layout.kind === 'output';
-      const isChecksStep = layout.kind === 'checks';
-      const isMetaStep = layout.kind === 'meta';
-      let forcedHandLeft = null;
-      let forcedHandDown = null;
-
-      const placePointerAbove = layout.forcePointerAboveTarget || targetCenterY > (vh * 0.55);
-
-      let pointerX;
-      let pointerY;
-      let usingAbovePlacement = false;
-
-      if (placePointerAbove) {
-        pointerX = targetCenterX - (pointerW / 2);
-        pointerY = targetRect.top - pointerH - 10;
-
-        // Si no hay espacio arriba, vuelve al modo lateral (salvo pasos de input).
-        if (pointerY < minTop && !layout.forcePointerAboveTarget) {
-          pointerX = pointerAtRightOfTarget ? (targetRect.right + 10) : (targetRect.left - pointerW - 10);
-          const handCenterOffsetFallback = 48;
-          pointerY = targetCenterY - handCenterOffsetFallback;
-          if (els.tutorialHand) els.tutorialHand.classList.remove('point-down');
-        } else {
-          pointerY = Math.max(minTop, pointerY);
-          usingAbovePlacement = true;
-          if (els.tutorialHand) els.tutorialHand.classList.add('point-down');
-        }
-      } else {
-        pointerX = pointerAtRightOfTarget ? (targetRect.right + 10) : (targetRect.left - pointerW - 10);
-        // Alinea la mano (parte inferior del puntero) al centro del elemento objetivo.
-        const handCenterOffset = 48;
-        pointerY = targetCenterY - handCenterOffset;
-        if (els.tutorialHand) els.tutorialHand.classList.remove('point-down');
-      }
-
-      if (isInputStep) {
-        // Paso 1: card anclado sobre la mini-grid y mano apuntando al input.
-        const minInputGap = isCompactViewport ? 18 : 44;
-        if (isCompactViewport) {
-          cardLeft = Math.max(safe, Math.min(vw - cardW - safe, (vw - cardW) / 2));
-          cardTop = minTop;
-
-          const canPlaceOnRight = (vw - targetRect.right) >= (pointerW + safe + 10);
-          pointerX = canPlaceOnRight
-            ? (targetRect.right + 10)
-            : (targetRect.left - pointerW - 10);
-          pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetCenterY - (pointerH / 2) + 8));
-          forcedHandLeft = canPlaceOnRight;
-          forcedHandDown = false;
-          if (els.tutorialHand) {
-            els.tutorialHand.classList.toggle('point-left', canPlaceOnRight);
-            els.tutorialHand.classList.remove('point-down');
-          }
-        } else {
-          const miniGridRect = document.querySelector('#mode-rapida .mini-grid')?.getBoundingClientRect();
-          if (miniGridRect && miniGridRect.width > 0) {
-            cardLeft = Math.max(safe, Math.min(vw - cardW - safe, miniGridRect.left));
-            cardTop = Math.max(minTop, miniGridRect.top - cardH - 16);
-          } else {
-            cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetRect.left));
-            cardTop = Math.max(minTop, targetRect.top - cardH - minInputGap);
-          }
-
-          pointerAtRightOfTarget = true;
-          pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 18);
-          // Alinea la mano con el centro del input para que apunte de forma directa.
-          const inputHandCenterOffset = 132;
-          pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetCenterY - inputHandCenterOffset));
-          forcedHandLeft = true;
-          forcedHandDown = false;
-          if (els.tutorialHand) {
-            els.tutorialHand.classList.add('point-left');
-            els.tutorialHand.classList.remove('point-down');
-          }
-        }
-        if (els.tutorialHand) {
-          els.tutorialHand.classList.toggle('point-down', false);
-        }
-      }
-
-      if (isButtonStep) {
-        // Paso 2: mano al lado de "Cargar y verificar", apuntando al centro del botón.
-        const buttonRect = document.getElementById('quickVerifyBtn')?.getBoundingClientRect() || targetRect;
-        const buttonCenterX = buttonRect.left + (buttonRect.width / 2);
-        const buttonCenterY = buttonRect.top + (buttonRect.height / 2);
-
-        cardLeft = Math.max(safe, Math.min(vw - cardW - safe, buttonCenterX - (cardW / 2)));
-        cardTop = Math.max(minTop, buttonRect.top - cardH - 24);
-
-        const sideGap = 14;
-        const canPlaceOnRight = (vw - buttonRect.right) >= (pointerW + safe + sideGap);
-        pointerX = canPlaceOnRight
-          ? (buttonRect.right + sideGap)
-          : (buttonRect.left - pointerW - sideGap);
-        // Ancla la mano al centro vertical del botón objetivo.
-        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, buttonCenterY - (pointerH / 2) + 14));
-        forcedHandLeft = canPlaceOnRight;
-        forcedHandDown = false;
-        if (els.tutorialHand) {
-          els.tutorialHand.classList.toggle('point-left', canPlaceOnRight);
-          els.tutorialHand.classList.remove('point-down');
-        }
-      }
-
-      if (isMetaStep) {
-        // Paso 5: sólo mano junto al bloque de metadatos, evitando tapar el texto del modal.
-        const metaRect = document.getElementById('meta')?.getBoundingClientRect() || targetRect;
-        const metaCenterX = metaRect.left + (metaRect.width / 2);
-
-        cardLeft = Math.max(safe, Math.min(vw - cardW - safe, metaCenterX - (cardW / 2)));
-        cardTop = Math.max(minTop, metaRect.top - cardH - 14);
-
-        const canPlaceOnRight = (vw - metaRect.right) >= (pointerW + safe + 10);
-        pointerX = canPlaceOnRight
-          ? (metaRect.right + 10)
-          : (metaRect.left - pointerW - 10);
-        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, metaRect.bottom - pointerH + 10));
-        forcedHandLeft = canPlaceOnRight;
-        forcedHandDown = false;
-        if (els.tutorialHand) {
-          els.tutorialHand.classList.toggle('point-left', canPlaceOnRight);
-          els.tutorialHand.classList.remove('point-down');
-        }
-      }
-
-      pointerX = Math.max(safe, Math.min(vw - pointerW - safe, pointerX));
-      pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, pointerY));
-
-      if (layout.reserveMenuSpace) {
-        pointerY = Math.max(minTop + 4, pointerY);
-      }
-
-      if (usesPinnedSideLayout) {
-        // Pasos de salida/validación: globo a la izquierda y puntero estable fuera del bloque.
-        cardLeft = safe;
-        cardTop = minTop;
-
-        if (isCompactViewport && (isOutputStep || isChecksStep)) {
-          // En celular, coloca la tarjeta arriba y deja el bloque de salida debajo.
-          cardLeft = Math.max(safe, Math.min(vw - cardW - safe, (vw - cardW) / 2));
-          cardTop = minTop;
-        }
-        if (isOutputStep) {
-          // Paso 3: mano pegada al borde superior de quickOutput, sin chancho.
-          const outputRect = document.getElementById('quickOutput')?.getBoundingClientRect() || targetRect;
-          if (!isCompactViewport) {
-            cardLeft = Math.max(safe, Math.min(vw - cardW - safe, outputRect.left + 8));
-            cardTop = Math.max(minTop, outputRect.top - cardH - 14);
-          }
-          pointerX = Math.max(safe, Math.min(vw - pointerW - safe, outputRect.right - pointerW - 4));
-          pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, outputRect.top - pointerH + 14));
-          if (isCompactViewport) {
-            pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, Math.max(cardTop + cardH - 10, pointerY)));
-          }
-        } else if (isChecksStep) {
-          // Paso 4: coloca la ayuda cerca del bloque y mano visible apuntando hacia abajo.
-          const checksRect = document.getElementById('quickOutput')?.getBoundingClientRect() || targetRect;
-          if (!isCompactViewport) {
-            cardLeft = Math.max(safe, Math.min(vw - cardW - safe, checksRect.left + 8));
-            cardTop = Math.max(minTop, checksRect.top - cardH - 12);
-          }
-          pointerX = Math.max(safe, Math.min(vw - pointerW - safe, checksRect.right - pointerW + 2));
-          pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, checksRect.top - pointerH + 24));
-          if (isCompactViewport) {
-            pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, Math.max(cardTop + cardH - 10, pointerY)));
-          }
-        } else {
-          pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 18);
-          pointerY = Math.max(
-            minTop,
-            Math.min(vh - pointerH - safe, Math.max(cardTop + cardH + 6, targetRect.top - 38)),
-          );
-        }
-        forcedHandLeft = false;
-        forcedHandDown = true;
-        if (els.tutorialHand) {
-          els.tutorialHand.classList.remove('point-left');
-          els.tutorialHand.classList.add('point-down');
-        }
-      }
-
-      if (isCompactViewport) {
-        const cardRight = cardLeft + cardW;
-        const cardBottom = cardTop + cardH;
-        const pointerRight = pointerX + pointerW;
-        const pointerBottom = pointerY + pointerH;
-        const overlapsCard = !(
-          pointerRight < (cardLeft + 8) ||
-          pointerX > (cardRight - 8) ||
-          pointerBottom < (cardTop + 8) ||
-          pointerY > (cardBottom - 8)
-        );
-
-        if (overlapsCard && targetRect) {
-          const belowTargetY = targetRect.bottom + 8;
-          const aboveTargetY = targetRect.top - pointerH - 8;
-          if ((belowTargetY + pointerH) <= (vh - safe)) {
-            pointerY = belowTargetY;
-          } else if (aboveTargetY >= minTop) {
-            pointerY = aboveTargetY;
-          } else {
-            pointerY = Math.min(vh - pointerH - safe, cardBottom + 8);
-          }
-        }
-      }
-
-      els.tutorialCard.style.left = `${cardLeft}px`;
-      els.tutorialCard.style.top = `${cardTop}px`;
-
-      els.tutorialCard.classList.remove('arrow-left', 'arrow-right', 'arrow-top', 'arrow-bottom', 'arrow-none');
-      if (usesPinnedSideLayout) {
-        // No bottom arrow in pinned side layout.
-        els.tutorialCard.classList.add('arrow-none');
-      } else {
-        const pointerCenterX = pointerX + (pointerW / 2);
-        const cardCenterX = cardLeft + (cardW / 2);
-        els.tutorialCard.classList.add(pointerCenterX >= cardCenterX ? 'arrow-right' : 'arrow-left');
-      }
-
-      if (els.tutorialHand) {
-        if (forcedHandLeft !== null || forcedHandDown !== null) {
-          // En pasos con guía fija, se respeta la orientación configurada arriba.
-          els.tutorialHand.classList.toggle('point-left', !!forcedHandLeft);
-          els.tutorialHand.classList.toggle('point-down', !!forcedHandDown);
-        } else {
-          // Orienta la mano según la posición real del objetivo resaltado.
-          const handCenterX = pointerX + (pointerW / 2);
-          const handCenterY = pointerY + (pointerH / 2);
-          const dx = targetCenterX - handCenterX;
-          const dy = targetCenterY - handCenterY;
-
-          els.tutorialHand.classList.remove('point-left', 'point-down');
-          if (Math.abs(dy) > (Math.abs(dx) * 0.85) && dy > 0) {
-            els.tutorialHand.classList.add('point-down');
-          }
-          if (dx < 0) {
-            els.tutorialHand.classList.add('point-left');
-          }
-        }
-      }
-
-      els.tutorialPointer.style.left = `${pointerX}px`;
-      els.tutorialPointer.style.top = `${pointerY}px`;
     }
 
     function activateMainTab(tab) {
@@ -1618,20 +960,7 @@
       if (!step) return;
 
       const stepKind = String(step.kind || 'default');
-      const stepNumber = tutorialIndex + 1;
-      const stepCardMaxWidth = Number(step.cardMaxWidth || 360);
-      els.tutorialModal.setAttribute('data-step-kind', stepKind);
-      els.tutorialModal.setAttribute('data-step-index', String(stepNumber));
-      els.tutorialCard.style.setProperty('--tutorial-card-max-width', `${stepCardMaxWidth}px`);
-
-      if (els.tutorialPig) {
-        els.tutorialPig.className = `tutorial-pig tutorial-pig-image tutorial-pig-step-${stepNumber}`;
-        els.tutorialPig.style.display = (stepNumber === 2 || stepNumber === 3) ? 'none' : '';
-      }
-      if (els.tutorialHand) {
-        els.tutorialHand.className = `tutorial-hand tutorial-hand-image tutorial-hand-step-${stepNumber}`;
-        els.tutorialHand.style.display = '';
-      }
+      document.body.setAttribute('data-tutorial-step', stepKind);
 
       if (step.targetId === 'buscarUsuario') {
         activateMainTab('buscar');
@@ -1643,19 +972,13 @@
       els.tutorialStepMeta.textContent = `Paso ${tutorialIndex + 1} de ${tutorialSteps.length}`;
       const stepText = typeof step.text === 'function' ? step.text() : step.text;
       els.tutorialStepBody.innerHTML = stepText;
-      syncTutorialInlineForm(stepKind);
-      renderTutorialDataPreview(stepKind);
       if (els.checks) {
         els.checks.classList.toggle('tutorial-tooltips-active', stepKind === 'checks');
       }
       wireTutorialCopyActions();
+      moveTutorialCardToAnchor(step.anchorSelector);
       applyTutorialHighlightById(step.targetId);
       window.requestAnimationFrame(() => resetTutorialOutputViewport(stepKind));
-      window.requestAnimationFrame(() => positionTutorialOverlay());
-      window.setTimeout(() => {
-        resetTutorialOutputViewport(stepKind);
-        positionTutorialOverlay();
-      }, 110);
 
       els.tutorialPrevBtn.disabled = tutorialIndex === 0;
       els.tutorialNextBtn.textContent = tutorialIndex === tutorialSteps.length - 1 ? 'Finalizar' : 'Siguiente';
@@ -1748,7 +1071,7 @@
     }
 
     function maybeAdvanceTutorialByDrawId() {
-      if (!els.tutorialModal.classList.contains('open')) return;
+      if (!document.body.classList.contains('tutorial-active')) return;
       if (tutorialIndex !== 0) return;
       const value = String(els.drawIdInput.value || '').trim().toLowerCase();
       if (value !== TUTORIAL_SAMPLE_DRAW_ID) return;
@@ -2274,7 +1597,7 @@
       try {
         runQuickVerificationFlow()
           .then(() => {
-            if (els.tutorialModal.classList.contains('open') && tutorialIndex === 1) {
+            if (document.body.classList.contains('tutorial-active') && tutorialIndex === 1) {
               tutorialIndex = 2;
               renderTutorialStep();
             }
@@ -2296,7 +1619,7 @@
 
     els.openTutorialBtn.addEventListener('click', openTutorialModal);
     els.tutorialCloseBtn.addEventListener('click', closeTutorialModal);
-    els.tutorialBackdrop.addEventListener('click', closeTutorialModal);
+
 
     els.tutorialPrevBtn.addEventListener('click', () => {
       if (tutorialIndex > 0) {
@@ -2340,30 +1663,11 @@
     });
 
     document.addEventListener('keydown', (event) => {
-      if (!els.tutorialModal.classList.contains('open')) return;
+      if (!document.body.classList.contains('tutorial-active')) return;
       if (event.key === 'Escape') closeTutorialModal();
     });
 
-    window.addEventListener('resize', positionTutorialOverlay);
-    window.addEventListener('scroll', () => {
-      if (els.tutorialModal.classList.contains('open')) positionTutorialOverlay();
-    }, { passive: true });
-
     els.drawIdInput.addEventListener('input', maybeAdvanceTutorialByDrawId);
-
-    if (els.tutorialInlineDrawId) {
-      els.tutorialInlineDrawId.addEventListener('input', () => {
-        const value = String(els.tutorialInlineDrawId.value || '');
-        els.drawIdInput.value = value;
-        maybeAdvanceTutorialByDrawId();
-      });
-    }
-
-    if (els.tutorialInlineVerifyBtn) {
-      els.tutorialInlineVerifyBtn.addEventListener('click', () => {
-        els.quickVerifyBtn.click();
-      });
-    }
 
     ['fechaPublicada', 'horaPublicada', 'slugPublicado'].forEach((id) => {
       document.getElementById(id).addEventListener('change', updatePublicLinks);
