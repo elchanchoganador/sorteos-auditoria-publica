@@ -275,11 +275,15 @@
       text-decoration: underline;
     }
     .quick-output {
+      display: none;
       margin-top: 12px;
       padding: 12px 14px;
       border-radius: 14px;
       border: 1px solid var(--border);
       background: rgba(255,255,255,.88);
+    }
+    .quick-output.is-visible {
+      display: block;
     }
     .quick-output #headline {
       font-weight: 700;
@@ -709,6 +713,7 @@
       drawIdInput: document.getElementById('drawIdInput'),
       publicLinks: document.getElementById('publicLinks'),
       quickVerifyBtn: document.getElementById('quickVerifyBtn'),
+      quickOutput: document.getElementById('quickOutput'),
       openTutorialBtn: document.getElementById('openTutorialBtn'),
       tutorialModal: document.getElementById('tutorialModal'),
       tutorialBackdrop: document.getElementById('tutorialBackdrop'),
@@ -733,6 +738,11 @@
       const html = items.map((item) => `<span class="pill ${item.className || ''}">${item.text}</span>`).join('');
       if (els.summary) els.summary.innerHTML = html;
       if (els.quickSummary) els.quickSummary.innerHTML = html;
+    }
+
+    function setQuickOutputVisible(visible) {
+      if (!els.quickOutput) return;
+      els.quickOutput.classList.toggle('is-visible', !!visible);
     }
 
     function clearTutorialHighlights() {
@@ -1247,6 +1257,7 @@
       const resultado = state.resultado;
 
       if (!pre || !commit || !draw || !drawText || !shaText) {
+        setQuickOutputVisible(true);
         els.headline.textContent = 'Faltan archivos obligatorios.';
         els.meta.textContent = 'Debes cargar pre_compromiso.json, tickets_commit.json, tickets_draw.json y tickets_draw.json.sha256.';
         renderChecks([{ title: 'Carga de archivos', status: 'bad', message: 'No se cargaron todos los archivos obligatorios.' }]);
@@ -1328,6 +1339,7 @@
         { text: `Advertencias: ${warnCount}`, className: 'warn' },
         { text: `Errores: ${badCount}`, className: 'bad' },
       ];
+      setQuickOutputVisible(true);
       setSummary(summaryItems);
       renderChecks(checks);
       renderStory(pre, resultado);
@@ -1341,6 +1353,7 @@
 
     els.verifyBtn.addEventListener('click', () => {
       verifyAll().catch((error) => {
+        setQuickOutputVisible(true);
         els.headline.textContent = 'Error ejecutando la auditoría.';
         setSummary([{ text: 'Error', className: 'bad' }]);
         renderChecks([{ title: 'Excepción', status: 'bad', message: error.message }]);
@@ -1353,6 +1366,7 @@
       loadPublishedBundle()
         .then(() => verifyAll())
         .catch((error) => {
+          setQuickOutputVisible(true);
           els.headline.textContent = 'Error cargando publicación.';
           setSummary([{ text: 'Carga fallida', className: 'bad' }]);
           renderChecks([{ title: 'Carga desde publicación', status: 'bad', message: error.message }]);
@@ -1364,6 +1378,7 @@
     els.clearBtn.addEventListener('click', () => {
       document.querySelectorAll('input[type="file"]').forEach((input) => { input.value = ''; });
       Object.keys(state).forEach((k) => { state[k] = null; });
+      setQuickOutputVisible(false);
       setSummary([]);
       renderChecks([]);
       els.headline.textContent = 'Carga archivos y ejecuta la verificación.';
@@ -1524,12 +1539,14 @@
             }
           })
           .catch((error) => {
+            setQuickOutputVisible(true);
             els.headline.textContent = 'Error cargando publicación.';
             setSummary([{ text: 'Carga fallida', className: 'bad' }]);
             renderChecks([{ title: 'Carga rápida', status: 'bad', message: error.message }]);
             els.meta.textContent = error.stack || error.message;
           });
       } catch (error) {
+        setQuickOutputVisible(true);
         els.headline.textContent = 'Codigo tecnico invalido.';
         setSummary([{ text: 'Codigo tecnico invalido', className: 'bad' }]);
         renderChecks([{ title: 'Codigo tecnico', status: 'bad', message: error.message }]);
