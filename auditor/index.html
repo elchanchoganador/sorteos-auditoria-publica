@@ -402,6 +402,7 @@
       margin: 0 0 8px;
     }
     .tutorial-copy-token {
+      display: inline-block;
       color: #1556d6;
       background: #eaf1ff;
       border: 1px dashed #5d8df0;
@@ -410,6 +411,8 @@
       cursor: pointer;
       user-select: all;
       font-weight: 700;
+      margin-top: 8px;
+      max-width: 100%;
     }
     .tutorial-copy-token:hover {
       background: #dfeaff;
@@ -786,7 +789,7 @@
         kind: 'input',
         cardMaxWidth: 420,
         targetId: 'drawIdInput',
-        text: `Paso 1: Entra en Verificacion rapida y escribe un codigo tecnico valido. Haz clic para copiar: <span class="tutorial-copy-token" role="button" tabindex="0" data-copy-text="${TUTORIAL_SAMPLE_DRAW_ID}">${TUTORIAL_SAMPLE_DRAW_ID}</span><span class="tutorial-copy-feedback" id="tutorialCopyFeedback"></span>`,
+        text: `Paso 1: Entra en Verificacion rapida y escribe un codigo tecnico valido. Haz clic para copiar:<br><span class="tutorial-copy-token" role="button" tabindex="0" data-copy-text="${TUTORIAL_SAMPLE_DRAW_ID}">${TUTORIAL_SAMPLE_DRAW_ID}</span><span class="tutorial-copy-feedback" id="tutorialCopyFeedback"></span>`,
       },
       {
         kind: 'button',
@@ -904,6 +907,7 @@
         if (els.tutorialHand) {
           els.tutorialHand.classList.remove('point-left', 'point-down');
         }
+        els.tutorialCard.style.width = '';
         els.tutorialCard.style.left = `${Math.max(safe, (vw - layout.cardMaxWidth) / 2)}px`;
         els.tutorialCard.style.top = `${minTop}px`;
         els.tutorialPointer.style.left = `${Math.max(safe, vw - pointerW - safe)}px`;
@@ -911,7 +915,7 @@
         return;
       }
 
-      const cardW = Math.min(layout.cardMaxWidth, vw - 24);
+      let cardW = Math.min(layout.cardMaxWidth, vw - 24);
       const cardH = Math.min(360, Math.max(220, els.tutorialCard.offsetHeight || 280));
       const targetCenterX = targetRect.left + (targetRect.width / 2);
       const targetCenterY = targetRect.top + (targetRect.height / 2);
@@ -966,6 +970,7 @@
       }
 
       if (isInputStep) {
+        cardW = Math.min(vw - 24, Math.round(targetRect.width));
         // Paso 1: globo arriba del input y chancho a la derecha del globo.
         cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetRect.left));
         cardTop = Math.max(minTop, targetRect.top - cardH - 16);
@@ -978,6 +983,8 @@
           els.tutorialHand.classList.remove('point-down');
         }
       }
+
+      els.tutorialCard.style.width = `${cardW}px`;
 
       if (isButtonStep) {
         // Paso 2: globo arriba del botón y chancho al costado para estilo burbuja de idea.
