@@ -360,6 +360,9 @@
     .tutorial-modal[data-step-kind="button"] .tutorial-card-mascot {
       display: block;
     }
+    .tutorial-modal[data-step-kind="input"] .tutorial-card-mascot {
+      display: none;
+    }
     
     
     
@@ -459,6 +462,12 @@
     .tutorial-modal[data-step-kind="input"] .tutorial-pig,
     .tutorial-modal[data-step-kind="button"] .tutorial-pig {
       display: none;
+    }
+    .tutorial-modal[data-step-kind="input"] .tutorial-pointer {
+      display: block;
+    }
+    .tutorial-modal[data-step-kind="input"] .tutorial-pointer .tutorial-pig {
+      display: block;
     }
     .tutorial-modal[data-step-kind="input"] .tutorial-hand,
     .tutorial-modal[data-step-kind="button"] .tutorial-hand {
@@ -924,7 +933,7 @@
       }
 
       els.tutorialCard.style.width = `${cardW}px`;
-      const cardH = Math.min(420, Math.max(220, els.tutorialCard.offsetHeight || 280));
+      const cardH = Math.min(420, Math.max(140, els.tutorialCard.offsetHeight || 280));
 
       let cardLeft = Math.max(safe, targetCenterX - (cardW / 2));
       if (cardLeft + cardW > vw - safe) cardLeft = vw - cardW - safe;
@@ -982,7 +991,7 @@
 
         pointerAtRightOfTarget = true;
         pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 14);
-        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, cardTop + 18));
+        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, cardTop + 26));
         if (els.tutorialHand) {
           els.tutorialHand.classList.add('point-left');
           els.tutorialHand.classList.remove('point-down');
