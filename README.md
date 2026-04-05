@@ -1,109 +1,27 @@
 # Sorteos Auditoria Publica
 
-Este repositorio publica solamente material verificable por terceros.
+Repositorio público de evidencia verificable de sorteos.
 
-Contenido esperado:
+## Contenido
 
-- `scripts/` con verificadores públicos
-- `auditor/` con una interfaz HTML descargable para comprobaciones manuales
-- `sorteos_log/YYYY/MM/DD/` con resultados auditables del día
-- `ticket_keys/YYYY/MM/DD/public_keys.json` con claves públicas para verificar recibos históricos
+- `sorteos_log/YYYY/MM/DD/HH/<sorteo>/` con evidencia del sorteo:
+	- `pre_compromiso.json`
+	- `tickets_commit.json`
+	- `tickets_draw.json`
+	- `tickets_draw.json.sha256`
+	- `resultado.json`
+	- `verificar.js`
+	- archivos de integridad (`virustotal_analysis.json`, `virustotal_scan.json` cuando aplique)
+- `ticket_keys/YYYY/MM/DD/public_keys.json` para validar recibos firmados
+- `scripts/verificar_resultado.js` y `scripts/verificar_recibo_ticket_publico.js`
+- `auditor/index.html` para verificación manual
 
-No se publican:
+## Verificación
 
-- llaves privadas
-- secretos
-- `.env`
-- archivos de `~/.ssh`
+- Resultado: `node scripts/verificar_resultado.js <ruta-carpeta-sorteo>`
+- Recibo: `node scripts/verificar_recibo_ticket_publico.js <recibo.json> <public_keys.json>`
+- Auditor manual: abrir `auditor/index.html` y cargar archivos del sorteo
 
-Uso típico:
+## Política pública
 
-- Verificar resultado: `node scripts/verificar_resultado.js <ruta-carpeta-sorteo>`
-- Verificar recibo: `node scripts/verificar_recibo_ticket_publico.js <recibo.json> <public_keys.json>`
-- Auditor manual: abrir `auditor/index.html` y cargar los archivos publicados del sorteo
-
-## Auditor HTML
-
-Ruta:
-
-- `auditor/index.html`
-
-Objetivo:
-
-- permitir una auditoría manual simple desde el navegador
-- comprobar hashes publicados sin depender de herramientas externas
-- mostrar de forma legible el número ganador cuando se carga `resultado.json`
-
-Dos modos de uso:
-
-1. Carga manual de archivos
-
-- `pre_compromiso.json`
-- `tickets_commit.json`
-- `tickets_draw.json`
-- `tickets_draw.json.sha256`
-- `resultado.json` (opcional pero recomendado)
-
-2. Carga desde publicación
-
-- seleccionar fecha
-- seleccionar hora
-- seleccionar sorteo
-- pulsar `Cargar datos publicados`
-
-Validaciones que realiza:
-
-- consistencia de `draw_id`
-- hash de participantes del precompromiso
-- SHA-256 de `tickets_draw.json`
-- consistencia de `ticket_set_hash`
-- conteo de tickets
-- si existe `resultado.json`: comprobación de hash de semilla final y relación índice ganador / número ganador
-
-Resumen legible:
-
-- al cargar `resultado.json`, el HTML muestra un resumen tipo:
-	- para el día `DD/MM/AAAA`, en el sorteo y hora indicados, usando los datos publicados de auditoría, el número ganador verificado es `NN`
-
-## Draw Invalidation Policy
-
-Cuando un draw no puede completarse de forma verificable, se publica un estado formal de invalidación para transparencia operativa.
-
-Motivos de invalidación (reason_code):
-
-- `seed_custody_missing`: no existe la seed privada requerida para `commit-reveal`
-
-Evidencia pública de invalidación:
-
-- archivo consolidado diario: `sorteos_log/YYYY/MM/DD/draw_invalidations.ndjson`
-- archivo por draw: `sorteos_log/YYYY/MM/DD/HH/<sorteo-slug>/draw_invalidation.json`
-- traza operativa en `audit.log` del draw con evento `DRAW_INVALIDATED_EVENT`
-
-Reglas operativas:
-
-- no se recalcula el mismo `draw_id`
-- cualquier repetición debe usar nuevo `draw_id` y nuevo precompromiso
-
-## Versionado y Releases
-
-Este repositorio mantiene historial de cambios con dos mecanismos:
-
-- `CHANGELOG.md` para el detalle cronológico de cambios
-- GitHub Releases (basados en tags) para marcar versiones publicadas
-
-Flujo recomendado por versión:
-
-1. actualizar `CHANGELOG.md` en la sección de la nueva versión
-2. hacer commit y push a `main`
-3. crear tag anotado (ejemplo: `v2026.04.03`)
-4. publicar GitHub Release usando ese tag y copiando el resumen del changelog
-
-Comandos típicos:
-
-- `git tag -a vYYYY.MM.DD -m "release vYYYY.MM.DD"`
-- `git push origin vYYYY.MM.DD`
-
-Sugerencia de esquema:
-
-- versión por fecha (`vYYYY.MM.DD`) para repositorio de evidencia diaria
-- opcionalmente SemVer (`v1.2.0`) cuando se introduzcan cambios de herramienta o formato
+- Este repositorio conserva únicamente datos necesarios para verificación independiente del sorteo.
