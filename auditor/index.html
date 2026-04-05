@@ -584,6 +584,7 @@
           <input id="drawIdInput" type="text" placeholder="Ej: el-chancho-de-oro:20260404:19">
         </div>
         <div style="display:flex;align-items:end;gap:10px;flex-wrap:wrap;">
+          <button id="fillDrawIdBtn" class="secondary">Usar código técnico</button>
           <button id="quickVerifyBtn">Cargar y verificar</button>
         </div>
       </div>
@@ -813,8 +814,8 @@
       {
         kind: 'button',
         cardMaxWidth: 360,
-        targetId: 'quickVerifyBtn',
-        text: 'Pulsa <strong>Cargar y verificar</strong> y deja que el sistema haga la comprobacion por ti.',
+        targetId: 'fillDrawIdBtn',
+        text: 'Pulsa <strong>Usar código técnico</strong> para completar los datos, luego ejecuta <strong>Cargar y verificar</strong>.',
       },
       {
         kind: 'output',
@@ -1754,6 +1755,18 @@
       const el = document.getElementById('buscarResultados');
       el.style.display = 'none';
       el.innerHTML = '';
+    });
+
+    document.getElementById('fillDrawIdBtn').addEventListener('click', () => {
+      els.drawIdInput.value = TUTORIAL_SAMPLE_DRAW_ID;
+      try {
+        syncSelectionFromDrawId();
+        els.headline.textContent = 'Codigo tecnico cargado. Pulsa "Cargar y verificar" para validar el sorteo.';
+      } catch (error) {
+        els.headline.textContent = 'Codigo tecnico invalido.';
+        setSummary([{ text: 'Codigo tecnico invalido', className: 'bad' }]);
+        renderChecks([{ title: 'Codigo tecnico', status: 'bad', message: error.message }]);
+      }
     });
 
     document.getElementById('quickVerifyBtn').addEventListener('click', () => {
