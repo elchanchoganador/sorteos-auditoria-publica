@@ -356,6 +356,21 @@
       right: 16px;
       left: auto;
     }
+    .tutorial-modal[data-step-kind="button"] .tutorial-card::before {
+      content: '';
+      position: absolute;
+      right: -10px;
+      bottom: 16px;
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid #d5ddec;
+    }
+    .tutorial-modal[data-step-kind="button"] .tutorial-card.arrow-right::after {
+      right: -28px;
+      bottom: 22px;
+    }
     .tutorial-card.arrow-none::after { display: none; }
     .tutorial-card.arrow-top::after,
     .tutorial-card.arrow-bottom::after {
@@ -453,6 +468,20 @@
       pointer-events: none;
       transform-origin: center;
       overflow: visible;
+    }
+    .tutorial-pig {
+      display: none;
+      width: 108px;
+      height: 108px;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 14px rgba(0,0,0,.28));
+      z-index: 3;
+    }
+    .tutorial-modal[data-step-kind="button"] .tutorial-pig {
+      display: block;
+    }
+    .tutorial-modal[data-step-kind="button"] .tutorial-hand {
+      display: none;
     }
     .tutorial-hand {
       width: 96px;
@@ -677,6 +706,7 @@
   <div id="tutorialModal" class="tutorial-modal" aria-hidden="true">
     <div class="tutorial-backdrop" id="tutorialBackdrop"></div>
     <div class="tutorial-pointer" id="tutorialPointer" aria-hidden="true">
+      <img class="tutorial-pig" src="../images/elchanchoganador.png" alt="" onerror="this.style.display='none'">
       <img class="tutorial-hand" src="../images/mickey-mouse-hand.svg" alt="" onerror="this.style.display='none'">
     </div>
     <div class="tutorial-card" role="dialog" aria-modal="true" aria-label="Tutorial guiado">
@@ -876,8 +906,8 @@
       const step = tutorialSteps[tutorialIndex] || {};
       const layout = getTutorialLayoutProfile(step, vw);
       const targetRect = tutorialActiveTarget?.getBoundingClientRect();
-      const pointerW = 96;
-      const pointerH = 96;
+      const pointerW = layout.kind === 'button' ? 108 : 96;
+      const pointerH = layout.kind === 'button' ? 108 : 96;
       const safe = layout.safe;
       const minTop = layout.minTop;
 
@@ -965,18 +995,18 @@
       }
 
       if (isButtonStep) {
-        // Paso 2: globo arriba del botón y mano apuntando hacia abajo al botón.
+        // Paso 2: globo arriba del botón y chancho al costado para estilo burbuja de idea.
         cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetCenterX - (cardW / 2)));
         cardTop = Math.max(minTop, targetRect.top - cardH - 18);
 
-        pointerX = Math.max(safe, Math.min(vw - pointerW - safe, targetCenterX - (pointerW / 2)));
+        pointerX = Math.max(safe, Math.min(vw - pointerW - safe, cardLeft + cardW + 12));
         pointerY = Math.max(
           minTop,
-          Math.min(vh - pointerH - safe, Math.max(cardTop + cardH + 6, targetRect.top - pointerH - 8)),
+          Math.min(vh - pointerH - safe, cardTop + cardH - pointerH + 2),
         );
         if (els.tutorialHand) {
           els.tutorialHand.classList.remove('point-left');
-          els.tutorialHand.classList.add('point-down');
+          els.tutorialHand.classList.remove('point-down');
         }
       }
 
