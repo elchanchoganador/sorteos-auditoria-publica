@@ -608,6 +608,87 @@
     .tutorial-modal[data-step-kind="checks"] #quickOutput .check strong {
       color: #155a2f;
     }
+    @media (max-width: 760px) {
+      .tutorial-modal[data-step-kind="output"] #quickOutput,
+      .tutorial-modal[data-step-kind="checks"] #quickOutput {
+        max-height: min(68vh, 520px);
+        overflow: auto;
+        overscroll-behavior: contain;
+        padding: 10px 10px 12px;
+      }
+      .tutorial-modal[data-step-kind="output"] #quickOutput #headline,
+      .tutorial-modal[data-step-kind="checks"] #quickOutput #headline {
+        font-size: .94rem;
+        line-height: 1.28;
+        margin-bottom: 6px;
+      }
+      .tutorial-modal[data-step-kind="output"] #quickOutput .summary,
+      .tutorial-modal[data-step-kind="checks"] #quickOutput .summary {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+        margin-top: 8px;
+        margin-bottom: 10px;
+      }
+      .tutorial-modal[data-step-kind="output"] #quickOutput .pill,
+      .tutorial-modal[data-step-kind="checks"] #quickOutput .pill {
+        font-size: .82rem;
+        padding: 6px 8px;
+        text-align: center;
+      }
+      .tutorial-modal[data-step-kind="output"] #quickOutput .checks,
+      .tutorial-modal[data-step-kind="checks"] #quickOutput .checks {
+        padding: 8px 10px 10px;
+        max-height: min(36vh, 280px);
+        overflow: auto;
+      }
+      .tutorial-modal[data-step-kind="output"] #quickOutput .check,
+      .tutorial-modal[data-step-kind="checks"] #quickOutput .check {
+        padding: 9px 0;
+      }
+      .tutorial-modal[data-step-kind="output"] #quickOutput .check strong,
+      .tutorial-modal[data-step-kind="checks"] #quickOutput .check strong {
+        font-size: .92rem;
+        line-height: 1.24;
+      }
+      .tutorial-modal[data-step-kind="output"] #quickOutput .check div,
+      .tutorial-modal[data-step-kind="checks"] #quickOutput .check div {
+        font-size: .88rem;
+        line-height: 1.3;
+      }
+      .tutorial-modal[data-step-kind="checks"] #quickOutput .check-help {
+        width: 22px;
+        height: 22px;
+        flex: 0 0 22px;
+      }
+      .tutorial-modal[data-step-kind="output"] #quickOutput #meta,
+      .tutorial-modal[data-step-kind="checks"] #quickOutput #meta {
+        margin-top: 10px;
+        padding: 10px;
+        max-height: 120px;
+        overflow: auto;
+        font-size: .8rem;
+        line-height: 1.32;
+      }
+      .tutorial-modal[data-step-kind="output"] #quickOutput.tutorial-focus,
+      .tutorial-modal[data-step-kind="checks"] #quickOutput.tutorial-focus {
+        box-shadow: 0 0 0 2px rgba(76, 129, 255, .55), 0 0 0 6px rgba(55, 108, 255, .2) !important;
+      }
+    }
+    @media (max-width: 420px) {
+      .tutorial-modal[data-step-kind="output"] #quickOutput .summary,
+      .tutorial-modal[data-step-kind="checks"] #quickOutput .summary {
+        grid-template-columns: 1fr;
+      }
+      .tutorial-modal[data-step-kind="output"] #quickOutput .checks,
+      .tutorial-modal[data-step-kind="checks"] #quickOutput .checks {
+        max-height: min(33vh, 240px);
+      }
+      .tutorial-modal[data-step-kind="output"] #quickOutput #meta,
+      .tutorial-modal[data-step-kind="checks"] #quickOutput #meta {
+        max-height: 96px;
+      }
+    }
     .tutorial-modal .tutorial-hand {
       display: block;
       margin-top: -24px;
