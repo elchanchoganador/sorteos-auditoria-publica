@@ -1219,7 +1219,7 @@
         if (isCompactViewport) {
           cardW = Math.min(vw - 24, Math.max(300, Math.round(vw * 0.92)));
         } else {
-          cardW = Math.min(vw - 24, Math.max(300, Math.round(targetRect.width)));
+          cardW = Math.min(vw - 24, layout.cardMaxWidth);
         }
       }
 
@@ -1286,8 +1286,8 @@
       }
 
       if (isInputStep) {
-        // Paso 1: globo arriba del input y chancho a la derecha del globo.
-        const minInputGap = isCompactViewport ? 18 : 44;
+        // Paso 1: mantiene visible la fila de input+botón, con tarjeta fija arriba.
+        const minInputGap = isCompactViewport ? 18 : 32;
         if (isCompactViewport) {
           cardLeft = Math.max(safe, Math.min(vw - cardW - safe, (vw - cardW) / 2));
           cardTop = minTop;
@@ -1304,18 +1304,18 @@
             els.tutorialHand.classList.remove('point-down');
           }
         } else {
-          cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetRect.left));
-          cardTop = Math.max(minTop, targetRect.top - cardH - minInputGap);
+          cardLeft = Math.max(safe, Math.min(vw - cardW - safe, (vw - cardW) / 2));
+          cardTop = minTop;
 
-          pointerAtRightOfTarget = true;
-          pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 18);
-          // Alinea la mano con el centro del input para que apunte de forma directa.
-          const inputHandCenterOffset = 132;
-          pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetCenterY - inputHandCenterOffset));
-          forcedHandLeft = true;
+          const canPlaceOnRight = (vw - targetRect.right) >= (pointerW + safe + 10);
+          pointerX = canPlaceOnRight
+            ? (targetRect.right + 10)
+            : (targetRect.left - pointerW - 10);
+          pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetCenterY - (pointerH / 2) + minInputGap));
+          forcedHandLeft = canPlaceOnRight;
           forcedHandDown = false;
           if (els.tutorialHand) {
-            els.tutorialHand.classList.add('point-left');
+            els.tutorialHand.classList.toggle('point-left', canPlaceOnRight);
             els.tutorialHand.classList.remove('point-down');
           }
         }
