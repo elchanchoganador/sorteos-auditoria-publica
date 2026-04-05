@@ -603,6 +603,7 @@
     <div class="mode-tabs">
       <button class="mode-btn active" data-mode="rapida">Verificación rápida</button>
       <button class="mode-btn" data-mode="manual">Verificación manual</button>
+      <button class="mode-btn secondary" id="downloadTodayZipBtn" type="button">Descargar ZIP de hoy</button>
     </div>
 
     <div id="mode-rapida" class="mode-panel active">
@@ -761,6 +762,7 @@
 
   </div><!-- /.wrap -->
 
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script>
     const state = {
       precompromiso: null,
@@ -786,6 +788,7 @@
       publicLinks: document.getElementById('publicLinks'),
       quickVerifyBtn: document.getElementById('quickVerifyBtn'),
       quickOutput: document.getElementById('quickOutput'),
+      downloadTodayZipBtn: document.getElementById('downloadTodayZipBtn'),
       openTutorialBtn: document.getElementById('openTutorialBtn'),
       tutorialModal: document.getElementById('tutorialModal'),
       tutorialCard: document.querySelector('.tutorial-card'),
@@ -1141,6 +1144,14 @@ function escapeHtml(text) {
       };
     }
 
+    function getTodayVETDateString() {
+      const now = new Date(Date.now() - 4 * 60 * 60 * 1000);
+      const yyyy = now.getUTCFullYear();
+      const mm = String(now.getUTCMonth() + 1).padStart(2, '0');
+      const dd = String(now.getUTCDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
     function parseDrawId(value) {
       const match = String(value || '').trim().match(/^([a-z0-9-]+):(\d{4})(\d{2})(\d{2}):(\d{2})$/i);
       if (!match) return null;
@@ -1236,6 +1247,94 @@ function escapeHtml(text) {
     async function loadPublishedText(relativePath, rawPath) {
       const response = await fetchWithFallback(relativePath, rawPath);
       return response.text();
+    }
+
+    function triggerDownloadBlob(filename, blob) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function normalizeHour(value) {
+      return String(value || '').padStart(2, '0');
+    }
+
+    function buildDrawIdFromIndexItem(item, fallbackFecha) {
+      const drawIdRaw = String(item?.draw_id || '').trim();
+      if (drawIdRaw) return drawIdRaw;
+
+      const slug = String(item?.sorteo || '').trim();
+      const hora = normalizeHour(item?.hora);
+      const fechaRaw = String(item?.fecha_vet || fallbackFecha || '').trim();
+      const fechaCompact = fechaRaw.replace(/-/g, '');
+      if (!slug || !hora || !fechaCompact) return '';
+      return `${slug}:${fechaCompact}:${hora}`;
+    }
+
+    async function generateTodayAuditZip() {
+      if (!window.JSZip) {
+        throw new Error('No se pudo inicializar el generador ZIP en el navegador.');
+      }
+
+      const fecha = getTodayVETDateString();
+      const [year, month, day] = fecha.split('-');
+      const indexRelative = `../sorteos_log/${year}/${month}/${day}/participants_${fecha}.json`;
+      const indexRaw = `${GITHUB_RAW_BASE}/sorteos_log/${year}/${month}/${day}/participants_${fecha}.json`;
+      const indexData = await loadPublishedJson(indexRelative, indexRaw);
+
+      const sorteos = Array.isArray(indexData?.sorteos) ? indexData.sorteos : [];
+      if (!sorteos.length) {
+        throw new Error(`No hay sorteos publicados para ${fecha}.`);
+      }
+
+      const zip = new JSZip();
+      zip.file(`participants_${fecha}.json`, JSON.stringify(indexData, null, 2));
+
+      const filesToInclude = [
+        'pre_compromiso.json',
+        'tickets_commit.json',
+        'tickets_draw.json',
+        'tickets_draw.json.sha256',
+        'resultado.json',
+        'verificar.js',
+        'virustotal_analysis.json',
+      ];
+
+      const missingFiles = [];
+      for (const item of sorteos) {
+        const drawId = buildDrawIdFromIndexItem(item, fecha);
+        const parsed = parseDrawId(drawId);
+        if (!parsed) {
+          missingFiles.push(`[draw desconocido] No se pudo interpretar draw_id: ${drawId || '(vacío)'}`);
+          continue;
+        }
+
+        const { relativeBase, rawBase } = buildPublishedBase(parsed.fecha, parsed.hora, parsed.slug);
+        const drawFolder = zip.folder(drawId) || zip;
+
+        for (const fileName of filesToInclude) {
+          try {
+            const response = await fetchWithFallback(`${relativeBase}/${fileName}`, `${rawBase}/${fileName}`);
+            const content = await response.text();
+            drawFolder.file(fileName, content);
+          } catch {
+            missingFiles.push(`${drawId}/${fileName}`);
+          }
+        }
+      }
+
+      if (missingFiles.length) {
+        zip.file('_faltantes.txt', missingFiles.join('\n'));
+      }
+
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      triggerDownloadBlob(`auditoria-sorteos-${fecha}.zip`, zipBlob);
+      return { fecha, totalSorteos: sorteos.length, missingCount: missingFiles.length };
     }
 
     function extractSha256FileValue(text) {
@@ -1472,7 +1571,7 @@ function escapeHtml(text) {
       });
     });
 
-    document.querySelectorAll('.mode-btn').forEach((btn) => {
+    document.querySelectorAll('.mode-btn[data-mode]').forEach((btn) => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.mode-btn').forEach((b) => b.classList.remove('active'));
         document.querySelectorAll('.mode-panel').forEach((p) => p.classList.remove('active'));
@@ -1480,6 +1579,44 @@ function escapeHtml(text) {
         document.getElementById(`mode-${btn.dataset.mode}`).classList.add('active');
       });
     });
+
+    if (els.downloadTodayZipBtn) {
+      els.downloadTodayZipBtn.addEventListener('click', async () => {
+        const originalText = els.downloadTodayZipBtn.textContent;
+        els.downloadTodayZipBtn.disabled = true;
+        els.downloadTodayZipBtn.textContent = 'Generando ZIP...';
+
+        try {
+          const summary = await generateTodayAuditZip();
+          setQuickOutputVisible(true);
+          els.headline.textContent = 'ZIP del día generado correctamente.';
+          setSummary([{ text: 'ZIP listo', className: 'ok' }]);
+          renderChecks([
+            {
+              title: 'Descarga de datos del día',
+              status: 'ok',
+              message: `Se generó auditoria-sorteos-${summary.fecha}.zip con ${summary.totalSorteos} sorteo(s). Archivos faltantes: ${summary.missingCount}.`,
+            },
+          ]);
+          els.meta.textContent = `ZIP generado para ${summary.fecha}.\nSorteos incluidos: ${summary.totalSorteos}.\nFaltantes: ${summary.missingCount}.`;
+        } catch (error) {
+          setQuickOutputVisible(true);
+          els.headline.textContent = 'No se pudo generar el ZIP del día.';
+          setSummary([{ text: 'ZIP fallido', className: 'bad' }]);
+          renderChecks([
+            {
+              title: 'Descarga de datos del día',
+              status: 'bad',
+              message: error.message,
+            },
+          ]);
+          els.meta.textContent = error.stack || error.message;
+        } finally {
+          els.downloadTodayZipBtn.disabled = false;
+          els.downloadTodayZipBtn.textContent = originalText;
+        }
+      });
+    }
 
     async function fetchParticipantsIndex(fecha) {
       const [year, month, day] = fecha.split('-');
@@ -1675,11 +1812,7 @@ function escapeHtml(text) {
 
     // Fecha por defecto = hoy en VET (UTC-4)
     (function setDefaultDate() {
-      const now = new Date(Date.now() - 4 * 60 * 60 * 1000);
-      const yyyy = now.getUTCFullYear();
-      const mm = String(now.getUTCMonth() + 1).padStart(2, '0');
-      const dd = String(now.getUTCDate()).padStart(2, '0');
-      const hoy = `${yyyy}-${mm}-${dd}`;
+      const hoy = getTodayVETDateString();
       document.getElementById('buscarFecha').value = hoy;
       document.getElementById('fechaPublicada').value = hoy;
       updatePublicLinks();
