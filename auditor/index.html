@@ -995,8 +995,9 @@
 
       if (isInputStep) {
         // Paso 1: globo arriba del input y chancho a la derecha del globo.
+        const minInputGap = 44;
         cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetRect.left));
-        cardTop = Math.max(minTop, targetRect.top - cardH - 72);
+        cardTop = Math.max(minTop, targetRect.top - cardH - minInputGap);
 
         pointerAtRightOfTarget = true;
         pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 18);
