@@ -309,15 +309,41 @@
       backdrop-filter: blur(2px);
     }
     .tutorial-card {
-      position: relative;
+      position: fixed;
       z-index: 10001;
-      max-width: 620px;
-      margin: 8vh auto 0;
+      width: min(560px, calc(100vw - 24px));
+      max-width: 560px;
+      left: 12px;
+      top: 14px;
       background: #fff;
       border: 1px solid #d5ddec;
       border-radius: 16px;
       box-shadow: 0 22px 50px rgba(5, 18, 46, .35);
       padding: 16px;
+    }
+    .tutorial-card::after {
+      content: '';
+      position: absolute;
+      right: 16px;
+      bottom: -10px;
+      width: 18px;
+      height: 18px;
+      transform: rotate(45deg);
+      background: #fff;
+      border-right: 1px solid #d5ddec;
+      border-bottom: 1px solid #d5ddec;
+    }
+    .tutorial-help-label {
+      display: inline-block;
+      background: #7fb7b6;
+      color: #142a2a;
+      border: 1px solid #4c8382;
+      border-radius: 10px;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      padding: 3px 8px;
+      margin-bottom: 8px;
     }
     .tutorial-card h3 {
       margin: 0 0 8px;
@@ -360,13 +386,13 @@
       margin-top: 12px;
       min-height: 40px;
     }
-    .tutorial-hero {
+    .tutorial-pointer {
+      position: fixed;
+      z-index: 10003;
       display: flex;
       align-items: flex-end;
-      justify-content: flex-end;
-      gap: 4px;
-      margin: -8px 0 6px;
-      min-height: 64px;
+      gap: 2px;
+      pointer-events: none;
     }
     .tutorial-pig {
       width: 54px;
@@ -375,8 +401,8 @@
       filter: drop-shadow(0 5px 10px rgba(0,0,0,.2));
     }
     .tutorial-hand {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       object-fit: contain;
       transform-origin: 70% 30%;
       animation: tutorialHandPoint 1.1s ease-in-out infinite;
@@ -586,11 +612,12 @@
 
   <div id="tutorialModal" class="tutorial-modal" aria-hidden="true">
     <div class="tutorial-backdrop" id="tutorialBackdrop"></div>
+    <div class="tutorial-pointer" id="tutorialPointer" aria-hidden="true">
+      <img class="tutorial-pig" src="../images/elchanchoganador.png" alt="" onerror="this.style.display='none'">
+      <img class="tutorial-hand" src="../images/mickey-mouse-hand.svg" alt="" onerror="this.style.display='none'">
+    </div>
     <div class="tutorial-card" role="dialog" aria-modal="true" aria-labelledby="tutorialTitle">
-      <div class="tutorial-hero" aria-hidden="true">
-        <img class="tutorial-pig" src="../images/elchanchoganador.png" alt="" onerror="this.style.display='none'">
-        <img class="tutorial-hand" src="../images/mickey-mouse-hand.svg" alt="" onerror="this.style.display='none'">
-      </div>
+      <span class="tutorial-help-label">AYUDA</span>
       <h3 id="tutorialTitle">Tutorial guiado</h3>
       <p class="tutorial-step-meta" id="tutorialStepMeta">Paso 1 de 1</p>
       <div id="tutorialStepBody"></div>
@@ -630,6 +657,8 @@
       openTutorialBtn: document.getElementById('openTutorialBtn'),
       tutorialModal: document.getElementById('tutorialModal'),
       tutorialBackdrop: document.getElementById('tutorialBackdrop'),
+      tutorialCard: document.querySelector('.tutorial-card'),
+      tutorialPointer: document.getElementById('tutorialPointer'),
       tutorialPrevBtn: document.getElementById('tutorialPrevBtn'),
       tutorialNextBtn: document.getElementById('tutorialNextBtn'),
       tutorialCloseBtn: document.getElementById('tutorialCloseBtn'),
@@ -663,7 +692,8 @@
       if (!el) return;
       tutorialActiveTarget = el;
       tutorialActiveTarget.classList.add('tutorial-focus');
-      tutorialActiveTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      tutorialActiveTarget.scrollIntoView({ behavior: 'auto', block: 'center' });
+      positionTutorialOverlay();
     }
 
     const tutorialSteps = [
@@ -723,6 +753,38 @@
       clearTutorialHighlights();
     }
 
+    function positionTutorialOverlay() {
+      if (!els.tutorialModal.classList.contains('open')) return;
+      if (!els.tutorialCard || !els.tutorialPointer) return;
+
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const targetRect = tutorialActiveTarget?.getBoundingClientRect();
+
+      if (!targetRect) {
+        els.tutorialCard.style.left = `${Math.max(12, (vw - 540) / 2)}px`;
+        els.tutorialCard.style.top = '20px';
+        els.tutorialPointer.style.left = `${Math.max(12, vw - 120)}px`;
+        els.tutorialPointer.style.top = '36px';
+        return;
+      }
+
+      const cardW = Math.min(560, vw - 24);
+      let cardLeft = Math.max(12, targetRect.left - 14);
+      if (cardLeft + cardW > vw - 12) cardLeft = vw - cardW - 12;
+
+      let cardTop = Math.max(14, targetRect.top - 190);
+      if (cardTop + 260 > vh - 12) cardTop = Math.max(14, targetRect.bottom - 260);
+
+      els.tutorialCard.style.left = `${cardLeft}px`;
+      els.tutorialCard.style.top = `${cardTop}px`;
+
+      const pointerX = Math.max(12, Math.min(vw - 120, targetRect.right - 70));
+      const pointerY = Math.max(14, Math.min(vh - 90, targetRect.top - 26));
+      els.tutorialPointer.style.left = `${pointerX}px`;
+      els.tutorialPointer.style.top = `${pointerY}px`;
+    }
+
     function activateMainTab(tab) {
       document.querySelectorAll('.tab-btn[data-tab]').forEach((b) => b.classList.remove('active'));
       document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
@@ -757,6 +819,8 @@
       els.tutorialStepBody.innerHTML = stepText;
       wireTutorialCopyActions();
       applyTutorialHighlightById(step.targetId);
+      window.requestAnimationFrame(() => positionTutorialOverlay());
+      window.setTimeout(positionTutorialOverlay, 110);
 
       els.tutorialPrevBtn.disabled = tutorialIndex === 0;
       els.tutorialNextBtn.textContent = tutorialIndex === tutorialSteps.length - 1 ? 'Finalizar' : 'Siguiente';
@@ -1408,6 +1472,11 @@
       if (!els.tutorialModal.classList.contains('open')) return;
       if (event.key === 'Escape') closeTutorialModal();
     });
+
+    window.addEventListener('resize', positionTutorialOverlay);
+    window.addEventListener('scroll', () => {
+      if (els.tutorialModal.classList.contains('open')) positionTutorialOverlay();
+    }, { passive: true });
 
     els.drawIdInput.addEventListener('input', maybeAdvanceTutorialByDrawId);
 
