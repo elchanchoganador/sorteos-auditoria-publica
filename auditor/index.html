@@ -614,7 +614,8 @@
         max-height: min(62vh, calc(100vh - var(--tutorial-card-space, 250px)));
         overflow: auto;
         overscroll-behavior: contain;
-        padding: 10px 10px 12px;
+        padding: 10px 10px max(14px, calc(var(--tutorial-occluded-bottom, 220px) + 8px));
+        scroll-padding-bottom: calc(var(--tutorial-occluded-bottom, 220px) + 8px);
       }
       .tutorial-modal[data-step-kind="output"] #quickOutput #headline,
       .tutorial-modal[data-step-kind="checks"] #quickOutput #headline {
@@ -1210,6 +1211,7 @@
         const maxCardHByViewport = Math.max(220, vh - minTop - safe - (isCompactViewport ? 8 : 16));
         const cardH = Math.min(maxCardHByViewport, Math.min(420, measuredCardH));
         els.tutorialModal.style.setProperty('--tutorial-card-space', `${Math.round(cardH + minTop + 18)}px`);
+        els.tutorialModal.style.setProperty('--tutorial-occluded-bottom', `${Math.round(cardH + safe + 10)}px`);
 
       let cardLeft = Math.max(safe, targetCenterX - (cardW / 2));
       if (cardLeft + cardW > vw - safe) cardLeft = vw - cardW - safe;
