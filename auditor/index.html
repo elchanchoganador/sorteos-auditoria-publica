@@ -826,8 +826,8 @@
         profile.forcePointerAboveTarget = true;
         profile.minTop = Math.max(20, Math.round(menuBottom + 14));
       } else if (kind === 'button') {
-        profile.reserveMenuSpace = true;
-        profile.minTop = Math.max(20, Math.round(menuBottom + 14));
+        profile.reserveMenuSpace = false;
+        profile.minTop = 20;
       } else if (kind === 'output' || kind === 'checks') {
         profile.pinCardTopLeft = true;
         profile.minTop = 20;
@@ -965,19 +965,15 @@
       }
 
       if (isButtonStep) {
-        // Paso de botón: globo cerca del botón y puntero pegado al botón, no lejos del contenido.
+        // Paso 2: globo arriba del botón y mano apuntando hacia abajo al botón.
         cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetCenterX - (cardW / 2)));
-        cardTop = Math.max(minTop, targetRect.bottom + 16);
+        cardTop = Math.max(minTop, targetRect.top - cardH - 18);
 
-        const canPlaceLeft = targetRect.left > (pointerW + 20);
-        pointerAtRightOfTarget = !canPlaceLeft;
-        pointerX = canPlaceLeft
-          ? (targetRect.left - pointerW - 14)
-          : Math.min(vw - pointerW - safe, targetRect.right + 14);
-        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetCenterY - 48));
+        pointerX = Math.max(safe, Math.min(vw - pointerW - safe, targetCenterX - (pointerW / 2)));
+        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetRect.top - pointerH - 8));
         if (els.tutorialHand) {
-          els.tutorialHand.classList.toggle('point-left', !canPlaceLeft);
-          els.tutorialHand.classList.remove('point-down');
+          els.tutorialHand.classList.remove('point-left');
+          els.tutorialHand.classList.add('point-down');
         }
       }
 
@@ -986,14 +982,6 @@
 
       if (layout.reserveMenuSpace) {
         pointerY = Math.max(minTop + 4, pointerY);
-      }
-
-      // Step 2: keep pig below the tutorial card so it doesn't cover nav/tabs.
-      if (tutorialIndex === 1) {
-        const cardBottomY = cardTop + cardH;
-        if (pointerY < cardBottomY + 12) {
-          pointerY = Math.min(vh - pointerH - safe, cardBottomY + 12);
-        }
       }
 
       if (usesPinnedSideLayout) {
