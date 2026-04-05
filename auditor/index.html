@@ -357,7 +357,7 @@
       filter: drop-shadow(0 8px 14px rgba(0,0,0,.2));
     }
     .tutorial-modal[data-step-kind="button"] .tutorial-card-mascot {
-      display: block;
+      display: none;
     }
     
     
@@ -448,35 +448,22 @@
       overflow: visible;
     }
     .tutorial-pig {
-      display: none;
+      display: block;
       width: 108px;
       height: 108px;
       object-fit: contain;
       filter: drop-shadow(0 8px 14px rgba(0,0,0,.28));
       z-index: 3;
     }
-    .tutorial-modal[data-step-kind="input"] .tutorial-pig,
-    .tutorial-modal[data-step-kind="button"] .tutorial-pig {
-      display: none;
-    }
-    .tutorial-modal[data-step-kind="input"] .tutorial-pointer {
+    .tutorial-modal .tutorial-pointer {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 0;
     }
-    .tutorial-modal[data-step-kind="input"] .tutorial-pointer .tutorial-pig {
-      display: block;
-    }
-    .tutorial-modal[data-step-kind="input"] .tutorial-hand {
+    .tutorial-modal .tutorial-hand {
       display: block;
       margin-top: -24px;
-    }
-    .tutorial-modal[data-step-kind="button"] .tutorial-pointer {
-      display: none;
-    }
-    .tutorial-modal[data-step-kind="button"] .tutorial-hand {
-      display: none;
     }
     .tutorial-hand {
       width: 96px;
@@ -704,8 +691,8 @@
   <div id="tutorialModal" class="tutorial-modal" aria-hidden="true">
     <div class="tutorial-backdrop" id="tutorialBackdrop"></div>
     <div class="tutorial-pointer" id="tutorialPointer" aria-hidden="true">
-      <img class="tutorial-pig" src="../images/elchanchoganador.png" alt="" onerror="this.style.display='none'">
-      <img class="tutorial-hand" src="../images/mickey-mouse-hand.svg" alt="" onerror="this.style.display='none'">
+      <img class="tutorial-pig tutorial-pig-image" src="../images/elchanchoganador.png" alt="" onerror="this.style.display='none'">
+      <img class="tutorial-hand tutorial-hand-image" src="../images/mickey-mouse-hand.svg" alt="" onerror="this.style.display='none'">
     </div>
     <div class="tutorial-card" role="dialog" aria-modal="true" aria-label="Tutorial guiado">
       <div class="tutorial-card-layout">
@@ -758,6 +745,7 @@
       tutorialBackdrop: document.getElementById('tutorialBackdrop'),
       tutorialCard: document.querySelector('.tutorial-card'),
       tutorialPointer: document.getElementById('tutorialPointer'),
+      tutorialPig: document.querySelector('.tutorial-pig'),
       tutorialHand: document.querySelector('.tutorial-hand'),
       tutorialPrevBtn: document.getElementById('tutorialPrevBtn'),
       tutorialNextBtn: document.getElementById('tutorialNextBtn'),
@@ -911,8 +899,8 @@
       const step = tutorialSteps[tutorialIndex] || {};
       const layout = getTutorialLayoutProfile(step, vw);
       const targetRect = tutorialActiveTarget?.getBoundingClientRect();
-      const pointerW = layout.kind === 'input' ? 116 : ((layout.kind === 'button') ? 108 : 96);
-      const pointerH = layout.kind === 'input' ? 170 : ((layout.kind === 'button') ? 108 : 96);
+      const pointerW = 116;
+      const pointerH = 170;
       const safe = layout.safe;
       const minTop = layout.minTop;
 
@@ -1113,9 +1101,18 @@
       if (!step) return;
 
       const stepKind = String(step.kind || 'default');
+      const stepNumber = tutorialIndex + 1;
       const stepCardMaxWidth = Number(step.cardMaxWidth || 360);
       els.tutorialModal.setAttribute('data-step-kind', stepKind);
+      els.tutorialModal.setAttribute('data-step-index', String(stepNumber));
       els.tutorialCard.style.setProperty('--tutorial-card-max-width', `${stepCardMaxWidth}px`);
+
+      if (els.tutorialPig) {
+        els.tutorialPig.className = `tutorial-pig tutorial-pig-image tutorial-pig-step-${stepNumber}`;
+      }
+      if (els.tutorialHand) {
+        els.tutorialHand.className = `tutorial-hand tutorial-hand-image tutorial-hand-step-${stepNumber}`;
+      }
 
       if (step.targetId === 'buscarUsuario') {
         activateMainTab('buscar');
