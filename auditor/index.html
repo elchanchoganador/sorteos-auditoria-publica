@@ -584,7 +584,6 @@
           <input id="drawIdInput" type="text" placeholder="Ej: el-chancho-de-oro:20260404:19">
         </div>
         <div style="display:flex;align-items:end;gap:10px;flex-wrap:wrap;">
-          <button id="fillDrawIdBtn" class="secondary">Usar código técnico</button>
           <button id="quickVerifyBtn">Cargar y verificar</button>
         </div>
       </div>
@@ -1026,13 +1025,16 @@
         cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetCenterX - (cardW / 2)));
         cardTop = Math.max(minTop, targetRect.top - cardH - 24);
 
-        pointerX = Math.max(safe, Math.min(vw - pointerW - safe, targetCenterX - (pointerW / 2)));
-        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetRect.top - pointerH - 10));
-        forcedHandLeft = false;
-        forcedHandDown = true;
+        const canPlaceOnRight = (vw - targetRect.right) >= (pointerW + safe + 10);
+        pointerX = canPlaceOnRight
+          ? (targetRect.right + 10)
+          : (targetRect.left - pointerW - 10);
+        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetCenterY - 84));
+        forcedHandLeft = canPlaceOnRight;
+        forcedHandDown = false;
         if (els.tutorialHand) {
-          els.tutorialHand.classList.remove('point-left');
-          els.tutorialHand.classList.add('point-down');
+          els.tutorialHand.classList.toggle('point-left', canPlaceOnRight);
+          els.tutorialHand.classList.remove('point-down');
         }
       }
 
@@ -1051,8 +1053,8 @@
           // Paso 3: mano pegada al borde superior de quickOutput, sin chancho.
           cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetRect.left + 8));
           cardTop = Math.max(minTop, targetRect.top - cardH - 12);
-          pointerX = Math.max(safe, Math.min(vw - pointerW - safe, targetRect.right - pointerW - 8));
-          pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetRect.top - pointerH + 8));
+          pointerX = Math.max(safe, Math.min(vw - pointerW - safe, targetRect.right - pointerW - 6));
+          pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetRect.top - pointerH + 26));
         } else {
           pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 18);
           pointerY = Math.max(
@@ -1138,9 +1140,11 @@
 
       if (els.tutorialPig) {
         els.tutorialPig.className = `tutorial-pig tutorial-pig-image tutorial-pig-step-${stepNumber}`;
+        els.tutorialPig.style.display = (stepNumber === 2 || stepNumber === 3) ? 'none' : '';
       }
       if (els.tutorialHand) {
         els.tutorialHand.className = `tutorial-hand tutorial-hand-image tutorial-hand-step-${stepNumber}`;
+        els.tutorialHand.style.display = '';
       }
 
       if (step.targetId === 'buscarUsuario') {
@@ -1750,17 +1754,6 @@
       const el = document.getElementById('buscarResultados');
       el.style.display = 'none';
       el.innerHTML = '';
-    });
-
-    document.getElementById('fillDrawIdBtn').addEventListener('click', () => {
-      try {
-        syncSelectionFromDrawId();
-        els.headline.textContent = 'Codigo tecnico cargado. Pulsa "Cargar y verificar" para validar el sorteo.';
-      } catch (error) {
-        els.headline.textContent = 'Codigo tecnico invalido.';
-        setSummary([{ text: 'Codigo tecnico invalido', className: 'bad' }]);
-        renderChecks([{ title: 'Codigo tecnico', status: 'bad', message: error.message }]);
-      }
     });
 
     document.getElementById('quickVerifyBtn').addEventListener('click', () => {
