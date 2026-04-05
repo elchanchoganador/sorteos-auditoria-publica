@@ -295,6 +295,80 @@
     }
     .mode-panel { display: none; }
     .mode-panel.active { display: block; }
+    .tutorial-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.78);
+    }
+    .tutorial-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      color: var(--ink);
+      user-select: none;
+      cursor: pointer;
+    }
+    .tutorial-switch input {
+      width: 44px;
+      height: 24px;
+      appearance: none;
+      border-radius: 999px;
+      background: #d8c8b2;
+      border: 1px solid #c7b49a;
+      position: relative;
+      outline: none;
+      transition: background .2s ease;
+    }
+    .tutorial-switch input::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,.2);
+      transition: transform .2s ease;
+    }
+    .tutorial-switch input:checked {
+      background: #2c8b4a;
+      border-color: #2c8b4a;
+    }
+    .tutorial-switch input:checked::after {
+      transform: translateX(20px);
+    }
+    .tutorial-panel {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(255,255,255,.94), rgba(248,239,221,.94));
+      display: none;
+    }
+    .tutorial-panel.active { display: block; }
+    .tutorial-panel ol {
+      margin: 8px 0 0 18px;
+      padding: 0;
+      line-height: 1.5;
+    }
+    .tutorial-highlight {
+      box-shadow: 0 0 0 3px rgba(216,160,58,.45), 0 0 0 6px rgba(143,29,20,.16) !important;
+      border-radius: 12px;
+      animation: tutorialPulse 1.2s ease-in-out infinite;
+    }
+    @keyframes tutorialPulse {
+      0% { box-shadow: 0 0 0 3px rgba(216,160,58,.35), 0 0 0 6px rgba(143,29,20,.12); }
+      50% { box-shadow: 0 0 0 4px rgba(216,160,58,.55), 0 0 0 8px rgba(143,29,20,.2); }
+      100% { box-shadow: 0 0 0 3px rgba(216,160,58,.35), 0 0 0 6px rgba(143,29,20,.12); }
+    }
   </style>
 </head>
 <body>
@@ -338,6 +412,17 @@
         </div>
       </div>
       <div class="links-box" id="publicLinks">Selecciona un sorteo o pega un <code>codigo_tecnico</code> para ver enlaces directos a los archivos públicos.</div>
+      <div class="tutorial-bar">
+        <label class="tutorial-switch" for="tutorialToggle">
+          <input id="tutorialToggle" type="checkbox">
+          Tutorial guiado
+        </label>
+        <small id="tutorialStatus" style="color:var(--muted)">Desactivado</small>
+      </div>
+      <div id="tutorialPanel" class="tutorial-panel" aria-live="polite">
+        <strong>Guía rápida</strong>
+        <ol id="tutorialSteps"></ol>
+      </div>
     </section>
     </div>
 
@@ -477,12 +562,77 @@
       clearBtn: document.getElementById('clearBtn'),
       drawIdInput: document.getElementById('drawIdInput'),
       publicLinks: document.getElementById('publicLinks'),
+      tutorialToggle: document.getElementById('tutorialToggle'),
+      tutorialStatus: document.getElementById('tutorialStatus'),
+      tutorialPanel: document.getElementById('tutorialPanel'),
+      tutorialSteps: document.getElementById('tutorialSteps'),
+      quickVerifyBtn: document.getElementById('quickVerifyBtn'),
     };
 
     const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main';
+    const tutorialTargets = [
+      'drawIdInput',
+      'quickVerifyBtn',
+      'summary',
+      'story',
+      'headline',
+      'checks',
+      'meta',
+    ];
 
     function setSummary(items) {
       els.summary.innerHTML = items.map((item) => `<span class="pill ${item.className || ''}">${item.text}</span>`).join('');
+    }
+
+    function clearTutorialHighlights() {
+      tutorialTargets.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('tutorial-highlight');
+      });
+    }
+
+    function applyTutorialHighlights() {
+      clearTutorialHighlights();
+      const ids = ['drawIdInput', 'quickVerifyBtn', 'headline', 'summary', 'checks', 'meta'];
+      ids.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('tutorial-highlight');
+      });
+    }
+
+    function setTutorialSteps(lines) {
+      els.tutorialSteps.innerHTML = lines.map((line) => `<li>${line}</li>`).join('');
+    }
+
+    function updateTutorialGuide() {
+      const enabled = !!els.tutorialToggle.checked;
+      if (!enabled) {
+        els.tutorialStatus.textContent = 'Desactivado';
+        els.tutorialPanel.classList.remove('active');
+        clearTutorialHighlights();
+        return;
+      }
+
+      els.tutorialStatus.textContent = 'Activado';
+      els.tutorialPanel.classList.add('active');
+
+      const parsed = parseDrawId(els.drawIdInput.value);
+      if (!parsed) {
+        setTutorialSteps([
+          'Ingresa un código técnico válido: <code>el-chancho-de-oro:20260404:19</code>.',
+          'Haz clic en <strong>Cargar y verificar</strong>.',
+          'Revisa abajo: estado general, resumen y detalle de validaciones.',
+        ]);
+      } else {
+        setTutorialSteps([
+          `Código detectado para <strong>${obtenerNombreSorteo(parsed.slug)}</strong>, ${parsed.fecha} a las ${parsed.hora}:00.`,
+          'Haz clic en <strong>Cargar y verificar</strong> para ejecutar la validación automática.',
+          'Resultado esperado: se mostrará el resumen (OK/Advertencias/Errores).',
+          'Verifica detalles en: resultado de auditoría, número ganador y panel de metadatos.',
+        ]);
+      }
+
+      applyTutorialHighlights();
     }
 
     function renderChecks(checks) {
@@ -1007,6 +1157,9 @@
       }
     });
 
+    els.tutorialToggle.addEventListener('change', updateTutorialGuide);
+    els.drawIdInput.addEventListener('input', updateTutorialGuide);
+
     ['fechaPublicada', 'horaPublicada', 'slugPublicado'].forEach((id) => {
       document.getElementById(id).addEventListener('change', updatePublicLinks);
     });
@@ -1044,6 +1197,8 @@
           // ignorar query inválida
         }
       }
+
+      updateTutorialGuide();
     })();
   </script>
 </body>
