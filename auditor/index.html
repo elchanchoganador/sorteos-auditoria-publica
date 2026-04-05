@@ -333,6 +333,14 @@
       border-right: 1px solid #d5ddec;
       border-bottom: 1px solid #d5ddec;
     }
+    .tutorial-card.arrow-left::after {
+      left: 16px;
+      right: auto;
+    }
+    .tutorial-card.arrow-right::after {
+      right: 16px;
+      left: auto;
+    }
     .tutorial-help-label {
       display: inline-block;
       background: #7fb7b6;
@@ -353,6 +361,18 @@
       margin: 0 0 8px;
       color: #3e547a;
       font-size: .92rem;
+    }
+    #tutorialStepBody {
+      line-height: 1.35;
+      font-size: 1.02rem;
+      max-height: min(38vh, 290px);
+      overflow: auto;
+      padding-right: 2px;
+      overflow-wrap: anywhere;
+      word-break: normal;
+    }
+    #tutorialStepBody p {
+      margin: 0 0 8px;
     }
     .tutorial-copy-token {
       color: #1556d6;
@@ -393,6 +413,10 @@
       align-items: flex-end;
       gap: 2px;
       pointer-events: none;
+      transform-origin: center;
+    }
+    .tutorial-pointer.flip-x {
+      transform: scaleX(-1);
     }
     .tutorial-pig {
       width: 54px;
@@ -760,8 +784,13 @@
       const vw = window.innerWidth;
       const vh = window.innerHeight;
       const targetRect = tutorialActiveTarget?.getBoundingClientRect();
+      const pointerW = 106;
+      const pointerH = 72;
 
       if (!targetRect) {
+        els.tutorialCard.classList.remove('arrow-left', 'arrow-right');
+        els.tutorialCard.classList.add('arrow-right');
+        els.tutorialPointer.classList.remove('flip-x');
         els.tutorialCard.style.left = `${Math.max(12, (vw - 540) / 2)}px`;
         els.tutorialCard.style.top = '20px';
         els.tutorialPointer.style.left = `${Math.max(12, vw - 120)}px`;
@@ -770,17 +799,33 @@
       }
 
       const cardW = Math.min(560, vw - 24);
-      let cardLeft = Math.max(12, targetRect.left - 14);
+      const cardH = Math.min(360, Math.max(220, els.tutorialCard.offsetHeight || 280));
+      const targetCenterX = targetRect.left + (targetRect.width / 2);
+
+      let cardLeft = Math.max(12, targetCenterX - (cardW / 2));
       if (cardLeft + cardW > vw - 12) cardLeft = vw - cardW - 12;
 
-      let cardTop = Math.max(14, targetRect.top - 190);
-      if (cardTop + 260 > vh - 12) cardTop = Math.max(14, targetRect.bottom - 260);
+      let cardTop = targetRect.top - cardH - 18;
+      if (cardTop < 14) {
+        cardTop = Math.min(vh - cardH - 12, targetRect.bottom + 18);
+      }
+      cardTop = Math.max(14, cardTop);
 
       els.tutorialCard.style.left = `${cardLeft}px`;
       els.tutorialCard.style.top = `${cardTop}px`;
 
-      const pointerX = Math.max(12, Math.min(vw - 120, targetRect.right - 70));
-      const pointerY = Math.max(14, Math.min(vh - 90, targetRect.top - 26));
+      const canPlacePointerLeft = targetRect.left - pointerW - 10 >= 8;
+      const pointerOnLeftSide = canPlacePointerLeft;
+      let pointerX = pointerOnLeftSide ? (targetRect.left - pointerW - 8) : (targetRect.right + 8);
+      pointerX = Math.max(8, Math.min(vw - pointerW - 8, pointerX));
+
+      let pointerY = targetRect.top + (targetRect.height / 2) - (pointerH / 2);
+      pointerY = Math.max(8, Math.min(vh - pointerH - 8, pointerY));
+
+      els.tutorialCard.classList.remove('arrow-left', 'arrow-right');
+      els.tutorialCard.classList.add(pointerOnLeftSide ? 'arrow-left' : 'arrow-right');
+      els.tutorialPointer.classList.toggle('flip-x', !pointerOnLeftSide);
+
       els.tutorialPointer.style.left = `${pointerX}px`;
       els.tutorialPointer.style.top = `${pointerY}px`;
     }
