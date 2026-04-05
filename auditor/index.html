@@ -1263,6 +1263,12 @@
         }
         loadPublishedBundle()
           .then(() => verifyAll())
+          .then(() => {
+            if (els.tutorialModal.classList.contains('open') && tutorialIndex === 1) {
+              tutorialIndex = 2;
+              renderTutorialStep();
+            }
+          })
           .catch((error) => {
             els.headline.textContent = 'Error cargando publicación.';
             setSummary([{ text: 'Carga fallida', className: 'bad' }]);
