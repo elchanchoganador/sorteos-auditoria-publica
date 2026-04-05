@@ -164,12 +164,70 @@
       grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 10px;
     }
+    .tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 22px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0;
+    }
+    .tab-btn {
+      background: none;
+      border: 0;
+      border-bottom: 3px solid transparent;
+      border-radius: 0;
+      padding: 10px 18px;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-bottom: -2px;
+    }
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    .search-results {
+      margin-top: 18px;
+    }
+    .sr-sorteo {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 18px;
+      margin-bottom: 12px;
+    }
+    .sr-sorteo h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+    .sr-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: .85rem;
+      font-weight: 700;
+    }
+    .sr-badge.winner { background: #d4edda; color: var(--ok); }
+    .sr-badge.loser { background: #f8d7da; color: var(--bad); }
+    .sr-badge.no-winner { background: #fff3cd; color: var(--warn); }
+    .sr-detail { font-size: .92rem; color: var(--muted); margin-top: 6px; }
+    .sr-hash { font-family: monospace; font-size: .82rem; word-break: break-all; }
   </style>
 </head>
 <body>
   <div class="wrap">
     <h1>Auditor Publico de Sorteos</h1>
-    <p class="lead">Carga los archivos publicados del sorteo y este HTML verifica relaciones básicas entre precompromiso, snapshot de tickets, hash del archivo y resultado final. Funciona localmente en el navegador y puede descargarse desde GitHub.</p>
+    <p class="lead">Verifica la integridad de cualquier sorteo o búscate como participante por tu nombre de usuario de Discord.</p>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="auditoria">Verificar Sorteo</button>
+      <button class="tab-btn" data-tab="buscar">Buscar mi Participación</button>
+    </div>
+
+    <div id="tab-auditoria" class="tab-panel active">
 
     <div class="grid">
       <section class="card">
@@ -257,7 +315,31 @@
     </section>
 
     <div class="meta" id="meta">Sin datos cargados.</div>
-  </div>
+  </div><!-- /tab-auditoria -->
+
+  <div id="tab-buscar" class="tab-panel">
+    <div class="card" style="max-width:560px;margin-bottom:22px;">
+      <h2>Buscar mi Participación</h2>
+      <p>Ingresa tu nombre de usuario de Discord y la fecha del sorteo. El sistema buscará en los registros publicados en GitHub.</p>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div>
+          <label for="buscarUsuario">Nombre de usuario (Discord)</label>
+          <input id="buscarUsuario" type="text" placeholder="Ej: Juan García" autocomplete="off">
+        </div>
+        <div>
+          <label for="buscarFecha">Fecha del sorteo</label>
+          <input id="buscarFecha" type="date">
+        </div>
+        <div class="actions" style="margin:0;">
+          <button id="buscarBtn">Buscar</button>
+          <button class="secondary" id="buscarLimpiarBtn">Limpiar</button>
+        </div>
+      </div>
+    </div>
+    <div id="buscarResultados" class="search-results" style="display:none;"></div>
+  </div><!-- /tab-buscar -->
+
+  </div><!-- /.wrap -->
 
   <script>
     const state = {
@@ -564,6 +646,141 @@
       els.story.textContent = 'Cuando cargues un resultado final, aquí aparecerá una explicación legible del número ganador verificado con los datos de auditoría.';
       els.meta.textContent = 'Sin datos cargados.';
     });
+
+    // ── Tabs ─────────────────────────────────────────────────────────────────
+    document.querySelectorAll('.tab-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+      });
+    });
+
+    // ── Buscador de participación ─────────────────────────────────────────────
+    const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main';
+
+    async function fetchParticipantsIndex(fecha) {
+      const [year, month, day] = fecha.split('-');
+      const relativePath = `../sorteos_log/${year}/${month}/${day}/participants_${fecha}.json`;
+      const rawPath = `${GITHUB_RAW_BASE}/sorteos_log/${year}/${month}/${day}/participants_${fecha}.json`;
+
+      // Intenta primero por ruta relativa (servidor local / GitHub Pages), luego por raw GitHub
+      for (const url of [relativePath, rawPath]) {
+        try {
+          const res = await fetch(url, { cache: 'no-store' });
+          if (res.ok) return res.json();
+        } catch {
+          // continuar al siguiente
+        }
+      }
+      throw new Error(`No se encontró el índice de participantes para ${fecha}. Es posible que aún no haya sido publicado.`);
+    }
+
+    function renderBuscarResultados(usuario, fecha, data) {
+      const el = document.getElementById('buscarResultados');
+      el.style.display = 'block';
+
+      const usuarioNorm = usuario.trim().toLowerCase();
+      const matches = [];
+
+      for (const sorteo of (data.sorteos || [])) {
+        const participante = (sorteo.participantes || []).find(
+          (p) => String(p.usuario || '').toLowerCase() === usuarioNorm,
+        );
+        if (participante) {
+          matches.push({ sorteo, participante });
+        }
+      }
+
+      if (matches.length === 0) {
+        el.innerHTML = `
+          <div class="sr-sorteo">
+            <h3 class="warn">Sin resultados</h3>
+            <p style="color:var(--muted)">No se encontró a <strong>${escapeHtml(usuario)}</strong> en los sorteos del <strong>${fecha}</strong>.<br>
+            Verifica que el nombre sea exactamente igual al de tu cuenta de Discord.</p>
+          </div>`;
+        return;
+      }
+
+      const html = matches.map(({ sorteo, participante }) => {
+        const gano = participante.gano;
+        const numero = String(participante.numero || '').padStart(2, '0');
+        const nombreSorteo = sorteo.sorteo.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+        const gaineroNumero = String(sorteo.numero_ganador || '').padStart(2, '0');
+        let badge = '';
+        if (gano) {
+          badge = `<span class="sr-badge winner">🏆 GANADOR — Número ${numero}</span>`;
+        } else if (!gaineroNumero || gaineroNumero === '00') {
+          badge = `<span class="sr-badge no-winner">⏳ Sin ganador declarado</span>`;
+        } else {
+          badge = `<span class="sr-badge loser">Participó — Número ${numero} (ganó el ${gaineroNumero})</span>`;
+        }
+        return `
+          <div class="sr-sorteo">
+            <h3>${nombreSorteo} — ${sorteo.hora}:00 VET del ${fecha}</h3>
+            ${badge}
+            <div class="sr-detail">
+              <strong>draw_id:</strong> ${escapeHtml(sorteo.draw_id)}<br>
+              <strong>Número jugado:</strong> ${numero}<br>
+              <strong>Número ganador:</strong> ${gaineroNumero || 'pendiente'}<br>
+              <strong>Ticket hash:</strong><br>
+              <span class="sr-hash">${escapeHtml(participante.ticket_id_hash || 'N/D')}</span>
+            </div>
+          </div>`;
+      }).join('');
+
+      el.innerHTML = `
+        <p style="color:var(--muted);margin-bottom:12px;">
+          Se encontraron <strong>${matches.length}</strong> participación(es) de <strong>${escapeHtml(usuario)}</strong> el ${fecha}.
+        </p>
+        ${html}`;
+    }
+
+    function escapeHtml(str) {
+      return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    document.getElementById('buscarBtn').addEventListener('click', async () => {
+      const usuario = document.getElementById('buscarUsuario').value.trim();
+      const fecha = document.getElementById('buscarFecha').value;
+      const el = document.getElementById('buscarResultados');
+
+      if (!usuario || !fecha) {
+        el.style.display = 'block';
+        el.innerHTML = '<div class="sr-sorteo"><p class="warn">Debes ingresar nombre de usuario y fecha.</p></div>';
+        return;
+      }
+
+      el.style.display = 'block';
+      el.innerHTML = '<div class="sr-sorteo"><p>Buscando...</p></div>';
+
+      try {
+        const data = await fetchParticipantsIndex(fecha);
+        renderBuscarResultados(usuario, fecha, data);
+      } catch (err) {
+        el.innerHTML = `<div class="sr-sorteo"><p class="bad">${escapeHtml(err.message)}</p></div>`;
+      }
+    });
+
+    document.getElementById('buscarLimpiarBtn').addEventListener('click', () => {
+      document.getElementById('buscarUsuario').value = '';
+      document.getElementById('buscarFecha').value = '';
+      const el = document.getElementById('buscarResultados');
+      el.style.display = 'none';
+      el.innerHTML = '';
+    });
+
+    // Fecha por defecto = hoy en VET (UTC-4)
+    (function setDefaultDate() {
+      const now = new Date(Date.now() - 4 * 60 * 60 * 1000);
+      const yyyy = now.getUTCFullYear();
+      const mm = String(now.getUTCMonth() + 1).padStart(2, '0');
+      const dd = String(now.getUTCDate()).padStart(2, '0');
+      const hoy = `${yyyy}-${mm}-${dd}`;
+      document.getElementById('buscarFecha').value = hoy;
+      document.getElementById('fechaPublicada').value = hoy;
+    })();
   </script>
 </body>
 </html>

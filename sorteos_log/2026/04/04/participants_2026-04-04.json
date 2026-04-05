@@ -1,0 +1,80 @@
+{
+  "version": "1.0",
+  "fecha": "2026-04-04",
+  "generado_utc": "2026-04-05T00:22:13.564Z",
+  "nota": "Busca tu nombre de usuario en \"participantes\" para verificar tu jugada.",
+  "sorteos": [
+    {
+      "draw_id": "el-chancho-de-bronce:20260404:17",
+      "sorteo": "el-chancho-de-bronce",
+      "hora": "17",
+      "numero_ganador": "10",
+      "total_participantes": 0,
+      "participantes": []
+    },
+    {
+      "draw_id": "el-chancho-de-bronce:20260404:18",
+      "sorteo": "el-chancho-de-bronce",
+      "hora": "18",
+      "numero_ganador": "01",
+      "total_participantes": 0,
+      "participantes": []
+    },
+    {
+      "draw_id": "el-chancho-de-bronce:20260404:19",
+      "sorteo": "el-chancho-de-bronce",
+      "hora": "19",
+      "numero_ganador": "29",
+      "total_participantes": 0,
+      "participantes": []
+    },
+    {
+      "draw_id": "el-chancho-de-plata:20260404:17",
+      "sorteo": "el-chancho-de-plata",
+      "hora": "17",
+      "numero_ganador": "06",
+      "total_participantes": 0,
+      "participantes": []
+    },
+    {
+      "draw_id": "el-chancho-de-plata:20260404:18",
+      "sorteo": "el-chancho-de-plata",
+      "hora": "18",
+      "numero_ganador": "28",
+      "total_participantes": 0,
+      "participantes": []
+    },
+    {
+      "draw_id": "el-chancho-de-plata:20260404:19",
+      "sorteo": "el-chancho-de-plata",
+      "hora": "19",
+      "numero_ganador": "32",
+      "total_participantes": 0,
+      "participantes": []
+    },
+    {
+      "draw_id": "el-chancho-de-oro:20260404:17",
+      "sorteo": "el-chancho-de-oro",
+      "hora": "17",
+      "numero_ganador": "09",
+      "total_participantes": 0,
+      "participantes": []
+    },
+    {
+      "draw_id": "el-chancho-de-oro:20260404:18",
+      "sorteo": "el-chancho-de-oro",
+      "hora": "18",
+      "numero_ganador": "16",
+      "total_participantes": 0,
+      "participantes": []
+    },
+    {
+      "draw_id": "el-chancho-de-oro:20260404:19",
+      "sorteo": "el-chancho-de-oro",
+      "hora": "19",
+      "numero_ganador": "29",
+      "total_participantes": 0,
+      "participantes": []
+    }
+  ]
+}
