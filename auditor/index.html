@@ -328,6 +328,27 @@
       color: #3e547a;
       font-size: .92rem;
     }
+    .tutorial-copy-token {
+      color: #1556d6;
+      background: #eaf1ff;
+      border: 1px dashed #5d8df0;
+      border-radius: 8px;
+      padding: 2px 8px;
+      cursor: pointer;
+      user-select: all;
+      font-weight: 700;
+    }
+    .tutorial-copy-token:hover {
+      background: #dfeaff;
+    }
+    .tutorial-copy-feedback {
+      display: inline-block;
+      margin-left: 8px;
+      color: #1f6f3f;
+      font-weight: 700;
+      font-size: .9rem;
+      min-height: 1em;
+    }
     .tutorial-actions {
       display: flex;
       gap: 8px;
@@ -557,6 +578,7 @@
 
     const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main';
     const TUTORIAL_SEEN_KEY = 'auditor_tutorial_seen_v1';
+    const TUTORIAL_SAMPLE_DRAW_ID = 'el-chancho-de-oro:20260404:19';
     let tutorialIndex = 0;
     let tutorialActiveTarget = null;
 
@@ -583,7 +605,7 @@
     const tutorialSteps = [
       {
         targetId: 'drawIdInput',
-        text: 'Escribe tu <strong>codigo tecnico</strong> para empezar. Ejemplo: <code>el-chancho-de-oro:20260404:19</code>.',
+        text: `Escribe tu <strong>codigo tecnico</strong> para empezar. Haz clic para copiar: <span class="tutorial-copy-token" role="button" tabindex="0" data-copy-text="${TUTORIAL_SAMPLE_DRAW_ID}">${TUTORIAL_SAMPLE_DRAW_ID}</span><span class="tutorial-copy-feedback" id="tutorialCopyFeedback"></span>`,
       },
       {
         targetId: 'quickVerifyBtn',
@@ -668,10 +690,67 @@
 
       els.tutorialStepMeta.textContent = `Paso ${tutorialIndex + 1} de ${tutorialSteps.length}`;
       els.tutorialStepBody.innerHTML = step.text;
+      wireTutorialCopyActions();
       applyTutorialHighlightById(step.targetId);
 
       els.tutorialPrevBtn.disabled = tutorialIndex === 0;
       els.tutorialNextBtn.textContent = tutorialIndex === tutorialSteps.length - 1 ? 'Finalizar' : 'Siguiente';
+    }
+
+    function wireTutorialCopyActions() {
+      const copyEl = els.tutorialStepBody.querySelector('[data-copy-text]');
+      if (!copyEl) return;
+
+      const copyValue = String(copyEl.getAttribute('data-copy-text') || '');
+      const feedback = els.tutorialStepBody.querySelector('#tutorialCopyFeedback');
+
+      const showCopied = () => {
+        if (!feedback) return;
+        feedback.textContent = 'texto copiado';
+        window.setTimeout(() => {
+          if (feedback.textContent === 'texto copiado') feedback.textContent = '';
+        }, 1400);
+      };
+
+      const copyNow = async () => {
+        if (!copyValue) return;
+        try {
+          await navigator.clipboard.writeText(copyValue);
+          showCopied();
+        } catch {
+          try {
+            const ta = document.createElement('textarea');
+            ta.value = copyValue;
+            ta.setAttribute('readonly', '');
+            ta.style.position = 'absolute';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            showCopied();
+          } catch {
+            // ignorar si no se puede copiar
+          }
+        }
+      };
+
+      copyEl.addEventListener('click', copyNow);
+      copyEl.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          copyNow();
+        }
+      });
+    }
+
+    function maybeAdvanceTutorialByDrawId() {
+      if (!els.tutorialModal.classList.contains('open')) return;
+      if (tutorialIndex !== 0) return;
+      const value = String(els.drawIdInput.value || '').trim().toLowerCase();
+      if (value !== TUTORIAL_SAMPLE_DRAW_ID) return;
+      tutorialIndex = 1;
+      renderTutorialStep();
     }
 
     function renderChecks(checks) {
@@ -1221,6 +1300,8 @@
       if (!els.tutorialModal.classList.contains('open')) return;
       if (event.key === 'Escape') closeTutorialModal();
     });
+
+    els.drawIdInput.addEventListener('input', maybeAdvanceTutorialByDrawId);
 
     ['fechaPublicada', 'horaPublicada', 'slugPublicado'].forEach((id) => {
       document.getElementById(id).addEventListener('change', updatePublicLinks);
