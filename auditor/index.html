@@ -954,6 +954,9 @@
       const usesPinnedSideLayout = layout.pinCardTopLeft;
       const isInputStep = layout.kind === 'input';
       const isButtonStep = layout.kind === 'button';
+      const isOutputStep = layout.kind === 'output';
+      let forcedHandLeft = null;
+      let forcedHandDown = null;
 
       const placePointerAbove = layout.forcePointerAboveTarget || targetCenterY > (vh * 0.55);
 
@@ -995,6 +998,8 @@
         // Alinea la mano con el centro del input para que apunte de forma directa.
         const inputHandCenterOffset = 132;
         pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetCenterY - inputHandCenterOffset));
+        forcedHandLeft = true;
+        forcedHandDown = false;
         if (els.tutorialHand) {
           els.tutorialHand.classList.add('point-left');
           els.tutorialHand.classList.remove('point-down');
@@ -1002,17 +1007,19 @@
       }
 
       if (isButtonStep) {
-        // Paso 2: globo arriba del botón y chancho al costado para estilo burbuja de idea.
+        // Paso 2: mano apuntando directamente al botón "Cargar y verificar".
         cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetCenterX - (cardW / 2)));
-        cardTop = Math.max(minTop, targetRect.top - cardH - 18);
+        cardTop = Math.max(minTop, targetRect.top - cardH - 24);
 
-        pointerX = Math.max(safe, Math.min(vw - pointerW - safe, cardLeft + cardW + 12));
-        pointerY = Math.max(
-          minTop,
-          Math.min(vh - pointerH - safe, cardTop + cardH - pointerH + 2),
-        );
+        const canPlaceOnRight = (vw - targetRect.right) >= (pointerW + safe + 10);
+        pointerX = canPlaceOnRight
+          ? (targetRect.right + 12)
+          : (targetRect.left - pointerW - 12);
+        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetCenterY - 132));
+        forcedHandLeft = canPlaceOnRight;
+        forcedHandDown = false;
         if (els.tutorialHand) {
-          els.tutorialHand.classList.remove('point-left');
+          els.tutorialHand.classList.toggle('point-left', canPlaceOnRight);
           els.tutorialHand.classList.remove('point-down');
         }
       }
@@ -1025,14 +1032,22 @@
       }
 
       if (usesPinnedSideLayout) {
-        // Pasos de salida/validación: globo a la izquierda y puntero al lado apuntando hacia abajo al bloque.
+        // Pasos de salida/validación: globo a la izquierda y puntero estable fuera del bloque.
         cardLeft = safe;
         cardTop = minTop;
-        pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 18);
-        pointerY = Math.max(
-          minTop,
-          Math.min(vh - pointerH - safe, Math.max(cardTop + cardH + 6, targetRect.top - 38)),
-        );
+        if (isOutputStep) {
+          // Paso 3: coloca el puntero por encima del bloque de validación para evitar descuadre.
+          pointerX = Math.max(safe, Math.min(vw - pointerW - safe, targetRect.right - pointerW - 12));
+          pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetRect.top - pointerH - 14));
+        } else {
+          pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 18);
+          pointerY = Math.max(
+            minTop,
+            Math.min(vh - pointerH - safe, Math.max(cardTop + cardH + 6, targetRect.top - 38)),
+          );
+        }
+        forcedHandLeft = false;
+        forcedHandDown = true;
         if (els.tutorialHand) {
           els.tutorialHand.classList.remove('point-left');
           els.tutorialHand.classList.add('point-down');
@@ -1053,10 +1068,10 @@
       }
 
       if (els.tutorialHand) {
-        if (isInputStep) {
-          // En el paso 1 se fija la orientación para señalar el input.
-          els.tutorialHand.classList.add('point-left');
-          els.tutorialHand.classList.remove('point-down');
+        if (forcedHandLeft !== null || forcedHandDown !== null) {
+          // En pasos con guía fija, se respeta la orientación configurada arriba.
+          els.tutorialHand.classList.toggle('point-left', !!forcedHandLeft);
+          els.tutorialHand.classList.toggle('point-down', !!forcedHandDown);
         } else {
           // Orienta la mano según la posición real del objetivo resaltado.
           const handCenterX = pointerX + (pointerW / 2);
