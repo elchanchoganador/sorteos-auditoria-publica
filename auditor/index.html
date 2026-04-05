@@ -609,6 +609,10 @@
       color: #155a2f;
     }
     @media (max-width: 760px) {
+      .tutorial-modal[data-step-kind="output"] .tutorial-card,
+      .tutorial-modal[data-step-kind="checks"] .tutorial-card {
+        z-index: 10005;
+      }
       .tutorial-modal[data-step-kind="output"] #quickOutput,
       .tutorial-modal[data-step-kind="checks"] #quickOutput {
         margin-top: max(10px, calc(var(--tutorial-card-space, 250px) + 8px));
@@ -674,6 +678,7 @@
       }
       .tutorial-modal[data-step-kind="output"] #quickOutput.tutorial-focus,
       .tutorial-modal[data-step-kind="checks"] #quickOutput.tutorial-focus {
+        z-index: 10002 !important;
         box-shadow: 0 0 0 2px rgba(76, 129, 255, .55), 0 0 0 6px rgba(55, 108, 255, .2) !important;
       }
     }
