@@ -11,3 +11,44 @@
 [2026-04-05T12:57:41.590Z]   Total tickets   : 0
 [2026-04-05T12:57:41.590Z]   Seed commit index: 23
 [2026-04-05T12:57:41.590Z]   Seed hash       : 815222758b16174cbf12899c29713daa3a1ed931202678832c9c66ba9767e826
+[2026-04-05T13:05:39.971Z] INICIO EJECUCIÓN SORTEO
+[2026-04-05T13:05:39.971Z]   Sorteo  : El Chancho de Plata (el-chancho-de-plata)
+[2026-04-05T13:05:39.971Z]   Hora VET: 09:00 AM — UTC: 2026-04-05T13:00:00.000Z
+[2026-04-05T13:05:39.971Z]   Ronda drand comprometida: 5998766
+[2026-04-05T13:05:40.083Z] BEACON drand OBTENIDO
+[2026-04-05T13:05:40.083Z]   Ronda     : 5998766
+[2026-04-05T13:05:40.083Z]   Randomness: ffa017a413df4b514b281f0d7b9f3ff56b51a60261a5a82329dc8413b4b68420
+[2026-04-05T13:05:40.083Z]   Signature : 85baf979af2fa6cb0ed5264c00a4f9a4...
+[2026-04-05T13:05:40.083Z]   Endpoint  : https://drand.cloudflare.com/public/5998766
+[2026-04-05T13:05:40.103Z] CÁLCULO GANADOR
+[2026-04-05T13:05:40.103Z]   Total números  : 38
+[2026-04-05T13:05:40.103Z]   Randomness base: ffa017a413df4b514b281f0d7b9f3ff56b51a60261a5a82329dc8413b4b68420
+[2026-04-05T13:05:40.103Z]   Randomness sorteo: 359ddb7dbb70c9c6bdaff6956bcae4f9434858abfb21930c2935e9ac85a53256
+[2026-04-05T13:05:40.103Z]   Precompromiso hash: ee796bdd88933c86fd2bf68e22d37e6723909da58234cf6d730c5c4fa16356c6
+[2026-04-05T13:05:40.103Z]   Seed reveal hash : 815222758b16174cbf12899c29713daa3a1ed931202678832c9c66ba9767e826
+[2026-04-05T13:05:40.103Z]   Draw ID         : el-chancho-de-plata:20260405:09
+[2026-04-05T13:05:40.103Z]   Protocolo       : 3.0.0
+[2026-04-05T13:05:40.103Z]   Pool entry id   : NO_APLICA
+[2026-04-05T13:05:40.103Z]   Pool entry hash : NO_APLICA
+[2026-04-05T13:05:40.103Z]   Pool chain hash : NO_APLICA
+[2026-04-05T13:05:40.103Z]   Local hex       : NO_APLICA
+[2026-04-05T13:05:40.103Z]   QRNG fuente    : NO_APLICA
+[2026-04-05T13:05:40.103Z]   QRNG hex       : NO_APLICA
+[2026-04-05T13:05:40.103Z]   QRNG color     : NO_APLICA
+[2026-04-05T13:05:40.103Z]   BTC altura     : NO_APLICA
+[2026-04-05T13:05:40.103Z]   BTC block hash : NO_APLICA
+[2026-04-05T13:05:40.103Z]   NIST pulse     : NO_APLICA
+[2026-04-05T13:05:40.103Z]   NIST hex       : NO_APLICA
+[2026-04-05T13:05:40.103Z]   Entropía final : SHA-256({seed_reveal,ticket_set_hash,precompromiso_hash,drand_randomness,round_drand,hash_participantes})
+[2026-04-05T13:05:40.103Z]   Operación      : rejection_sampling(domain=LOTTERY-V3.0, N=38) = índice 16
+[2026-04-05T13:05:40.103Z]   Rejection      : intento=0 hash=73bd862d7093a195...
+[2026-04-05T13:05:40.103Z]   Número ganador : 16 (Pala)
+[2026-04-05T13:05:40.103Z]   Participantes  : 0
+[2026-04-05T13:05:40.103Z]   Ganadores      : NINGUNO (número no jugado)
+[2026-04-05T13:05:40.118Z] SORTEO COMPLETADO
+[2026-04-05T13:05:40.118Z]   Número ganador: 16 (Pala)
+[2026-04-05T13:05:40.118Z]   Ganadores      : NINGUNO
+[2026-04-05T13:05:40.118Z]   Seed reveal idx: 51
+[2026-04-05T13:05:40.118Z]   Chain entry index: 52
+[2026-04-05T13:05:40.118Z]   Chain entry hash : 12cd4b680e62327e836ddee6407eb316d7f3352d6f00b3c2d65dc2d70a6441b0
+[2026-04-05T13:05:40.118Z]   Archivos creados: resultado.json, participantes.json, entropy_entry.json, software_info.json, verificar.js, audit.log
