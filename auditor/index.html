@@ -282,7 +282,7 @@
       <img src="https://avatars.githubusercontent.com/u/255641549?v=4" alt="Logo El Chancho Ganador">
       <h1>Auditor Publico de Sorteos</h1>
     </div>
-    <p class="lead">Verifica la integridad de cualquier sorteo o búscate por tu identificador de jugada (id_jugada) sin exponer usuarios de Discord.</p>
+    <p class="lead">Verifica la integridad de cualquier sorteo o búscate por tu identificador de jugada sin exponer usuarios de Discord.</p>
 
     <div class="tabs">
       <button class="tab-btn active" data-tab="auditoria">Verificar Sorteo</button>
@@ -293,7 +293,7 @@
 
     <section class="helper">
       <h2>Verificación Rápida</h2>
-      <p>Pega el <code>draw_id</code> o selecciona fecha, hora y nombre del sorteo. Luego pulsa <strong>Cargar y verificar</strong>.</p>
+      <p>Pega el <code>codigo_tecnico</code> o selecciona fecha, hora y nombre del sorteo. Luego pulsa <strong>Cargar y verificar</strong>.</p>
       <div class="steps">
         <div class="step"><strong>1.</strong> Identifica el draw: <code>id_sorteo:YYYYMMDD:HH</code></div>
         <div class="step"><strong>2.</strong> Carga automáticamente los archivos públicos</div>
@@ -301,15 +301,15 @@
       </div>
       <div class="mini-grid">
         <div>
-          <label for="drawIdInput">draw_id</label>
+          <label for="drawIdInput">Codigo tecnico del sorteo</label>
           <input id="drawIdInput" type="text" placeholder="Ej: el-chancho-de-oro:20260404:19">
         </div>
         <div style="display:flex;align-items:end;gap:10px;flex-wrap:wrap;">
-          <button id="fillDrawIdBtn" class="secondary">Usar draw_id</button>
+          <button id="fillDrawIdBtn" class="secondary">Usar código técnico</button>
           <button id="quickVerifyBtn">Cargar y verificar</button>
         </div>
       </div>
-      <div class="links-box" id="publicLinks">Selecciona un sorteo o pega un <code>draw_id</code> para ver enlaces directos a los archivos públicos.</div>
+      <div class="links-box" id="publicLinks">Selecciona un sorteo o pega un <code>codigo_tecnico</code> para ver enlaces directos a los archivos públicos.</div>
     </section>
 
     <div class="grid">
@@ -403,10 +403,10 @@
   <div id="tab-buscar" class="tab-panel">
     <div class="card" style="max-width:560px;margin-bottom:22px;">
       <h2>Buscar mi Participación</h2>
-      <p>Ingresa tu id_jugada (formato <code>discord_bot_...</code>) y la fecha del sorteo. El sistema buscará en los registros públicos de GitHub.</p>
+      <p>Ingresa tu código de jugada (formato <code>discord_bot_...</code>) y la fecha del sorteo. El sistema buscará en los registros públicos de GitHub.</p>
       <div style="display:flex;flex-direction:column;gap:12px;">
         <div>
-          <label for="buscarUsuario">id_jugada</label>
+          <label for="buscarUsuario">Código de jugada</label>
           <input id="buscarUsuario" type="text" placeholder="Ej: discord_bot_9f4a2c..." autocomplete="off">
         </div>
         <div>
@@ -524,7 +524,7 @@
     function syncSelectionFromDrawId() {
       const parsed = parseDrawId(els.drawIdInput.value);
       if (!parsed) {
-        throw new Error('draw_id inválido. Usa el formato id_sorteo:YYYYMMDD:HH');
+        throw new Error('Codigo tecnico invalido. Usa el formato id_sorteo:YYYYMMDD:HH');
       }
       document.getElementById('fechaPublicada').value = parsed.fecha;
       document.getElementById('horaPublicada').value = parsed.hora;
@@ -536,7 +536,7 @@
     function updatePublicLinks() {
       const { fecha, hora, slug } = getPublishedSelection();
       if (!fecha || !hora || !slug) {
-        els.publicLinks.innerHTML = 'Selecciona un sorteo o pega un <code>draw_id</code> para ver enlaces directos a los archivos públicos.';
+        els.publicLinks.innerHTML = 'Selecciona un sorteo o pega un <code>codigo_tecnico</code> para ver enlaces directos a los archivos públicos.';
         return;
       }
       const { relativeBase, rawBase } = buildPublishedBase(fecha, hora, slug);
@@ -628,7 +628,7 @@
         `Para el día <strong>${fecha || '(sin fecha)'}</strong> en el sorteo <strong>${sorteo}</strong>,`,
         `a la hora <strong>${hora || '(sin hora)'}</strong>,`,
         `usando los datos de auditoría cargados, el número ganador verificado es <strong>${numero}</strong> (${producto}).`,
-        drawId ? `<br><br><strong>draw_id:</strong> ${drawId}` : '',
+        drawId ? `<br><br><strong>Código técnico:</strong> ${drawId}` : '',
       ].join(' ');
     }
 
@@ -700,7 +700,7 @@
       const commitDrawId = String(commit?.draw_id || '');
       const drawDrawId = String(draw?.draw_id || '');
       const drawIdConsistent = drawId && drawId === commitDrawId && drawId === drawDrawId;
-      addCheck(checks, 'Consistencia de draw_id', drawIdConsistent, `draw_id consistente: ${drawId}`, `draw_id inconsistente entre archivos: ${drawId} / ${commitDrawId} / ${drawDrawId}`);
+      addCheck(checks, 'Consistencia del código técnico', drawIdConsistent, `Código consistente: ${drawId}`, `Código inconsistente entre archivos: ${drawId} / ${commitDrawId} / ${drawDrawId}`);
 
       const preParticipantesHash = String(pre?.participantes?.hash_sha256 || '');
       const preTextoHasheado = String(pre?.participantes?.texto_hasheado || '');
@@ -711,12 +711,12 @@
       const expectedDrawSha = await sha256HexFromText(drawText);
       const shaFileHash = extractSha256FileValue(shaText);
       const shaOk = shaFileHash === expectedDrawSha;
-      addCheck(checks, 'Hash de tickets_draw.json', shaOk, 'El SHA-256 del archivo coincide con tickets_draw.json.sha256.', `SHA-256 inválido. Esperado ${expectedDrawSha} y encontrado ${shaFileHash}.`);
+      addCheck(checks, 'Huella digital del archivo de boletos', shaOk, 'La huella SHA-256 coincide con la publicada.', `Huella SHA-256 inválida. Esperado ${expectedDrawSha} y encontrado ${shaFileHash}.`);
 
       const commitmentHash = String(pre?.tickets_commitment?.ticket_set_hash || '');
       const commitHash = String(commit?.ticket_set_hash || '');
       const ticketHashesOk = commitmentHash === commitHash && commitHash === expectedDrawSha;
-      addCheck(checks, 'Compromiso de tickets', ticketHashesOk, 'El ticket_set_hash coincide entre precompromiso, commit y snapshot.', `ticket_set_hash inconsistente. pre=${commitmentHash} commit=${commitHash} archivo=${expectedDrawSha}`);
+      addCheck(checks, 'Compromiso del conjunto de boletos', ticketHashesOk, 'El compromiso coincide entre archivos de precompromiso, compromiso y boletos.', `Compromiso inconsistente. pre=${commitmentHash} compromiso=${commitHash} archivo=${expectedDrawSha}`);
 
       const totalTicketsPre = Number(pre?.tickets_commitment?.total_tickets ?? -1);
       const totalTicketsCommit = Number(commit?.total_tickets ?? -1);
@@ -727,7 +727,7 @@
       if (resultado) {
         const resultadoDrawId = `${resultado?.sorteo?.slug || ''}:${String(resultado?.horario?.fecha_vet || '').replace(/-/g, '')}:${String(resultado?.horario?.hora24_vet || '').padStart(2, '0')}`;
         const resultadoDrawIdOk = resultadoDrawId === drawId;
-        addCheck(checks, 'Resultado asociado al mismo sorteo', resultadoDrawIdOk, 'resultado.json corresponde al mismo draw_id.', `resultado.json pertenece a ${resultadoDrawId} y no a ${drawId}.`);
+        addCheck(checks, 'Resultado asociado al mismo sorteo', resultadoDrawIdOk, 'El resultado corresponde al mismo código técnico.', `El resultado pertenece a ${resultadoDrawId} y no a ${drawId}.`);
 
         const resultadoParticipantesHash = String(resultado?.participantes?.hash_sha256 || '');
         const resultadoParticipantesOk = resultadoParticipantesHash === preParticipantesHash;
@@ -774,10 +774,10 @@
       renderChecks(checks);
       renderStory(pre, resultado);
       els.meta.textContent = [
-        `draw_id: ${drawId || '(sin dato)'}`,
-        `ticket_set_hash: ${commitHash || '(sin dato)'}`,
-        `hash participantes: ${preParticipantesHash || '(sin dato)'}`,
-        resultado ? `resultado cargado: sí` : 'resultado cargado: no',
+        `Código técnico: ${drawId || '(sin dato)'}`,
+        `Compromiso del conjunto de boletos: ${commitHash || '(sin dato)'}`,
+        `Huella de participantes: ${preParticipantesHash || '(sin dato)'}`,
+        resultado ? `Resultado cargado: sí` : 'Resultado cargado: no',
       ].join('\n');
     }
 
@@ -860,7 +860,7 @@
         el.innerHTML = `
           <div class="sr-sorteo">
             <h3 class="warn">Sin resultados</h3>
-            <p style="color:var(--muted)">No se encontró el id_jugada <strong>${escapeHtml(idJugadaInput)}</strong> en los sorteos del <strong>${fecha}</strong>.<br>
+            <p style="color:var(--muted)">No se encontró el código de jugada <strong>${escapeHtml(idJugadaInput)}</strong> en los sorteos del <strong>${fecha}</strong>.<br>
             Verifica que el identificador sea exacto.</p>
           </div>`;
         return;
@@ -884,8 +884,8 @@
             <h3>${nombreSorteo} — ${sorteo.hora}:00 VET del ${fecha}</h3>
             ${badge}
             <div class="sr-detail">
-              <strong>id_jugada:</strong> ${escapeHtml(participante.id_jugada || 'N/D')}<br>
-              <strong>draw_id:</strong> ${escapeHtml(sorteo.draw_id)}<br>
+              <strong>Código de jugada:</strong> ${escapeHtml(participante.id_jugada || 'N/D')}<br>
+              <strong>Código técnico:</strong> ${escapeHtml(sorteo.draw_id)}<br>
               <strong>Número jugado:</strong> ${numero}<br>
               <strong>Número ganador:</strong> ${gaineroNumero || 'pendiente'}<br>
               <strong>Ticket hash:</strong><br>
@@ -912,7 +912,7 @@
 
       if (!idJugada || !fecha) {
         el.style.display = 'block';
-        el.innerHTML = '<div class="sr-sorteo"><p class="warn">Debes ingresar id_jugada y fecha.</p></div>';
+        el.innerHTML = '<div class="sr-sorteo"><p class="warn">Debes ingresar código de jugada y fecha.</p></div>';
         return;
       }
 
@@ -938,11 +938,11 @@
     document.getElementById('fillDrawIdBtn').addEventListener('click', () => {
       try {
         syncSelectionFromDrawId();
-        els.headline.textContent = 'draw_id cargado. Pulsa "Cargar y verificar" para validar el sorteo.';
+        els.headline.textContent = 'Codigo tecnico cargado. Pulsa "Cargar y verificar" para validar el sorteo.';
       } catch (error) {
-        els.headline.textContent = 'draw_id inválido.';
-        setSummary([{ text: 'draw_id inválido', className: 'bad' }]);
-        renderChecks([{ title: 'draw_id', status: 'bad', message: error.message }]);
+        els.headline.textContent = 'Codigo tecnico invalido.';
+        setSummary([{ text: 'Codigo tecnico invalido', className: 'bad' }]);
+        renderChecks([{ title: 'Codigo tecnico', status: 'bad', message: error.message }]);
       }
     });
 
@@ -960,9 +960,9 @@
             els.meta.textContent = error.stack || error.message;
           });
       } catch (error) {
-        els.headline.textContent = 'draw_id inválido.';
-        setSummary([{ text: 'draw_id inválido', className: 'bad' }]);
-        renderChecks([{ title: 'draw_id', status: 'bad', message: error.message }]);
+        els.headline.textContent = 'Codigo tecnico invalido.';
+        setSummary([{ text: 'Codigo tecnico invalido', className: 'bad' }]);
+        renderChecks([{ title: 'Codigo tecnico', status: 'bad', message: error.message }]);
       }
     });
 

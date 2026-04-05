@@ -146,6 +146,7 @@
       <div class="actions">
         <a class="btn btn-soft" href="auditor/index.html">Abrir verificador manual</a>
         <a class="btn btn-soft" href="scripts/verificar_resultado.js">Ver script verificar_resultado.js</a>
+        <a class="btn btn-soft" href="DOCUMENTACION_TECNICA_VARIABLES.md">Glosario técnico</a>
       </div>
       <div id="status" class="meta">Formato esperado: <code>bronce|plata|oro:YYYYMMDD:HH</code>.</div>
       <div id="resultadoRapido" class="checks" style="display:none;"></div>
@@ -265,17 +266,17 @@
 
           const drawId = String(pre?.draw_id || '');
           const drawIdOk = drawId && drawId === String(commit?.draw_id || '') && drawId === String(draw?.draw_id || '');
-          pushCheck(checks, drawIdOk ? 'ok' : 'bad', 'Consistencia de identificador', drawIdOk ? drawId : 'Inconsistencia entre archivos del sorteo.');
+          pushCheck(checks, drawIdOk ? 'ok' : 'bad', 'Consistencia del código del sorteo', drawIdOk ? drawId : 'Inconsistencia entre archivos del sorteo.');
 
           const expectedDrawSha = await sha256HexFromText(drawText);
           const shaFileHash = extractSha256FileValue(shaText);
           const shaOk = shaFileHash === expectedDrawSha;
-          pushCheck(checks, shaOk ? 'ok' : 'bad', 'Hash de tickets_draw.json', shaOk ? 'SHA-256 correcto.' : `Hash inválido. Esperado ${expectedDrawSha} y encontrado ${shaFileHash}.`);
+          pushCheck(checks, shaOk ? 'ok' : 'bad', 'Huella digital del archivo de boletos', shaOk ? 'Huella SHA-256 correcta.' : `Huella inválida. Esperado ${expectedDrawSha} y encontrado ${shaFileHash}.`);
 
           const commitmentHash = String(pre?.tickets_commitment?.ticket_set_hash || '');
           const commitHash = String(commit?.ticket_set_hash || '');
           const setHashOk = commitmentHash === commitHash && commitHash === expectedDrawSha;
-          pushCheck(checks, setHashOk ? 'ok' : 'bad', 'Compromiso de tickets', setHashOk ? 'ticket_set_hash consistente entre archivos.' : 'ticket_set_hash inconsistente entre precompromiso, commit o snapshot.');
+          pushCheck(checks, setHashOk ? 'ok' : 'bad', 'Compromiso del conjunto de boletos', setHashOk ? 'Compromiso consistente entre archivos.' : 'Compromiso inconsistente entre precompromiso, compromiso y archivo de boletos.');
 
           if (resultado) {
             const numeroGanador = String(resultado?.resultado?.numero_ganador || '');
