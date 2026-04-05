@@ -200,6 +200,35 @@
     .check-help:focus-visible::after {
       opacity: 1;
     }
+    @media (max-width: 860px) {
+      .tutorial-card {
+        width: min(var(--tutorial-card-max-width, 360px), calc(100vw - 12px));
+        border-radius: 14px;
+        padding: 12px;
+      }
+      .tutorial-card-layout {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .tutorial-card-mascot {
+        display: none !important;
+      }
+      #tutorialStepBody {
+        font-size: .94rem;
+        max-height: min(46vh, 280px);
+      }
+      .tutorial-actions {
+        justify-content: center;
+        gap: 6px;
+      }
+      .check-help::after {
+        left: 50%;
+        top: calc(100% + 8px);
+        transform: translateX(-50%);
+        min-width: 180px;
+        max-width: 220px;
+      }
+    }
     code, pre {
       font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
       font-size: .92rem;
@@ -513,7 +542,7 @@
       gap: 0;
     }
     .tutorial-modal[data-step-kind="checks"] .tutorial-pointer {
-      display: none;
+      display: flex;
     }
     .tutorial-modal .tutorial-hand {
       display: block;
@@ -557,6 +586,13 @@
       display: none;
     }
     .tutorial-hand-step-3 {
+      margin-top: 0;
+      z-index: 5;
+    }
+    .tutorial-pig-step-4 {
+      display: none;
+    }
+    .tutorial-hand-step-4 {
       margin-top: 0;
       z-index: 5;
     }
@@ -927,7 +963,7 @@
         profile.minTop = 20;
       } else if (kind === 'output' || kind === 'checks') {
         profile.pinCardTopLeft = true;
-        profile.minTop = 20;
+        profile.minTop = kind === 'checks' ? Math.max(44, Math.round(menuBottom + 10)) : 20;
       }
 
       profile.cardMaxWidth = Math.min(profile.cardMaxWidth, Math.max(300, vw - 24));
@@ -1031,6 +1067,7 @@
       const isInputStep = layout.kind === 'input';
       const isButtonStep = layout.kind === 'button';
       const isOutputStep = layout.kind === 'output';
+      const isChecksStep = layout.kind === 'checks';
       let forcedHandLeft = null;
       let forcedHandDown = null;
 
@@ -1124,6 +1161,12 @@
           cardTop = Math.max(minTop, outputRect.top - cardH - 14);
           pointerX = Math.max(safe, Math.min(vw - pointerW - safe, outputRect.right - pointerW - 4));
           pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, outputRect.top - pointerH + 14));
+        } else if (isChecksStep) {
+          // Paso 4: coloca la ayuda cerca del bloque y mano visible apuntando hacia abajo.
+          cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetRect.left + 6));
+          cardTop = Math.max(minTop, targetRect.top - cardH - 14);
+          pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 10);
+          pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetRect.top - pointerH + 10));
         } else {
           pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 18);
           pointerY = Math.max(
