@@ -1161,6 +1161,20 @@
       clearTutorialHighlights();
     }
 
+    function resetTutorialOutputViewport(stepKind) {
+      const isOutputLikeStep = stepKind === 'output' || stepKind === 'checks';
+      if (!isOutputLikeStep || !els.quickOutput) return;
+
+      // Arranca siempre desde el inicio del bloque de datos en pasos 3/4.
+      els.quickOutput.scrollTop = 0;
+      if (els.checks) els.checks.scrollTop = 0;
+      if (els.meta) els.meta.scrollTop = 0;
+
+      if (window.innerWidth <= 760) {
+        els.quickOutput.scrollIntoView({ behavior: 'auto', block: 'start' });
+      }
+    }
+
     function positionTutorialOverlay() {
       if (!els.tutorialModal.classList.contains('open')) return;
       if (!els.tutorialCard || !els.tutorialPointer) return;
@@ -1529,8 +1543,12 @@
       }
       wireTutorialCopyActions();
       applyTutorialHighlightById(step.targetId);
+      window.requestAnimationFrame(() => resetTutorialOutputViewport(stepKind));
       window.requestAnimationFrame(() => positionTutorialOverlay());
-      window.setTimeout(positionTutorialOverlay, 110);
+      window.setTimeout(() => {
+        resetTutorialOutputViewport(stepKind);
+        positionTutorialOverlay();
+      }, 110);
 
       els.tutorialPrevBtn.disabled = tutorialIndex === 0;
       els.tutorialNextBtn.textContent = tutorialIndex === tutorialSteps.length - 1 ? 'Finalizar' : 'Siguiente';
