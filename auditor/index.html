@@ -336,66 +336,35 @@
       box-shadow: 0 22px 50px rgba(5, 18, 46, .35);
       padding: 16px;
     }
-    .tutorial-card::after {
-      content: '';
-      position: absolute;
-      right: 22px;
-      bottom: -11px;
-      width: 20px;
-      height: 20px;
-      transform: rotate(45deg);
-      background: #fff;
-      border-right: 1px solid #d5ddec;
-      border-bottom: 1px solid #d5ddec;
+    .tutorial-card-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: start;
     }
-    .tutorial-card.arrow-left::after {
-      left: 16px;
-      right: auto;
+    .tutorial-card-main {
+      min-width: 0;
     }
-    .tutorial-card.arrow-right::after {
-      right: 16px;
-      left: auto;
+    .tutorial-card-mascot {
+      display: none;
+      align-self: center;
     }
-    .tutorial-modal[data-step-kind="input"] .tutorial-card.arrow-right::after {
-      right: -11px;
-      left: auto;
-      top: calc(50% - 10px);
-      bottom: auto;
-      transform: rotate(45deg);
+    .tutorial-card-mascot img {
+      display: block;
+      width: 92px;
+      height: 92px;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 14px rgba(0,0,0,.2));
     }
-    .tutorial-modal[data-step-kind="button"] .tutorial-card::before {
-      content: '';
-      position: absolute;
-      right: -10px;
-      bottom: 16px;
-      width: 12px;
-      height: 12px;
-      border-radius: 999px;
-      background: #fff;
-      border: 1px solid #d5ddec;
+    .tutorial-modal[data-step-kind="input"] .tutorial-card-mascot,
+    .tutorial-modal[data-step-kind="button"] .tutorial-card-mascot {
+      display: block;
     }
-    .tutorial-modal[data-step-kind="button"] .tutorial-card.arrow-right::after {
-      right: -28px;
-      bottom: 22px;
-    }
-    .tutorial-card.arrow-none::after { display: none; }
-    .tutorial-card.arrow-top::after,
-    .tutorial-card.arrow-bottom::after {
-      bottom: auto;
-      top: -11px;
-      border-right: 0;
-      border-bottom: 0;
-      border-left: 1px solid #d5ddec;
-      border-top: 1px solid #d5ddec;
-    }
-    .tutorial-card.arrow-top::after {
-      left: calc(50% - 10px);
-      right: auto;
-    }
-    .tutorial-card.arrow-bottom::after {
-      left: calc(50% - 10px);
-      right: auto;
-    }
+    
+    
+    
+    
+  
     .tutorial-modal[data-step-kind="input"] .tutorial-pointer {
       gap: 4px;
     }
@@ -486,7 +455,7 @@
     }
     .tutorial-modal[data-step-kind="input"] .tutorial-pig,
     .tutorial-modal[data-step-kind="button"] .tutorial-pig {
-      display: block;
+      display: none;
     }
     .tutorial-modal[data-step-kind="input"] .tutorial-hand,
     .tutorial-modal[data-step-kind="button"] .tutorial-hand {
@@ -715,17 +684,24 @@
   <div id="tutorialModal" class="tutorial-modal" aria-hidden="true">
     <div class="tutorial-backdrop" id="tutorialBackdrop"></div>
     <div class="tutorial-pointer" id="tutorialPointer" aria-hidden="true">
-      <img class="tutorial-pig" src="../images/elchanchoganador.png" alt="" onerror="this.style.display='none'">
+       
       <img class="tutorial-hand" src="../images/mickey-mouse-hand.svg" alt="" onerror="this.style.display='none'">
     </div>
     <div class="tutorial-card" role="dialog" aria-modal="true" aria-label="Tutorial guiado">
-      <span class="tutorial-help-label">AYUDA</span>
-      <p class="tutorial-step-meta" id="tutorialStepMeta">Paso 1 de 1</p>
-      <div id="tutorialStepBody"></div>
-      <div class="tutorial-actions">
-        <button class="secondary" id="tutorialPrevBtn" type="button">Anterior</button>
-        <button id="tutorialNextBtn" type="button">Siguiente</button>
-        <button class="secondary" id="tutorialCloseBtn" type="button">Cerrar</button>
+      <div class="tutorial-card-layout">
+        <div class="tutorial-card-main">
+          <span class="tutorial-help-label">AYUDA</span>
+          <p class="tutorial-step-meta" id="tutorialStepMeta">Paso 1 de 1</p>
+          <div id="tutorialStepBody"></div>
+          <div class="tutorial-actions">
+            <button class="secondary" id="tutorialPrevBtn" type="button">Anterior</button>
+            <button id="tutorialNextBtn" type="button">Siguiente</button>
+            <button class="secondary" id="tutorialCloseBtn" type="button">Cerrar</button>
+          </div>
+        </div>
+        <div class="tutorial-card-mascot" aria-hidden="true">
+          <img src="../images/elchanchoganador.png" alt="" onerror="this.style.display='none'">
+        </div>
       </div>
     </div>
   </div>
