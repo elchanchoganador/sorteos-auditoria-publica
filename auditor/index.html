@@ -220,7 +220,7 @@
 <body>
   <div class="wrap">
     <h1>Auditor Publico de Sorteos</h1>
-    <p class="lead">Verifica la integridad de cualquier sorteo o búscate como participante por tu nombre de usuario de Discord.</p>
+    <p class="lead">Verifica la integridad de cualquier sorteo o búscate por tu identificador de jugada (id_jugada) sin exponer usuarios de Discord.</p>
 
     <div class="tabs">
       <button class="tab-btn active" data-tab="auditoria">Verificar Sorteo</button>
@@ -320,11 +320,11 @@
   <div id="tab-buscar" class="tab-panel">
     <div class="card" style="max-width:560px;margin-bottom:22px;">
       <h2>Buscar mi Participación</h2>
-      <p>Ingresa tu nombre de usuario de Discord y la fecha del sorteo. El sistema buscará en los registros publicados en GitHub.</p>
+      <p>Ingresa tu id_jugada (formato <code>discord_bot_...</code>) y la fecha del sorteo. El sistema buscará en los registros públicos de GitHub.</p>
       <div style="display:flex;flex-direction:column;gap:12px;">
         <div>
-          <label for="buscarUsuario">Nombre de usuario (Discord)</label>
-          <input id="buscarUsuario" type="text" placeholder="Ej: Juan García" autocomplete="off">
+          <label for="buscarUsuario">id_jugada</label>
+          <input id="buscarUsuario" type="text" placeholder="Ej: discord_bot_9f4a2c..." autocomplete="off">
         </div>
         <div>
           <label for="buscarFecha">Fecha del sorteo</label>
@@ -677,16 +677,16 @@
       throw new Error(`No se encontró el índice de participantes para ${fecha}. Es posible que aún no haya sido publicado.`);
     }
 
-    function renderBuscarResultados(usuario, fecha, data) {
+    function renderBuscarResultados(idJugadaInput, fecha, data) {
       const el = document.getElementById('buscarResultados');
       el.style.display = 'block';
 
-      const usuarioNorm = usuario.trim().toLowerCase();
+      const idJugadaNorm = idJugadaInput.trim().toLowerCase();
       const matches = [];
 
       for (const sorteo of (data.sorteos || [])) {
-        const participante = (sorteo.participantes || []).find(
-          (p) => String(p.usuario || '').toLowerCase() === usuarioNorm,
+        const participante = (sorteo.participaciones || []).find(
+          (p) => String(p.id_jugada || '').toLowerCase() === idJugadaNorm,
         );
         if (participante) {
           matches.push({ sorteo, participante });
@@ -697,8 +697,8 @@
         el.innerHTML = `
           <div class="sr-sorteo">
             <h3 class="warn">Sin resultados</h3>
-            <p style="color:var(--muted)">No se encontró a <strong>${escapeHtml(usuario)}</strong> en los sorteos del <strong>${fecha}</strong>.<br>
-            Verifica que el nombre sea exactamente igual al de tu cuenta de Discord.</p>
+            <p style="color:var(--muted)">No se encontró el id_jugada <strong>${escapeHtml(idJugadaInput)}</strong> en los sorteos del <strong>${fecha}</strong>.<br>
+            Verifica que el identificador sea exacto.</p>
           </div>`;
         return;
       }
@@ -721,6 +721,7 @@
             <h3>${nombreSorteo} — ${sorteo.hora}:00 VET del ${fecha}</h3>
             ${badge}
             <div class="sr-detail">
+              <strong>id_jugada:</strong> ${escapeHtml(participante.id_jugada || 'N/D')}<br>
               <strong>draw_id:</strong> ${escapeHtml(sorteo.draw_id)}<br>
               <strong>Número jugado:</strong> ${numero}<br>
               <strong>Número ganador:</strong> ${gaineroNumero || 'pendiente'}<br>
@@ -732,7 +733,7 @@
 
       el.innerHTML = `
         <p style="color:var(--muted);margin-bottom:12px;">
-          Se encontraron <strong>${matches.length}</strong> participación(es) de <strong>${escapeHtml(usuario)}</strong> el ${fecha}.
+          Se encontraron <strong>${matches.length}</strong> participación(es) para <strong>${escapeHtml(idJugadaInput)}</strong> el ${fecha}.
         </p>
         ${html}`;
     }
@@ -742,13 +743,13 @@
     }
 
     document.getElementById('buscarBtn').addEventListener('click', async () => {
-      const usuario = document.getElementById('buscarUsuario').value.trim();
+      const idJugada = document.getElementById('buscarUsuario').value.trim();
       const fecha = document.getElementById('buscarFecha').value;
       const el = document.getElementById('buscarResultados');
 
-      if (!usuario || !fecha) {
+      if (!idJugada || !fecha) {
         el.style.display = 'block';
-        el.innerHTML = '<div class="sr-sorteo"><p class="warn">Debes ingresar nombre de usuario y fecha.</p></div>';
+        el.innerHTML = '<div class="sr-sorteo"><p class="warn">Debes ingresar id_jugada y fecha.</p></div>';
         return;
       }
 
@@ -757,7 +758,7 @@
 
       try {
         const data = await fetchParticipantsIndex(fecha);
-        renderBuscarResultados(usuario, fecha, data);
+        renderBuscarResultados(idJugada, fecha, data);
       } catch (err) {
         el.innerHTML = `<div class="sr-sorteo"><p class="bad">${escapeHtml(err.message)}</p></div>`;
       }
