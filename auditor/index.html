@@ -356,6 +356,7 @@
       right: 16px;
       left: auto;
     }
+    .tutorial-card.arrow-none::after { display: none; }
     .tutorial-card.arrow-top::after,
     .tutorial-card.arrow-bottom::after {
       bottom: auto;
@@ -397,7 +398,7 @@
     #tutorialStepBody {
       line-height: 1.42;
       font-size: 1rem;
-      max-height: min(42vh, 320px);
+      max-height: min(55vh, 420px);
       overflow: auto;
       padding: 2px 4px 2px 0;
       overflow-wrap: anywhere;
@@ -448,6 +449,7 @@
       gap: 0;
       pointer-events: none;
       transform-origin: center;
+      overflow: visible;
     }
     .tutorial-pig {
       width: 124px;
@@ -904,32 +906,41 @@
       pointerX = Math.max(safe, Math.min(vw - pointerW - safe, pointerX));
       pointerY = Math.max(safe, Math.min(vh - pointerH - safe, pointerY));
 
-      if (isStepThreeOrFour) {
-        // Relación diagonal entre globo de ayuda y el chancho/mano.
-        cardLeft = pointerAtRightOfTarget ? (pointerX - cardW - 24) : (pointerX + pointerW + 24);
-        cardTop = pointerY - cardH + 72;
-
-        if (usingAbovePlacement) {
-          cardTop = pointerY - cardH + 58;
+      // Step 2: keep pig below the tutorial card so it doesn't cover nav/tabs.
+      if (tutorialIndex === 1) {
+        const cardBottomY = cardTop + cardH;
+        if (pointerY < cardBottomY + 12) {
+          pointerY = Math.min(vh - pointerH - safe, cardBottomY + 12);
         }
+      }
 
-        cardLeft = Math.max(safe, Math.min(vw - cardW - safe, cardLeft));
-        cardTop = Math.max(safe, Math.min(vh - cardH - safe, cardTop));
-
-        // En pasos 3/4, evita que el puntero quede tapado por contenido: súbelo un poco.
-        pointerY = Math.max(safe, Math.min(vh - pointerH - safe, pointerY - 8));
+      if (isStepThreeOrFour) {
+        // Card anchored to top-left; pig placed to the right of the card; hand points down.
+        cardLeft = safe;
+        cardTop = safe;
+        // Pig starts just to the right of the card bubble.
+        pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 12);
+        pointerY = cardTop + 8;
+        if (els.tutorialHand) {
+          els.tutorialHand.classList.remove('point-left');
+          els.tutorialHand.classList.add('point-down');
+        }
       }
 
       els.tutorialCard.style.left = `${cardLeft}px`;
       els.tutorialCard.style.top = `${cardTop}px`;
 
-      els.tutorialCard.classList.remove('arrow-left', 'arrow-right', 'arrow-top', 'arrow-bottom');
-      const pointerCenterX = pointerX + (pointerW / 2);
-      const cardCenterX = cardLeft + (cardW / 2);
-      els.tutorialCard.classList.add(pointerCenterX >= cardCenterX ? 'arrow-right' : 'arrow-left');
-      if (els.tutorialHand) {
-        // Si el objetivo está a la izquierda, la mano gira para apuntar correctamente.
-        els.tutorialHand.classList.toggle('point-left', pointerAtRightOfTarget);
+      els.tutorialCard.classList.remove('arrow-left', 'arrow-right', 'arrow-top', 'arrow-bottom', 'arrow-none');
+      if (isStepThreeOrFour) {
+        // No bottom arrow; pig is visually adjacent to the right of the card.
+        els.tutorialCard.classList.add('arrow-none');
+      } else {
+        const pointerCenterX = pointerX + (pointerW / 2);
+        const cardCenterX = cardLeft + (cardW / 2);
+        els.tutorialCard.classList.add(pointerCenterX >= cardCenterX ? 'arrow-right' : 'arrow-left');
+        if (els.tutorialHand) {
+          els.tutorialHand.classList.toggle('point-left', pointerAtRightOfTarget);
+        }
       }
 
       els.tutorialPointer.style.left = `${pointerX}px`;
