@@ -311,8 +311,8 @@
     .tutorial-card {
       position: fixed;
       z-index: 10001;
-      width: min(560px, calc(100vw - 24px));
-      max-width: 560px;
+      width: min(520px, calc(100vw - 24px));
+      max-width: 520px;
       left: 12px;
       top: 14px;
       background: #fff;
@@ -324,10 +324,10 @@
     .tutorial-card::after {
       content: '';
       position: absolute;
-      right: 16px;
-      bottom: -10px;
-      width: 18px;
-      height: 18px;
+      right: 22px;
+      bottom: -11px;
+      width: 20px;
+      height: 20px;
       transform: rotate(45deg);
       background: #fff;
       border-right: 1px solid #d5ddec;
@@ -340,6 +340,23 @@
     .tutorial-card.arrow-right::after {
       right: 16px;
       left: auto;
+    }
+    .tutorial-card.arrow-top::after,
+    .tutorial-card.arrow-bottom::after {
+      bottom: auto;
+      top: -11px;
+      border-right: 0;
+      border-bottom: 0;
+      border-left: 1px solid #d5ddec;
+      border-top: 1px solid #d5ddec;
+    }
+    .tutorial-card.arrow-top::after {
+      left: calc(50% - 10px);
+      right: auto;
+    }
+    .tutorial-card.arrow-bottom::after {
+      left: calc(50% - 10px);
+      right: auto;
     }
     .tutorial-help-label {
       display: inline-block;
@@ -363,11 +380,11 @@
       font-size: .92rem;
     }
     #tutorialStepBody {
-      line-height: 1.35;
-      font-size: 1.02rem;
-      max-height: min(38vh, 290px);
+      line-height: 1.42;
+      font-size: 1rem;
+      max-height: min(42vh, 320px);
       overflow: auto;
-      padding-right: 2px;
+      padding: 2px 4px 2px 0;
       overflow-wrap: anywhere;
       word-break: normal;
     }
@@ -410,8 +427,10 @@
       position: fixed;
       z-index: 10003;
       display: flex;
-      align-items: flex-end;
-      gap: 2px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 0;
       pointer-events: none;
       transform-origin: center;
     }
@@ -419,17 +438,20 @@
       transform: scaleX(-1);
     }
     .tutorial-pig {
-      width: 54px;
-      height: 54px;
+      width: 80px;
+      height: 80px;
       object-fit: contain;
       filter: drop-shadow(0 5px 10px rgba(0,0,0,.2));
+      z-index: 2;
     }
     .tutorial-hand {
-      width: 44px;
-      height: 44px;
+      width: 64px;
+      height: 64px;
       object-fit: contain;
-      transform-origin: 70% 30%;
+      margin-top: -20px;
+      transform-origin: 60% 35%;
       animation: tutorialHandPoint 1.1s ease-in-out infinite;
+      z-index: 1;
     }
     .tutorial-check-explain {
       margin-top: 8px;
@@ -470,8 +492,8 @@
       100% { box-shadow: 0 0 0 3px rgba(76, 129, 255, .45), 0 0 0 8px rgba(55, 108, 255, .16); }
     }
     @keyframes tutorialHandPoint {
-      0%, 100% { transform: rotate(0deg) translateY(0); }
-      50% { transform: rotate(8deg) translateY(-2px); }
+      0%, 100% { transform: rotate(-34deg) translateY(0); }
+      50% { transform: rotate(-24deg) translateY(-3px); }
     }
   </style>
 </head>
@@ -640,9 +662,8 @@
       <img class="tutorial-pig" src="../images/elchanchoganador.png" alt="" onerror="this.style.display='none'">
       <img class="tutorial-hand" src="../images/mickey-mouse-hand.svg" alt="" onerror="this.style.display='none'">
     </div>
-    <div class="tutorial-card" role="dialog" aria-modal="true" aria-labelledby="tutorialTitle">
+    <div class="tutorial-card" role="dialog" aria-modal="true" aria-label="Tutorial guiado">
       <span class="tutorial-help-label">AYUDA</span>
-      <h3 id="tutorialTitle">Tutorial guiado</h3>
       <p class="tutorial-step-meta" id="tutorialStepMeta">Paso 1 de 1</p>
       <div id="tutorialStepBody"></div>
       <div class="tutorial-actions">
@@ -784,11 +805,11 @@
       const vw = window.innerWidth;
       const vh = window.innerHeight;
       const targetRect = tutorialActiveTarget?.getBoundingClientRect();
-      const pointerW = 106;
-      const pointerH = 72;
+      const pointerW = 96;
+      const pointerH = 132;
 
       if (!targetRect) {
-        els.tutorialCard.classList.remove('arrow-left', 'arrow-right');
+        els.tutorialCard.classList.remove('arrow-left', 'arrow-right', 'arrow-top', 'arrow-bottom');
         els.tutorialCard.classList.add('arrow-right');
         els.tutorialPointer.classList.remove('flip-x');
         els.tutorialCard.style.left = `${Math.max(12, (vw - 540) / 2)}px`;
@@ -798,9 +819,10 @@
         return;
       }
 
-      const cardW = Math.min(560, vw - 24);
+      const cardW = Math.min(520, vw - 24);
       const cardH = Math.min(360, Math.max(220, els.tutorialCard.offsetHeight || 280));
       const targetCenterX = targetRect.left + (targetRect.width / 2);
+      const targetCenterY = targetRect.top + (targetRect.height / 2);
 
       let cardLeft = Math.max(12, targetCenterX - (cardW / 2));
       if (cardLeft + cardW > vw - 12) cardLeft = vw - cardW - 12;
@@ -814,17 +836,24 @@
       els.tutorialCard.style.left = `${cardLeft}px`;
       els.tutorialCard.style.top = `${cardTop}px`;
 
-      const canPlacePointerLeft = targetRect.left - pointerW - 10 >= 8;
-      const pointerOnLeftSide = canPlacePointerLeft;
-      let pointerX = pointerOnLeftSide ? (targetRect.left - pointerW - 8) : (targetRect.right + 8);
+      const leftSpace = targetRect.left - 8;
+      const rightSpace = vw - targetRect.right - 8;
+      let pointerOnLeftSide = leftSpace >= rightSpace;
+      if (pointerOnLeftSide && leftSpace < pointerW + 8) pointerOnLeftSide = false;
+      if (!pointerOnLeftSide && rightSpace < pointerW + 8 && leftSpace >= pointerW + 8) pointerOnLeftSide = true;
+
+      let pointerX = pointerOnLeftSide ? (targetRect.left - pointerW - 10) : (targetRect.right + 10);
       pointerX = Math.max(8, Math.min(vw - pointerW - 8, pointerX));
 
-      let pointerY = targetRect.top + (targetRect.height / 2) - (pointerH / 2);
+      let pointerY = targetCenterY - (pointerH / 2);
+      if (targetRect.height > 110) {
+        pointerY = targetRect.top + 8;
+      }
       pointerY = Math.max(8, Math.min(vh - pointerH - 8, pointerY));
 
-      els.tutorialCard.classList.remove('arrow-left', 'arrow-right');
+      els.tutorialCard.classList.remove('arrow-left', 'arrow-right', 'arrow-top', 'arrow-bottom');
       els.tutorialCard.classList.add(pointerOnLeftSide ? 'arrow-left' : 'arrow-right');
-      els.tutorialPointer.classList.toggle('flip-x', !pointerOnLeftSide);
+      els.tutorialPointer.classList.toggle('flip-x', pointerOnLeftSide);
 
       els.tutorialPointer.style.left = `${pointerX}px`;
       els.tutorialPointer.style.top = `${pointerY}px`;
