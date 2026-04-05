@@ -604,6 +604,7 @@
       <button class="mode-btn active" data-mode="rapida">Verificación rápida</button>
       <button class="mode-btn" data-mode="manual">Verificación manual</button>
       <button class="mode-btn secondary" id="downloadTodayZipBtn" type="button">Descargar ZIP de hoy</button>
+      <button class="mode-btn secondary" id="downloadByDateZipBtn" type="button">ZIP por fecha</button>
     </div>
 
     <div id="mode-rapida" class="mode-panel active">
@@ -789,6 +790,7 @@
       quickVerifyBtn: document.getElementById('quickVerifyBtn'),
       quickOutput: document.getElementById('quickOutput'),
       downloadTodayZipBtn: document.getElementById('downloadTodayZipBtn'),
+      downloadByDateZipBtn: document.getElementById('downloadByDateZipBtn'),
       openTutorialBtn: document.getElementById('openTutorialBtn'),
       tutorialModal: document.getElementById('tutorialModal'),
       tutorialCard: document.querySelector('.tutorial-card'),
@@ -1276,12 +1278,19 @@ function escapeHtml(text) {
       return `${slug}:${fechaCompact}:${hora}`;
     }
 
-    async function generateTodayAuditZip() {
+    function getSelectedPublishedDate() {
+      const value = String(document.getElementById('fechaPublicada')?.value || '').trim();
+      if (!value) {
+        throw new Error('Debes seleccionar una fecha en "Cargar Desde Publicación" para generar el ZIP por fecha.');
+      }
+      return value;
+    }
+
+    async function generateAuditZipForDate(fecha, zipFileName) {
       if (!window.JSZip) {
         throw new Error('No se pudo inicializar el generador ZIP en el navegador.');
       }
 
-      const fecha = getTodayVETDateString();
       const [year, month, day] = fecha.split('-');
       const indexRelative = `../sorteos_log/${year}/${month}/${day}/participants_${fecha}.json`;
       const indexRaw = `${GITHUB_RAW_BASE}/sorteos_log/${year}/${month}/${day}/participants_${fecha}.json`;
@@ -1333,8 +1342,18 @@ function escapeHtml(text) {
       }
 
       const zipBlob = await zip.generateAsync({ type: 'blob' });
-      triggerDownloadBlob(`auditoria-sorteos-${fecha}.zip`, zipBlob);
+      triggerDownloadBlob(zipFileName, zipBlob);
       return { fecha, totalSorteos: sorteos.length, missingCount: missingFiles.length };
+    }
+
+    async function generateTodayAuditZip() {
+      const fecha = getTodayVETDateString();
+      return generateAuditZipForDate(fecha, `auditoria-sorteos-${fecha}.zip`);
+    }
+
+    async function generateAuditZipBySelectedDate() {
+      const fecha = getSelectedPublishedDate();
+      return generateAuditZipForDate(fecha, `resultados y auditoriaz ${fecha}.zip`);
     }
 
     function extractSha256FileValue(text) {
@@ -1614,6 +1633,44 @@ function escapeHtml(text) {
         } finally {
           els.downloadTodayZipBtn.disabled = false;
           els.downloadTodayZipBtn.textContent = originalText;
+        }
+      });
+    }
+
+    if (els.downloadByDateZipBtn) {
+      els.downloadByDateZipBtn.addEventListener('click', async () => {
+        const originalText = els.downloadByDateZipBtn.textContent;
+        els.downloadByDateZipBtn.disabled = true;
+        els.downloadByDateZipBtn.textContent = 'Generando ZIP...';
+
+        try {
+          const summary = await generateAuditZipBySelectedDate();
+          setQuickOutputVisible(true);
+          els.headline.textContent = 'ZIP por fecha generado correctamente.';
+          setSummary([{ text: 'ZIP por fecha listo', className: 'ok' }]);
+          renderChecks([
+            {
+              title: 'Descarga de resultados y auditoría por fecha',
+              status: 'ok',
+              message: `Se generó resultados y auditoriaz ${summary.fecha}.zip con ${summary.totalSorteos} sorteo(s). Archivos faltantes: ${summary.missingCount}.`,
+            },
+          ]);
+          els.meta.textContent = `ZIP por fecha generado para ${summary.fecha}.\nSorteos incluidos: ${summary.totalSorteos}.\nFaltantes: ${summary.missingCount}.`;
+        } catch (error) {
+          setQuickOutputVisible(true);
+          els.headline.textContent = 'No se pudo generar el ZIP por fecha.';
+          setSummary([{ text: 'ZIP por fecha fallido', className: 'bad' }]);
+          renderChecks([
+            {
+              title: 'Descarga de resultados y auditoría por fecha',
+              status: 'bad',
+              message: error.message,
+            },
+          ]);
+          els.meta.textContent = error.stack || error.message;
+        } finally {
+          els.downloadByDateZipBtn.disabled = false;
+          els.downloadByDateZipBtn.textContent = originalText;
         }
       });
     }
