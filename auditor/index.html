@@ -326,8 +326,8 @@
     .tutorial-card {
       position: fixed;
       z-index: 10001;
-      width: min(360px, calc(100vw - 24px));
-      max-width: 360px;
+      width: min(var(--tutorial-card-max-width, 360px), calc(100vw - 24px));
+      max-width: var(--tutorial-card-max-width, 360px);
       left: 12px;
       top: 14px;
       background: #fff;
@@ -373,6 +373,9 @@
     .tutorial-card.arrow-bottom::after {
       left: calc(50% - 10px);
       right: auto;
+    }
+    .tutorial-modal[data-step-kind="input"] .tutorial-pointer {
+      gap: 4px;
     }
     .tutorial-help-label {
       display: inline-block;
@@ -773,30 +776,74 @@
 
     const tutorialSteps = [
       {
+        kind: 'input',
+        cardMaxWidth: 420,
         targetId: 'drawIdInput',
         text: `Paso 1: Entra en Verificacion rapida y escribe un codigo tecnico valido. Haz clic para copiar: <span class="tutorial-copy-token" role="button" tabindex="0" data-copy-text="${TUTORIAL_SAMPLE_DRAW_ID}">${TUTORIAL_SAMPLE_DRAW_ID}</span><span class="tutorial-copy-feedback" id="tutorialCopyFeedback"></span>`,
       },
       {
+        kind: 'button',
+        cardMaxWidth: 360,
         targetId: 'quickVerifyBtn',
         text: 'Pulsa <strong>Cargar y verificar</strong> y deja que el sistema haga la comprobacion por ti.',
       },
       {
+        kind: 'output',
+        cardMaxWidth: 380,
         targetId: 'quickOutput',
         text: 'Revisa este bloque de salida: aqui veras <strong>error o resultado</strong> de la validacion para confirmar si todo salio bien.',
       },
       {
+        kind: 'checks',
+        cardMaxWidth: 420,
         targetId: 'checks',
         text: () => buildTutorialChecksExplanationHtml(),
       },
       {
+        kind: 'meta',
+        cardMaxWidth: 360,
         targetId: 'meta',
         text: 'Revisa <strong>metadatos</strong> y conserva esa evidencia para tu respaldo de auditoria.',
       },
       {
+        kind: 'search',
+        cardMaxWidth: 360,
         targetId: 'buscarUsuario',
         text: 'Quieres revisar una jugada puntual: ve a <strong>Buscar mi Participacion</strong> y pega su codigo.',
       },
     ];
+
+    function getTutorialLayoutProfile(step, vw) {
+      const tabsRect = document.querySelector('.tabs')?.getBoundingClientRect();
+      const menuBottom = tabsRect ? Math.max(0, tabsRect.bottom) : 0;
+      const kind = String(step?.kind || 'default');
+      const cardMaxWidth = Number(step?.cardMaxWidth || 360);
+
+      const profile = {
+        kind,
+        cardMaxWidth,
+        safe: 20,
+        minTop: 20,
+        reserveMenuSpace: false,
+        forcePointerAboveTarget: false,
+        pinCardTopLeft: false,
+      };
+
+      if (kind === 'input') {
+        profile.reserveMenuSpace = true;
+        profile.forcePointerAboveTarget = true;
+        profile.minTop = Math.max(20, Math.round(menuBottom + 14));
+      } else if (kind === 'button') {
+        profile.reserveMenuSpace = true;
+        profile.minTop = Math.max(20, Math.round(menuBottom + 14));
+      } else if (kind === 'output' || kind === 'checks') {
+        profile.pinCardTopLeft = true;
+        profile.minTop = 20;
+      }
+
+      profile.cardMaxWidth = Math.min(profile.cardMaxWidth, Math.max(300, vw - 24));
+      return profile;
+    }
 
     function hasSeenTutorial() {
       try {
@@ -834,25 +881,30 @@
 
       const vw = window.innerWidth;
       const vh = window.innerHeight;
+      const step = tutorialSteps[tutorialIndex] || {};
+      const layout = getTutorialLayoutProfile(step, vw);
       const targetRect = tutorialActiveTarget?.getBoundingClientRect();
       const pointerW = 132;
       const pointerH = 210;
-      const safe = 20;
+      const safe = layout.safe;
+      const minTop = layout.minTop;
+
+      els.tutorialCard.style.setProperty('--tutorial-card-max-width', `${layout.cardMaxWidth}px`);
 
       if (!targetRect) {
-        els.tutorialCard.classList.remove('arrow-left', 'arrow-right', 'arrow-top', 'arrow-bottom');
+        els.tutorialCard.classList.remove('arrow-left', 'arrow-right', 'arrow-top', 'arrow-bottom', 'arrow-none');
         els.tutorialCard.classList.add('arrow-right');
         if (els.tutorialHand) {
           els.tutorialHand.classList.remove('point-left', 'point-down');
         }
-        els.tutorialCard.style.left = `${Math.max(safe, (vw - 540) / 2)}px`;
-        els.tutorialCard.style.top = '20px';
+        els.tutorialCard.style.left = `${Math.max(safe, (vw - layout.cardMaxWidth) / 2)}px`;
+        els.tutorialCard.style.top = `${minTop}px`;
         els.tutorialPointer.style.left = `${Math.max(safe, vw - pointerW - safe)}px`;
-        els.tutorialPointer.style.top = '36px';
+        els.tutorialPointer.style.top = `${Math.max(minTop + 14, 36)}px`;
         return;
       }
 
-      const cardW = Math.min(360, vw - 24);
+      const cardW = Math.min(layout.cardMaxWidth, vw - 24);
       const cardH = Math.min(360, Math.max(220, els.tutorialCard.offsetHeight || 280));
       const targetCenterX = targetRect.left + (targetRect.width / 2);
       const targetCenterY = targetRect.top + (targetRect.height / 2);
@@ -861,10 +913,10 @@
       if (cardLeft + cardW > vw - safe) cardLeft = vw - cardW - safe;
 
       let cardTop = targetRect.top - cardH - 18;
-      if (cardTop < safe) {
+      if (cardTop < minTop) {
         cardTop = Math.min(vh - cardH - safe, targetRect.bottom + 18);
       }
-      cardTop = Math.max(safe, cardTop);
+      cardTop = Math.max(minTop, cardTop);
 
       els.tutorialCard.style.left = `${cardLeft}px`;
       els.tutorialCard.style.top = `${cardTop}px`;
@@ -873,9 +925,9 @@
       let pointerAtRightOfTarget = targetIsOnLeftHalf;
       if (pointerAtRightOfTarget && (vw - targetRect.right) < (pointerW + 10)) pointerAtRightOfTarget = false;
       if (!pointerAtRightOfTarget && targetRect.left < (pointerW + 10)) pointerAtRightOfTarget = true;
-      const isStepThreeOrFour = tutorialIndex === 2 || tutorialIndex === 3;
+      const usesPinnedSideLayout = layout.pinCardTopLeft;
 
-      const placePointerAbove = targetCenterY > (vh * 0.55);
+      const placePointerAbove = layout.forcePointerAboveTarget || targetCenterY > (vh * 0.55);
 
       let pointerX;
       let pointerY;
@@ -885,13 +937,14 @@
         pointerX = targetCenterX - (pointerW / 2);
         pointerY = targetRect.top - pointerH - 10;
 
-        // Si no hay espacio arriba, vuelve al modo lateral.
-        if (pointerY < safe) {
+        // Si no hay espacio arriba, vuelve al modo lateral (salvo pasos de input).
+        if (pointerY < minTop && !layout.forcePointerAboveTarget) {
           pointerX = pointerAtRightOfTarget ? (targetRect.right + 10) : (targetRect.left - pointerW - 10);
           const handCenterOffsetFallback = 162;
           pointerY = targetCenterY - handCenterOffsetFallback;
           if (els.tutorialHand) els.tutorialHand.classList.remove('point-down');
         } else {
+          pointerY = Math.max(minTop, pointerY);
           usingAbovePlacement = true;
           if (els.tutorialHand) els.tutorialHand.classList.add('point-down');
         }
@@ -904,7 +957,11 @@
       }
 
       pointerX = Math.max(safe, Math.min(vw - pointerW - safe, pointerX));
-      pointerY = Math.max(safe, Math.min(vh - pointerH - safe, pointerY));
+      pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, pointerY));
+
+      if (layout.reserveMenuSpace) {
+        pointerY = Math.max(minTop + 4, pointerY);
+      }
 
       // Step 2: keep pig below the tutorial card so it doesn't cover nav/tabs.
       if (tutorialIndex === 1) {
@@ -914,10 +971,10 @@
         }
       }
 
-      if (isStepThreeOrFour) {
+      if (usesPinnedSideLayout) {
         // Card anchored to top-left; pig placed to the right of the card; hand points down.
         cardLeft = safe;
-        cardTop = safe;
+        cardTop = minTop;
         // Pig starts just to the right of the card bubble.
         pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 12);
         pointerY = cardTop + 8;
@@ -931,7 +988,7 @@
       els.tutorialCard.style.top = `${cardTop}px`;
 
       els.tutorialCard.classList.remove('arrow-left', 'arrow-right', 'arrow-top', 'arrow-bottom', 'arrow-none');
-      if (isStepThreeOrFour) {
+      if (usesPinnedSideLayout) {
         // No bottom arrow; pig is visually adjacent to the right of the card.
         els.tutorialCard.classList.add('arrow-none');
       } else {
@@ -968,6 +1025,11 @@
     function renderTutorialStep() {
       const step = tutorialSteps[tutorialIndex];
       if (!step) return;
+
+      const stepKind = String(step.kind || 'default');
+      const stepCardMaxWidth = Number(step.cardMaxWidth || 360);
+      els.tutorialModal.setAttribute('data-step-kind', stepKind);
+      els.tutorialCard.style.setProperty('--tutorial-card-max-width', `${stepCardMaxWidth}px`);
 
       if (step.targetId === 'buscarUsuario') {
         activateMainTab('buscar');
