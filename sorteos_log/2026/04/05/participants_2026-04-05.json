@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "fecha": "2026-04-05",
-  "generado_utc": "2026-04-05T13:12:37.768Z",
+  "generado_utc": "2026-04-05T14:12:37.835Z",
   "nota": "Busca tu id_jugada (discord_bot_...) en \"participaciones\" para verificar tu jugada.",
   "sorteos": [
     {
@@ -17,6 +17,14 @@
       "sorteo": "el-chancho-de-bronce",
       "hora": "09",
       "numero_ganador": "22",
+      "total_participantes": 0,
+      "participaciones": []
+    },
+    {
+      "draw_id": "el-chancho-de-bronce:20260405:10",
+      "sorteo": "el-chancho-de-bronce",
+      "hora": "10",
+      "numero_ganador": "18",
       "total_participantes": 0,
       "participaciones": []
     },
@@ -37,6 +45,14 @@
       "participaciones": []
     },
     {
+      "draw_id": "el-chancho-de-plata:20260405:10",
+      "sorteo": "el-chancho-de-plata",
+      "hora": "10",
+      "numero_ganador": "24",
+      "total_participantes": 0,
+      "participaciones": []
+    },
+    {
       "draw_id": "el-chancho-de-oro:20260405:08",
       "sorteo": "el-chancho-de-oro",
       "hora": "08",
@@ -49,6 +65,14 @@
       "sorteo": "el-chancho-de-oro",
       "hora": "09",
       "numero_ganador": "18",
+      "total_participantes": 0,
+      "participaciones": []
+    },
+    {
+      "draw_id": "el-chancho-de-oro:20260405:10",
+      "sorteo": "el-chancho-de-oro",
+      "hora": "10",
+      "numero_ganador": "08",
       "total_participantes": 0,
       "participaciones": []
     }
