@@ -105,6 +105,21 @@
       color: var(--muted);
       background: rgba(255,255,255,.7);
     }
+    .checks {
+      margin-top: 12px;
+      display: grid;
+      gap: 8px;
+    }
+    .check {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: .92rem;
+    }
+    .check.ok { border-color: #9bd3ad; color: #115f34; }
+    .check.bad { border-color: #e4b1b1; color: #8f1d14; }
+    .check.warn { border-color: #e7d3a8; color: #8a6300; }
     .ok { color: var(--ok); }
     @media (max-width: 680px) {
       .hero { grid-template-columns: 1fr; }
@@ -123,42 +138,170 @@
     </section>
 
     <section class="panel">
-      <label for="drawId">Verificar por draw_id (rápido)</label>
+      <label for="codigoSorteo">Verificar por código de sorteo (rápido)</label>
       <div class="row">
-        <input id="drawId" type="text" placeholder="Ej: el-chancho-de-oro:20260404:19" autocomplete="off">
-        <button id="goDraw" class="btn-primary">Abrir verificador</button>
+        <input id="codigoSorteo" type="text" placeholder="Ej: oro:20260404:19" autocomplete="off">
+        <button id="goDraw" class="btn-primary">Verificar código</button>
       </div>
       <div class="actions">
         <a class="btn btn-soft" href="auditor/index.html">Abrir verificador manual</a>
         <a class="btn btn-soft" href="scripts/verificar_resultado.js">Ver script verificar_resultado.js</a>
       </div>
-      <div id="status" class="meta">Formato esperado: <code>slug:YYYYMMDD:HH</code>.</div>
+      <div id="status" class="meta">Formato esperado: <code>bronce|plata|oro:YYYYMMDD:HH</code>.</div>
+      <div id="resultadoRapido" class="checks" style="display:none;"></div>
     </section>
 
     <section class="panel">
       <strong>Ruta sugerida para auditoría:</strong>
       <div class="meta">
-        1) Entrar al verificador web.<br>
-        2) Cargar datos del sorteo por fecha/hora/slug o por <code>draw_id</code>.<br>
-        3) Validar hashes, coherencia y resultado final.
+        1) Escribir el código del sorteo y pulsar <strong>Verificar código</strong>.<br>
+        2) Revisar resultado, hashes y consistencia.<br>
+        3) Si necesitas auditoría manual avanzada, usar <strong>Abrir verificador manual</strong>.
       </div>
     </section>
   </main>
 
   <script>
-    function parseDrawId(v) {
-      return String(v || '').trim().match(/^([a-z0-9-]+):(\d{8}):(\d{2})$/i);
+    const RAW_BASE = 'https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main';
+    const SORTEOS = {
+      bronce: 'el-chancho-de-bronce',
+      plata: 'el-chancho-de-plata',
+      oro: 'el-chancho-de-oro',
+    };
+
+    function parseCodigoSorteo(v) {
+      const raw = String(v || '').trim().toLowerCase();
+      const m = raw.match(/^([a-z0-9-]+):(\d{8}):(\d{2})$/);
+      if (!m) return null;
+      const prefijo = m[1];
+      const slug = SORTEOS[prefijo] || prefijo;
+      if (!['el-chancho-de-bronce', 'el-chancho-de-plata', 'el-chancho-de-oro'].includes(slug)) return null;
+      return { slug, fechaCompacta: m[2], hora: m[3], codigoEntrada: raw };
+    }
+
+    function pathInfo(fechaCompacta, hora, slug) {
+      const year = fechaCompacta.slice(0, 4);
+      const month = fechaCompacta.slice(4, 6);
+      const day = fechaCompacta.slice(6, 8);
+      const relBase = `sorteos_log/${year}/${month}/${day}/${hora}/${slug}`;
+      return {
+        year,
+        month,
+        day,
+        relBase,
+        rawBase: `${RAW_BASE}/${relBase}`,
+      };
+    }
+
+    async function fetchTextWithFallback(relUrl, rawUrl) {
+      for (const url of [relUrl, rawUrl]) {
+        try {
+          const res = await fetch(url, { cache: 'no-store' });
+          if (res.ok) return await res.text();
+        } catch {
+          // try next
+        }
+      }
+      throw new Error(`No se pudo cargar ${relUrl}`);
+    }
+
+    async function fetchJsonWithFallback(relUrl, rawUrl) {
+      const text = await fetchTextWithFallback(relUrl, rawUrl);
+      return JSON.parse(text);
+    }
+
+    function extractSha256FileValue(text) {
+      return String(text || '').trim().split(/\s+/)[0] || '';
+    }
+
+    async function sha256HexFromText(text) {
+      const bytes = new TextEncoder().encode(text);
+      const hash = await crypto.subtle.digest('SHA-256', bytes);
+      return Array.from(new Uint8Array(hash)).map((b) => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function pushCheck(checks, status, title, message) {
+      checks.push({ status, title, message });
+    }
+
+    function renderChecks(checks) {
+      const out = document.getElementById('resultadoRapido');
+      out.style.display = 'grid';
+      out.innerHTML = checks.map((c) => `<div class="check ${c.status}"><strong>${c.title}</strong><br>${c.message}</div>`).join('');
     }
 
     document.getElementById('goDraw').addEventListener('click', () => {
-      const drawId = document.getElementById('drawId').value.trim();
+      const codigo = document.getElementById('codigoSorteo').value.trim();
       const status = document.getElementById('status');
-      if (!parseDrawId(drawId)) {
-        status.innerHTML = '<span style="color:#a11d2a">draw_id inválido.</span> Usa el formato <code>slug:YYYYMMDD:HH</code>.';
+      const parsed = parseCodigoSorteo(codigo);
+      if (!parsed) {
+        status.innerHTML = '<span style="color:#a11d2a">Código inválido.</span> Usa el formato <code>bronce|plata|oro:YYYYMMDD:HH</code>.';
         return;
       }
-      status.innerHTML = '<span class="ok">Abriendo verificador...</span>';
-      window.location.href = `auditor/index.html?draw_id=${encodeURIComponent(drawId)}`;
+
+      status.innerHTML = '<span class="ok">Verificando en esta página...</span>';
+      const out = document.getElementById('resultadoRapido');
+      out.style.display = 'grid';
+      out.innerHTML = '<div class="check warn"><strong>Procesando</strong><br>Cargando archivos públicos del sorteo...</div>';
+
+      (async () => {
+        const { slug, fechaCompacta, hora } = parsed;
+        const { relBase, rawBase } = pathInfo(fechaCompacta, hora, slug);
+        const checks = [];
+
+        try {
+          const pre = await fetchJsonWithFallback(`${relBase}/pre_compromiso.json`, `${rawBase}/pre_compromiso.json`);
+          const commit = await fetchJsonWithFallback(`${relBase}/tickets_commit.json`, `${rawBase}/tickets_commit.json`);
+          const drawText = await fetchTextWithFallback(`${relBase}/tickets_draw.json`, `${rawBase}/tickets_draw.json`);
+          const draw = JSON.parse(drawText);
+          const shaText = await fetchTextWithFallback(`${relBase}/tickets_draw.json.sha256`, `${rawBase}/tickets_draw.json.sha256`);
+
+          let resultado = null;
+          try {
+            resultado = await fetchJsonWithFallback(`${relBase}/resultado.json`, `${rawBase}/resultado.json`);
+          } catch {
+            resultado = null;
+          }
+
+          const drawId = String(pre?.draw_id || '');
+          const drawIdOk = drawId && drawId === String(commit?.draw_id || '') && drawId === String(draw?.draw_id || '');
+          pushCheck(checks, drawIdOk ? 'ok' : 'bad', 'Consistencia de identificador', drawIdOk ? drawId : 'Inconsistencia entre archivos del sorteo.');
+
+          const expectedDrawSha = await sha256HexFromText(drawText);
+          const shaFileHash = extractSha256FileValue(shaText);
+          const shaOk = shaFileHash === expectedDrawSha;
+          pushCheck(checks, shaOk ? 'ok' : 'bad', 'Hash de tickets_draw.json', shaOk ? 'SHA-256 correcto.' : `Hash inválido. Esperado ${expectedDrawSha} y encontrado ${shaFileHash}.`);
+
+          const commitmentHash = String(pre?.tickets_commitment?.ticket_set_hash || '');
+          const commitHash = String(commit?.ticket_set_hash || '');
+          const setHashOk = commitmentHash === commitHash && commitHash === expectedDrawSha;
+          pushCheck(checks, setHashOk ? 'ok' : 'bad', 'Compromiso de tickets', setHashOk ? 'ticket_set_hash consistente entre archivos.' : 'ticket_set_hash inconsistente entre precompromiso, commit o snapshot.');
+
+          if (resultado) {
+            const numeroGanador = String(resultado?.resultado?.numero_ganador || '');
+            const idx = Number(resultado?.calculo?.indice_ganador ?? -1);
+            const numeros = Array.isArray(resultado?.calculo?.todos_numeros) ? resultado.calculo.todos_numeros : [];
+            const numeroOk = numeros.length > 0 && idx >= 0 && idx < numeros.length && String(numeros[idx]) === numeroGanador;
+            pushCheck(checks, numeroOk ? 'ok' : 'warn', 'Resultado final', numeroOk ? `Número ganador verificado: ${numeroGanador}.` : 'No se pudo verificar índice vs número con la información disponible.');
+          } else {
+            pushCheck(checks, 'warn', 'Resultado final', 'No se encontró resultado.json en esta ruta.');
+          }
+
+          const hasBad = checks.some((c) => c.status === 'bad');
+          const hasWarn = checks.some((c) => c.status === 'warn');
+          if (hasBad) {
+            status.innerHTML = '<span style="color:#a11d2a">Se detectaron inconsistencias. Revisa el detalle abajo.</span>';
+          } else if (hasWarn) {
+            status.innerHTML = '<span style="color:#8a6300">Validación parcial completada con advertencias.</span>';
+          } else {
+            status.innerHTML = '<span class="ok">Validación completada sin inconsistencias.</span>';
+          }
+          renderChecks(checks);
+        } catch (error) {
+          status.innerHTML = `<span style="color:#a11d2a">Error:</span> ${String(error.message || error)}`;
+          renderChecks([{ status: 'bad', title: 'Carga de archivos', message: String(error.message || error) }]);
+        }
+      })();
     });
   </script>
 </body>
