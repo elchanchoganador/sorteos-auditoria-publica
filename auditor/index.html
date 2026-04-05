@@ -215,6 +215,50 @@
     .sr-badge.no-winner { background: #fff3cd; color: var(--warn); }
     .sr-detail { font-size: .92rem; color: var(--muted); margin-top: 6px; }
     .sr-hash { font-family: monospace; font-size: .82rem; word-break: break-all; }
+    .helper {
+      margin-bottom: 18px;
+      padding: 16px 18px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255,255,255,.96), rgba(250,242,226,.95));
+    }
+    .helper h2 {
+      margin: 0 0 8px;
+      font-size: 1.05rem;
+    }
+    .helper p {
+      margin: 0 0 12px;
+      color: var(--muted);
+    }
+    .steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 10px 0 14px;
+    }
+    .step {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 12px;
+      min-width: 180px;
+      flex: 1 1 180px;
+      font-size: .92rem;
+    }
+    .links-box {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.76);
+    }
+    .links-box a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .links-box a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -228,6 +272,27 @@
     </div>
 
     <div id="tab-auditoria" class="tab-panel active">
+
+    <section class="helper">
+      <h2>Verificación Rápida</h2>
+      <p>Pega el <code>draw_id</code> o selecciona fecha, hora y sorteo. Luego pulsa <strong>Cargar y verificar</strong>.</p>
+      <div class="steps">
+        <div class="step"><strong>1.</strong> Identifica el draw: <code>slug:YYYYMMDD:HH</code></div>
+        <div class="step"><strong>2.</strong> Carga automáticamente los archivos públicos</div>
+        <div class="step"><strong>3.</strong> Revisa resultado, hashes y consistencia</div>
+      </div>
+      <div class="mini-grid">
+        <div>
+          <label for="drawIdInput">draw_id</label>
+          <input id="drawIdInput" type="text" placeholder="Ej: el-chancho-de-oro:20260404:19">
+        </div>
+        <div style="display:flex;align-items:end;gap:10px;flex-wrap:wrap;">
+          <button id="fillDrawIdBtn" class="secondary">Usar draw_id</button>
+          <button id="quickVerifyBtn">Cargar y verificar</button>
+        </div>
+      </div>
+      <div class="links-box" id="publicLinks">Selecciona un sorteo o pega un <code>draw_id</code> para ver enlaces directos a los archivos públicos.</div>
+    </section>
 
     <div class="grid">
       <section class="card">
@@ -360,7 +425,11 @@
       verifyBtn: document.getElementById('verifyBtn'),
       loadPublishedBtn: document.getElementById('loadPublishedBtn'),
       clearBtn: document.getElementById('clearBtn'),
+      drawIdInput: document.getElementById('drawIdInput'),
+      publicLinks: document.getElementById('publicLinks'),
     };
+
+    const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main';
 
     function setSummary(items) {
       els.summary.innerHTML = items.map((item) => `<span class="pill ${item.className || ''}">${item.text}</span>`).join('');
@@ -395,6 +464,68 @@
       }
     }
 
+    function getPublishedSelection() {
+      return {
+        fecha: document.getElementById('fechaPublicada').value,
+        hora: document.getElementById('horaPublicada').value,
+        slug: document.getElementById('slugPublicado').value,
+      };
+    }
+
+    function buildPublishedBase(fecha, hora, slug) {
+      const [year, month, day] = fecha.split('-');
+      return {
+        year,
+        month,
+        day,
+        relativeBase: `../sorteos_log/${year}/${month}/${day}/${hora}/${slug}`,
+        rawBase: `${GITHUB_RAW_BASE}/sorteos_log/${year}/${month}/${day}/${hora}/${slug}`,
+      };
+    }
+
+    function parseDrawId(value) {
+      const match = String(value || '').trim().match(/^([a-z0-9-]+):(\d{4})(\d{2})(\d{2}):(\d{2})$/i);
+      if (!match) return null;
+      return {
+        slug: match[1],
+        fecha: `${match[2]}-${match[3]}-${match[4]}`,
+        hora: match[5],
+      };
+    }
+
+    function syncSelectionFromDrawId() {
+      const parsed = parseDrawId(els.drawIdInput.value);
+      if (!parsed) {
+        throw new Error('draw_id inválido. Usa el formato slug:YYYYMMDD:HH');
+      }
+      document.getElementById('fechaPublicada').value = parsed.fecha;
+      document.getElementById('horaPublicada').value = parsed.hora;
+      document.getElementById('slugPublicado').value = parsed.slug;
+      updatePublicLinks();
+      return parsed;
+    }
+
+    function updatePublicLinks() {
+      const { fecha, hora, slug } = getPublishedSelection();
+      if (!fecha || !hora || !slug) {
+        els.publicLinks.innerHTML = 'Selecciona un sorteo o pega un <code>draw_id</code> para ver enlaces directos a los archivos públicos.';
+        return;
+      }
+      const { relativeBase, rawBase } = buildPublishedBase(fecha, hora, slug);
+      const files = [
+        'pre_compromiso.json',
+        'tickets_commit.json',
+        'tickets_draw.json',
+        'tickets_draw.json.sha256',
+        'resultado.json',
+        'verificar.js',
+      ];
+      els.publicLinks.innerHTML = [
+        `<strong>Ruta del sorteo:</strong> ${relativeBase}`,
+        ...files.map((file) => `<a href="${rawBase}/${file}" target="_blank" rel="noopener noreferrer">${file}</a>`),
+      ].join('<br>');
+    }
+
     async function loadFile(inputId, targetKey, parser = 'json') {
       const input = document.getElementById(inputId);
       const file = input.files?.[0];
@@ -413,19 +544,25 @@
       }
     }
 
-    async function loadPublishedJson(relativePath) {
-      const response = await fetch(relativePath, { cache: 'no-store' });
-      if (!response.ok) {
-        throw new Error(`No se pudo cargar ${relativePath} (HTTP ${response.status})`);
+    async function fetchWithFallback(relativePath, rawPath) {
+      for (const url of [relativePath, rawPath]) {
+        try {
+          const response = await fetch(url, { cache: 'no-store' });
+          if (response.ok) return response;
+        } catch {
+          // probar siguiente origen
+        }
       }
+      throw new Error(`No se pudo cargar ${relativePath}`);
+    }
+
+    async function loadPublishedJson(relativePath, rawPath) {
+      const response = await fetchWithFallback(relativePath, rawPath);
       return response.json();
     }
 
-    async function loadPublishedText(relativePath) {
-      const response = await fetch(relativePath, { cache: 'no-store' });
-      if (!response.ok) {
-        throw new Error(`No se pudo cargar ${relativePath} (HTTP ${response.status})`);
-      }
+    async function loadPublishedText(relativePath, rawPath) {
+      const response = await fetchWithFallback(relativePath, rawPath);
       return response.text();
     }
 
@@ -475,22 +612,22 @@
         throw new Error('Debes indicar fecha, hora y sorteo para cargar la publicación.');
       }
 
-      const [year, month, day] = fecha.split('-');
-      const base = `../sorteos_log/${year}/${month}/${day}/${hora}/${slug}`;
+      const { relativeBase, rawBase } = buildPublishedBase(fecha, hora, slug);
 
-      state.precompromiso = await loadPublishedJson(`${base}/pre_compromiso.json`);
-      state.ticketsCommit = await loadPublishedJson(`${base}/tickets_commit.json`);
-      state.ticketsDrawJsonText = await loadPublishedText(`${base}/tickets_draw.json`);
-      state.ticketsDrawJson = safeJsonParse(state.ticketsDrawJsonText, `${base}/tickets_draw.json`);
-      state.ticketsShaText = await loadPublishedText(`${base}/tickets_draw.json.sha256`);
+      state.precompromiso = await loadPublishedJson(`${relativeBase}/pre_compromiso.json`, `${rawBase}/pre_compromiso.json`);
+      state.ticketsCommit = await loadPublishedJson(`${relativeBase}/tickets_commit.json`, `${rawBase}/tickets_commit.json`);
+      state.ticketsDrawJsonText = await loadPublishedText(`${relativeBase}/tickets_draw.json`, `${rawBase}/tickets_draw.json`);
+      state.ticketsDrawJson = safeJsonParse(state.ticketsDrawJsonText, `${relativeBase}/tickets_draw.json`);
+      state.ticketsShaText = await loadPublishedText(`${relativeBase}/tickets_draw.json.sha256`, `${rawBase}/tickets_draw.json.sha256`);
 
       try {
-        state.resultado = await loadPublishedJson(`${base}/resultado.json`);
+        state.resultado = await loadPublishedJson(`${relativeBase}/resultado.json`, `${rawBase}/resultado.json`);
       } catch {
         state.resultado = null;
       }
 
-      els.meta.textContent = `Datos cargados desde publicación:\n${base}`;
+      els.meta.textContent = `Datos cargados desde publicación:\n${relativeBase}`;
+      updatePublicLinks();
     }
 
     async function verifyAll() {
@@ -657,9 +794,6 @@
       });
     });
 
-    // ── Buscador de participación ─────────────────────────────────────────────
-    const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main';
-
     async function fetchParticipantsIndex(fecha) {
       const [year, month, day] = fecha.split('-');
       const relativePath = `../sorteos_log/${year}/${month}/${day}/participants_${fecha}.json`;
@@ -772,6 +906,41 @@
       el.innerHTML = '';
     });
 
+    document.getElementById('fillDrawIdBtn').addEventListener('click', () => {
+      try {
+        syncSelectionFromDrawId();
+        els.headline.textContent = 'draw_id cargado. Pulsa "Cargar y verificar" para validar el sorteo.';
+      } catch (error) {
+        els.headline.textContent = 'draw_id inválido.';
+        setSummary([{ text: 'draw_id inválido', className: 'bad' }]);
+        renderChecks([{ title: 'draw_id', status: 'bad', message: error.message }]);
+      }
+    });
+
+    document.getElementById('quickVerifyBtn').addEventListener('click', () => {
+      try {
+        if (els.drawIdInput.value.trim()) {
+          syncSelectionFromDrawId();
+        }
+        loadPublishedBundle()
+          .then(() => verifyAll())
+          .catch((error) => {
+            els.headline.textContent = 'Error cargando publicación.';
+            setSummary([{ text: 'Carga fallida', className: 'bad' }]);
+            renderChecks([{ title: 'Carga rápida', status: 'bad', message: error.message }]);
+            els.meta.textContent = error.stack || error.message;
+          });
+      } catch (error) {
+        els.headline.textContent = 'draw_id inválido.';
+        setSummary([{ text: 'draw_id inválido', className: 'bad' }]);
+        renderChecks([{ title: 'draw_id', status: 'bad', message: error.message }]);
+      }
+    });
+
+    ['fechaPublicada', 'horaPublicada', 'slugPublicado'].forEach((id) => {
+      document.getElementById(id).addEventListener('change', updatePublicLinks);
+    });
+
     // Fecha por defecto = hoy en VET (UTC-4)
     (function setDefaultDate() {
       const now = new Date(Date.now() - 4 * 60 * 60 * 1000);
@@ -781,6 +950,18 @@
       const hoy = `${yyyy}-${mm}-${dd}`;
       document.getElementById('buscarFecha').value = hoy;
       document.getElementById('fechaPublicada').value = hoy;
+      updatePublicLinks();
+
+      const params = new URLSearchParams(window.location.search);
+      const drawIdParam = params.get('draw_id');
+      if (drawIdParam) {
+        els.drawIdInput.value = drawIdParam;
+        try {
+          syncSelectionFromDrawId();
+        } catch {
+          // ignorar query inválida
+        }
+      }
     })();
   </script>
 </body>
