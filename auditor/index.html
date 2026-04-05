@@ -545,8 +545,18 @@
       display: flex;
     }
     .tutorial-modal[data-step-kind="checks"] .tutorial-backdrop {
-      background: rgba(8, 13, 27, .42);
-      backdrop-filter: blur(1px);
+      background: rgba(8, 13, 27, .24);
+      backdrop-filter: blur(.5px);
+    }
+    .tutorial-modal[data-step-kind="checks"] #quickOutput {
+      background: rgba(255,255,255,.96);
+      border-color: #7ea7f8;
+    }
+    .tutorial-modal[data-step-kind="checks"] #quickOutput .check {
+      border-bottom-color: rgba(34, 52, 79, .14);
+    }
+    .tutorial-modal[data-step-kind="checks"] #quickOutput .check div {
+      color: #2d2d2d;
     }
     .tutorial-modal .tutorial-hand {
       display: block;
@@ -932,7 +942,7 @@
       {
         kind: 'checks',
         cardMaxWidth: 420,
-        targetId: 'checks',
+        targetId: 'quickOutput',
         text: () => buildTutorialChecksExplanationHtml(),
       },
       {
@@ -1159,7 +1169,6 @@
         // Paso 5: sólo mano junto al bloque de metadatos, evitando tapar el texto del modal.
         const metaRect = document.getElementById('meta')?.getBoundingClientRect() || targetRect;
         const metaCenterX = metaRect.left + (metaRect.width / 2);
-        const metaCenterY = metaRect.top + (metaRect.height / 2);
 
         cardLeft = Math.max(safe, Math.min(vw - cardW - safe, metaCenterX - (cardW / 2)));
         cardTop = Math.max(minTop, metaRect.top - cardH - 14);
@@ -1168,7 +1177,7 @@
         pointerX = canPlaceOnRight
           ? (metaRect.right + 10)
           : (metaRect.left - pointerW - 10);
-        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, metaCenterY - (pointerH / 2)));
+        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, metaRect.bottom - pointerH + 10));
         forcedHandLeft = canPlaceOnRight;
         forcedHandDown = false;
         if (els.tutorialHand) {
@@ -1197,10 +1206,11 @@
           pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, outputRect.top - pointerH + 14));
         } else if (isChecksStep) {
           // Paso 4: coloca la ayuda cerca del bloque y mano visible apuntando hacia abajo.
-          cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetRect.left + 6));
-          cardTop = Math.max(minTop, targetRect.top - cardH - 14);
-          pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 10);
-          pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetRect.top - pointerH + 10));
+          const checksRect = document.getElementById('quickOutput')?.getBoundingClientRect() || targetRect;
+          cardLeft = Math.max(safe, Math.min(vw - cardW - safe, checksRect.left + 8));
+          cardTop = Math.max(minTop, checksRect.top - cardH - 12);
+          pointerX = Math.max(safe, Math.min(vw - pointerW - safe, checksRect.right - pointerW + 2));
+          pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, checksRect.top - pointerH + 24));
         } else {
           pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 18);
           pointerY = Math.max(
