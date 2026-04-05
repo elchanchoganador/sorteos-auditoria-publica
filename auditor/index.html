@@ -274,6 +274,17 @@
     .links-box a:hover {
       text-decoration: underline;
     }
+    .quick-output {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.88);
+    }
+    .quick-output #headline {
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
     .mode-tabs {
       display: flex;
       gap: 8px;
@@ -435,17 +446,17 @@
       transform-origin: center;
     }
     .tutorial-pig {
-      width: 80px;
-      height: 80px;
+      width: 104px;
+      height: 104px;
       object-fit: contain;
-      filter: drop-shadow(0 5px 10px rgba(0,0,0,.2));
+      filter: drop-shadow(0 8px 14px rgba(0,0,0,.28));
       z-index: 2;
     }
     .tutorial-hand {
-      width: 64px;
-      height: 64px;
+      width: 84px;
+      height: 84px;
       object-fit: contain;
-      margin-top: -20px;
+      margin-top: -36px;
       transform-origin: 62% 35%;
       --hand-transform: rotate(-34deg);
       animation: tutorialHandPoint 1.1s ease-in-out infinite;
@@ -539,9 +550,15 @@
           <button id="quickVerifyBtn">Cargar y verificar</button>
         </div>
       </div>
-      <div class="links-box" id="publicLinks">
-        <div id="publicLinksContent">Selecciona un sorteo o pega un <code>codigo_tecnico</code> para ver enlaces directos a los archivos públicos.</div>
+      <div class="quick-output" id="quickOutput">
+        <div id="headline">Carga archivos y ejecuta la verificación.</div>
         <div class="summary quick-summary" id="quickSummary"></div>
+        <div class="checks" id="checks"></div>
+      </div>
+      <div style="display:none" aria-hidden="true">
+        <div id="publicLinksContent"></div>
+        <div id="story"></div>
+        <div id="meta"></div>
       </div>
     </section>
     </div>
@@ -623,17 +640,7 @@
     </div>
     </div>
 
-    <div class="story" id="story">Cuando cargues un resultado final, aquí aparecerá una explicación legible del número ganador verificado con los datos de auditoría.</div>
-
-    <section class="results">
-      <header>
-        <strong>Resultado de auditoria</strong>
-        <div id="headline">Carga archivos y ejecuta la verificación.</div>
-      </header>
-      <div class="checks" id="checks"></div>
-    </section>
-
-    <div class="meta" id="meta">Sin datos cargados.</div>
+    
   </div><!-- /tab-auditoria -->
 
   <div id="tab-buscar" class="tab-panel">
@@ -689,7 +696,7 @@
     };
 
     const els = {
-      summary: document.getElementById('summary'),
+      summary: document.getElementById('quickSummary'),
       quickSummary: document.getElementById('quickSummary'),
       publicLinksContent: document.getElementById('publicLinksContent'),
       checks: document.getElementById('checks'),
@@ -755,8 +762,8 @@
         text: 'Pulsa <strong>Cargar y verificar</strong> y deja que el sistema haga la comprobacion por ti.',
       },
       {
-        targetId: 'publicLinks',
-        text: 'Revisa este bloque: aqui veras <strong>los archivos cargados</strong> y el <strong>resumen de respuesta</strong> para confirmar que la carga y la validacion se completaron.',
+        targetId: 'quickOutput',
+        text: 'Revisa este bloque de salida: aqui veras <strong>error o resultado</strong> de la validacion para confirmar si todo salio bien.',
       },
       {
         targetId: 'checks',
