@@ -916,9 +916,15 @@
       }
 
       let cardW = Math.min(layout.cardMaxWidth, vw - 24);
-      const cardH = Math.min(360, Math.max(220, els.tutorialCard.offsetHeight || 280));
       const targetCenterX = targetRect.left + (targetRect.width / 2);
       const targetCenterY = targetRect.top + (targetRect.height / 2);
+
+      if (layout.kind === 'input') {
+        cardW = Math.min(vw - 24, Math.round(targetRect.width));
+      }
+
+      els.tutorialCard.style.width = `${cardW}px`;
+      const cardH = Math.min(420, Math.max(220, els.tutorialCard.offsetHeight || 280));
 
       let cardLeft = Math.max(safe, targetCenterX - (cardW / 2));
       if (cardLeft + cardW > vw - safe) cardLeft = vw - cardW - safe;
@@ -970,10 +976,9 @@
       }
 
       if (isInputStep) {
-        cardW = Math.min(vw - 24, Math.round(targetRect.width));
         // Paso 1: globo arriba del input y chancho a la derecha del globo.
         cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetRect.left));
-        cardTop = Math.max(minTop, targetRect.top - cardH - 16);
+        cardTop = Math.max(minTop, targetRect.top - cardH - 22);
 
         pointerAtRightOfTarget = true;
         pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 14);
@@ -983,8 +988,6 @@
           els.tutorialHand.classList.remove('point-down');
         }
       }
-
-      els.tutorialCard.style.width = `${cardW}px`;
 
       if (isButtonStep) {
         // Paso 2: globo arriba del botón y chancho al costado para estilo burbuja de idea.
