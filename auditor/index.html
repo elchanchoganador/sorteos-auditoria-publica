@@ -556,6 +556,7 @@
     };
 
     const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main';
+    const TUTORIAL_SEEN_KEY = 'auditor_tutorial_seen_v1';
     let tutorialIndex = 0;
     let tutorialActiveTarget = null;
 
@@ -582,31 +583,48 @@
     const tutorialSteps = [
       {
         targetId: 'drawIdInput',
-        text: 'Paso 1: Entra en Verificación rápida y escribe un código técnico válido, por ejemplo: <code>el-chancho-de-oro:20260404:19</code>.',
+        text: 'Escribe tu <strong>codigo tecnico</strong> para empezar. Ejemplo: <code>el-chancho-de-oro:20260404:19</code>.',
       },
       {
         targetId: 'quickVerifyBtn',
-        text: 'Paso 2: Haz clic en <strong>Cargar y verificar</strong> para ejecutar la validación automática del sorteo.',
+        text: 'Pulsa <strong>Cargar y verificar</strong> y deja que el sistema haga la comprobacion por ti.',
       },
       {
         targetId: 'summary',
-        text: 'Paso 3: Revisa el resumen (OK / Advertencias / Errores) para saber si hay inconsistencias.',
+        text: 'Mira el <strong>resumen</strong>: en segundos sabras si todo quedo OK o si hay alertas.',
       },
       {
         targetId: 'checks',
-        text: 'Paso 4: Revisa el detalle de validaciones para confirmar cada punto de integridad del sorteo.',
+        text: 'Abre el <strong>detalle</strong> para ver cada validacion de integridad paso a paso.',
       },
       {
         targetId: 'meta',
-        text: 'Paso 5: Verifica los metadatos finales y guarda evidencia si necesitas soporte de auditoría.',
+        text: 'Revisa <strong>metadatos</strong> y conserva esa evidencia para tu respaldo de auditoria.',
       },
       {
         targetId: 'buscarUsuario',
-        text: 'Paso 6: Si quieres comprobar una jugada específica, abre la pestaña <strong>Buscar mi Participación</strong> y coloca el código de jugada.',
+        text: 'Quieres revisar una jugada puntual: ve a <strong>Buscar mi Participacion</strong> y pega su codigo.',
       },
     ];
 
-    function openTutorialModal() {
+    function hasSeenTutorial() {
+      try {
+        return localStorage.getItem(TUTORIAL_SEEN_KEY) === '1';
+      } catch {
+        return false;
+      }
+    }
+
+    function markTutorialSeen() {
+      try {
+        localStorage.setItem(TUTORIAL_SEEN_KEY, '1');
+      } catch {
+        // almacenamiento bloqueado: continuar sin persistencia
+      }
+    }
+
+    function openTutorialModal(options = {}) {
+      if (options.markSeen) markTutorialSeen();
       tutorialIndex = 0;
       els.tutorialModal.classList.add('open');
       els.tutorialModal.setAttribute('aria-hidden', 'false');
@@ -1017,12 +1035,13 @@
     });
 
     // ── Tabs ─────────────────────────────────────────────────────────────────
-    document.querySelectorAll('.tab-btn').forEach((btn) => {
+    document.querySelectorAll('.tab-btn[data-tab]').forEach((btn) => {
       btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
+        document.querySelectorAll('.tab-btn[data-tab]').forEach((b) => b.classList.remove('active'));
         document.querySelectorAll('.tab-panel').forEach((p) => p.classList.remove('active'));
         btn.classList.add('active');
-        document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+        const panel = document.getElementById(`tab-${btn.dataset.tab}`);
+        if (panel) panel.classList.add('active');
       });
     });
 
@@ -1239,6 +1258,10 @@
         } catch {
           // ignorar query inválida
         }
+      }
+
+      if (!hasSeenTutorial()) {
+        setTimeout(() => openTutorialModal({ markSeen: true }), 450);
       }
 
     })();
