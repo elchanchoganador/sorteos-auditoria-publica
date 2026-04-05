@@ -440,7 +440,7 @@
     }
     .tutorial-pointer {
       position: fixed;
-      z-index: 10003;
+      z-index: 10006;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -464,7 +464,8 @@
       transform-origin: 62% 35%;
       --hand-transform: rotate(-34deg);
       animation: tutorialHandPoint 1.1s ease-in-out infinite;
-      z-index: 1;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.35));
+      z-index: 4;
     }
     .tutorial-hand.point-left {
       --hand-transform: scaleX(-1) rotate(-34deg);
@@ -870,11 +871,13 @@
       let pointerAtRightOfTarget = targetIsOnLeftHalf;
       if (pointerAtRightOfTarget && (vw - targetRect.right) < (pointerW + 10)) pointerAtRightOfTarget = false;
       if (!pointerAtRightOfTarget && targetRect.left < (pointerW + 10)) pointerAtRightOfTarget = true;
+      const isStepThreeOrFour = tutorialIndex === 2 || tutorialIndex === 3;
 
       const placePointerAbove = targetCenterY > (vh * 0.55);
 
       let pointerX;
       let pointerY;
+      let usingAbovePlacement = false;
 
       if (placePointerAbove) {
         pointerX = targetCenterX - (pointerW / 2);
@@ -887,10 +890,7 @@
           pointerY = targetCenterY - handCenterOffsetFallback;
           if (els.tutorialHand) els.tutorialHand.classList.remove('point-down');
         } else {
-          const idealCardTop = pointerY - cardH - 12;
-          cardTop = Math.max(safe, idealCardTop);
-          cardTop = Math.min(vh - cardH - safe, cardTop);
-          els.tutorialCard.style.top = `${cardTop}px`;
+          usingAbovePlacement = true;
           if (els.tutorialHand) els.tutorialHand.classList.add('point-down');
         }
       } else {
@@ -904,17 +904,29 @@
       pointerX = Math.max(safe, Math.min(vw - pointerW - safe, pointerX));
       pointerY = Math.max(safe, Math.min(vh - pointerH - safe, pointerY));
 
-      // Ajuste fino para pasos 3 y 4: alinear mejor cuadro de ayuda con mano y objetivo.
-      if (tutorialIndex === 2 || tutorialIndex === 3) {
-        cardTop = Math.max(safe, Math.min(vh - cardH - safe, targetRect.top - cardH - 26));
-        els.tutorialCard.style.top = `${cardTop}px`;
-        if (!placePointerAbove) {
-          pointerY = Math.max(safe, Math.min(vh - pointerH - safe, targetRect.top + 4));
+      if (isStepThreeOrFour) {
+        // Relación diagonal entre globo de ayuda y el chancho/mano.
+        cardLeft = pointerAtRightOfTarget ? (pointerX - cardW - 24) : (pointerX + pointerW + 24);
+        cardTop = pointerY - cardH + 72;
+
+        if (usingAbovePlacement) {
+          cardTop = pointerY - cardH + 58;
         }
+
+        cardLeft = Math.max(safe, Math.min(vw - cardW - safe, cardLeft));
+        cardTop = Math.max(safe, Math.min(vh - cardH - safe, cardTop));
+
+        // En pasos 3/4, evita que el puntero quede tapado por contenido: súbelo un poco.
+        pointerY = Math.max(safe, Math.min(vh - pointerH - safe, pointerY - 8));
       }
 
+      els.tutorialCard.style.left = `${cardLeft}px`;
+      els.tutorialCard.style.top = `${cardTop}px`;
+
       els.tutorialCard.classList.remove('arrow-left', 'arrow-right', 'arrow-top', 'arrow-bottom');
-      els.tutorialCard.classList.add(pointerAtRightOfTarget ? 'arrow-right' : 'arrow-left');
+      const pointerCenterX = pointerX + (pointerW / 2);
+      const cardCenterX = cardLeft + (cardW / 2);
+      els.tutorialCard.classList.add(pointerCenterX >= cardCenterX ? 'arrow-right' : 'arrow-left');
       if (els.tutorialHand) {
         // Si el objetivo está a la izquierda, la mano gira para apuntar correctamente.
         els.tutorialHand.classList.toggle('point-left', pointerAtRightOfTarget);
