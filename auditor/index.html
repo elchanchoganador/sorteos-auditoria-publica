@@ -173,22 +173,6 @@
     }
     .check-help-inline {
       display: none;
-      color: #5f4a2a;
-      font-size: .8rem;
-      line-height: 1.3;
-      background: #fff7e8;
-      border: 1px solid #ead3a6;
-      border-radius: 8px;
-      padding: 5px 8px;
-      margin-top: 4px;
-      width: 100%;
-    }
-    .checks.tutorial-tooltips-active .check-title-row {
-      align-items: flex-start;
-      flex-wrap: wrap;
-    }
-    .checks.tutorial-tooltips-active .check-help-inline {
-      display: block;
     }
     .check-help::after {
       content: attr(data-tip);
@@ -613,6 +597,13 @@
       display: none;
     }
     .tutorial-hand-step-4 {
+      margin-top: 0;
+      z-index: 5;
+    }
+    .tutorial-pig-step-5 {
+      display: none;
+    }
+    .tutorial-hand-step-5 {
       margin-top: 0;
       z-index: 5;
     }
@@ -1088,6 +1079,7 @@
       const isButtonStep = layout.kind === 'button';
       const isOutputStep = layout.kind === 'output';
       const isChecksStep = layout.kind === 'checks';
+      const isMetaStep = layout.kind === 'meta';
       let forcedHandLeft = null;
       let forcedHandDown = null;
 
@@ -1155,6 +1147,28 @@
           : (buttonRect.left - pointerW - sideGap);
         // Ancla la mano al centro vertical del botón objetivo.
         pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, buttonCenterY - (pointerH / 2) + 14));
+        forcedHandLeft = canPlaceOnRight;
+        forcedHandDown = false;
+        if (els.tutorialHand) {
+          els.tutorialHand.classList.toggle('point-left', canPlaceOnRight);
+          els.tutorialHand.classList.remove('point-down');
+        }
+      }
+
+      if (isMetaStep) {
+        // Paso 5: sólo mano junto al bloque de metadatos, evitando tapar el texto del modal.
+        const metaRect = document.getElementById('meta')?.getBoundingClientRect() || targetRect;
+        const metaCenterX = metaRect.left + (metaRect.width / 2);
+        const metaCenterY = metaRect.top + (metaRect.height / 2);
+
+        cardLeft = Math.max(safe, Math.min(vw - cardW - safe, metaCenterX - (cardW / 2)));
+        cardTop = Math.max(minTop, metaRect.top - cardH - 14);
+
+        const canPlaceOnRight = (vw - metaRect.right) >= (pointerW + safe + 10);
+        pointerX = canPlaceOnRight
+          ? (metaRect.right + 10)
+          : (metaRect.left - pointerW - 10);
+        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, metaCenterY - (pointerH / 2)));
         forcedHandLeft = canPlaceOnRight;
         forcedHandDown = false;
         if (els.tutorialHand) {
@@ -1403,7 +1417,6 @@
           <div class="check-title-row">
             <strong class="${check.status}">${check.title}</strong>
             <span class="check-help" tabindex="0" data-tip="${escapeHtml(getCheckTooltip(check.title))}">?</span>
-            <span class="check-help-inline">${escapeHtml(getCheckTooltip(check.title))}</span>
           </div>
           <div>${check.message}</div>
         </div>
