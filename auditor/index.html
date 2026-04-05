@@ -229,6 +229,29 @@
         max-width: 220px;
       }
     }
+    @media (max-width: 560px) {
+      .tutorial-card {
+        width: calc(100vw - 14px);
+        max-width: calc(100vw - 14px);
+      }
+      #tutorialStepBody {
+        max-height: min(38vh, 230px);
+      }
+      .tutorial-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        align-items: stretch;
+      }
+      .tutorial-actions button {
+        width: 100%;
+        min-width: 0;
+        padding: 10px 12px;
+      }
+      #tutorialCloseBtn {
+        grid-column: 1 / -1;
+      }
+    }
     code, pre {
       font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
       font-size: .92rem;
@@ -547,10 +570,6 @@
     }
     .tutorial-modal[data-step-kind="checks"] .tutorial-pointer {
       display: flex;
-    }
-    .tutorial-modal[data-step-kind="checks"] .tutorial-backdrop {
-      background: rgba(8, 13, 27, .24);
-      backdrop-filter: blur(.5px);
     }
     .tutorial-modal[data-step-kind="checks"] #quickOutput {
       background: rgba(255,255,255,.96);
@@ -971,11 +990,12 @@
       const menuBottom = tabsRect ? Math.max(0, tabsRect.bottom) : 0;
       const kind = String(step?.kind || 'default');
       const cardMaxWidth = Number(step?.cardMaxWidth || 360);
+      const isCompactViewport = vw <= 640;
 
       const profile = {
         kind,
         cardMaxWidth,
-        safe: 20,
+        safe: isCompactViewport ? 10 : 20,
         minTop: 20,
         reserveMenuSpace: false,
         forcePointerAboveTarget: false,
@@ -994,7 +1014,7 @@
         profile.minTop = kind === 'checks' ? Math.max(44, Math.round(menuBottom + 10)) : 20;
       }
 
-      profile.cardMaxWidth = Math.min(profile.cardMaxWidth, Math.max(300, vw - 24));
+      profile.cardMaxWidth = Math.min(profile.cardMaxWidth, Math.max(isCompactViewport ? 280 : 300, vw - 24));
       return profile;
     }
 
@@ -1035,12 +1055,13 @@
 
       const vw = window.innerWidth;
       const vh = window.innerHeight;
+      const isCompactViewport = vw <= 640;
       const step = tutorialSteps[tutorialIndex] || {};
       const layout = getTutorialLayoutProfile(step, vw);
       const targetRect = tutorialActiveTarget?.getBoundingClientRect();
       const isHandOnlyStep = ['button', 'output', 'checks', 'meta'].includes(layout.kind);
-      const pointerW = isHandOnlyStep ? 96 : 116;
-      const pointerH = isHandOnlyStep ? 96 : 170;
+      const pointerW = isHandOnlyStep ? (isCompactViewport ? 84 : 96) : (isCompactViewport ? 100 : 116);
+      const pointerH = isHandOnlyStep ? (isCompactViewport ? 84 : 96) : (isCompactViewport ? 146 : 170);
       const safe = layout.safe;
       const minTop = layout.minTop;
 
@@ -1067,7 +1088,11 @@
       const targetCenterY = targetRect.top + (targetRect.height / 2);
 
       if (layout.kind === 'input') {
-        cardW = Math.min(vw - 24, Math.round(targetRect.width));
+        if (isCompactViewport) {
+          cardW = Math.min(vw - 24, Math.max(300, Math.round(vw * 0.92)));
+        } else {
+          cardW = Math.min(vw - 24, Math.max(300, Math.round(targetRect.width)));
+        }
       }
 
       els.tutorialCard.style.width = `${cardW}px`;
@@ -1131,20 +1156,40 @@
 
       if (isInputStep) {
         // Paso 1: globo arriba del input y chancho a la derecha del globo.
-        const minInputGap = 44;
-        cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetRect.left));
-        cardTop = Math.max(minTop, targetRect.top - cardH - minInputGap);
+        const minInputGap = isCompactViewport ? 18 : 44;
+        if (isCompactViewport) {
+          cardLeft = Math.max(safe, Math.min(vw - cardW - safe, (vw - cardW) / 2));
+          cardTop = minTop;
 
-        pointerAtRightOfTarget = true;
-        pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 18);
-        // Alinea la mano con el centro del input para que apunte de forma directa.
-        const inputHandCenterOffset = 132;
-        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetCenterY - inputHandCenterOffset));
-        forcedHandLeft = true;
-        forcedHandDown = false;
+          const canPlaceOnRight = (vw - targetRect.right) >= (pointerW + safe + 10);
+          pointerX = canPlaceOnRight
+            ? (targetRect.right + 10)
+            : (targetRect.left - pointerW - 10);
+          pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetCenterY - (pointerH / 2) + 8));
+          forcedHandLeft = canPlaceOnRight;
+          forcedHandDown = false;
+          if (els.tutorialHand) {
+            els.tutorialHand.classList.toggle('point-left', canPlaceOnRight);
+            els.tutorialHand.classList.remove('point-down');
+          }
+        } else {
+          cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetRect.left));
+          cardTop = Math.max(minTop, targetRect.top - cardH - minInputGap);
+
+          pointerAtRightOfTarget = true;
+          pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 18);
+          // Alinea la mano con el centro del input para que apunte de forma directa.
+          const inputHandCenterOffset = 132;
+          pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetCenterY - inputHandCenterOffset));
+          forcedHandLeft = true;
+          forcedHandDown = false;
+          if (els.tutorialHand) {
+            els.tutorialHand.classList.add('point-left');
+            els.tutorialHand.classList.remove('point-down');
+          }
+        }
         if (els.tutorialHand) {
-          els.tutorialHand.classList.add('point-left');
-          els.tutorialHand.classList.remove('point-down');
+          els.tutorialHand.classList.toggle('point-down', false);
         }
       }
 
