@@ -1,7 +1,32 @@
 {
   "version": "1.0",
   "fecha": "2026-04-05",
-  "generado_utc": "2026-04-05T13:00:42.739Z",
+  "generado_utc": "2026-04-05T13:01:19.694Z",
   "nota": "Busca tu id_jugada (discord_bot_...) en \"participaciones\" para verificar tu jugada.",
-  "sorteos": []
+  "sorteos": [
+    {
+      "draw_id": "el-chancho-de-bronce:20260405:08",
+      "sorteo": "el-chancho-de-bronce",
+      "hora": "08",
+      "numero_ganador": "06",
+      "total_participantes": 0,
+      "participaciones": []
+    },
+    {
+      "draw_id": "el-chancho-de-plata:20260405:08",
+      "sorteo": "el-chancho-de-plata",
+      "hora": "08",
+      "numero_ganador": "01",
+      "total_participantes": 0,
+      "participaciones": []
+    },
+    {
+      "draw_id": "el-chancho-de-oro:20260405:08",
+      "sorteo": "el-chancho-de-oro",
+      "hora": "08",
+      "numero_ganador": "05",
+      "total_participantes": 0,
+      "participaciones": []
+    }
+  ]
 }

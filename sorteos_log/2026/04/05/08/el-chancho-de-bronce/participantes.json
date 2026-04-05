@@ -1,0 +1,9 @@
+{
+  "total": 0,
+  "hash_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "algoritmo_hash": "SHA-256(\"usuario|numero|timestamp_jugada\" por participante, ordenado por SHA-256(ticket) asc)",
+  "orden": "sort_asc(SHA-256(\"usuario|numero|timestamp_jugada\"))",
+  "canonicalizacion_timestamp": "timestamp_jugada => unix_epoch_ms (string)",
+  "texto_hasheado": "",
+  "lista": []
+}

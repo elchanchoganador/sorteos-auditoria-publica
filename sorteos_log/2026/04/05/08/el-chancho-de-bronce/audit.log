@@ -7,3 +7,57 @@
 [2026-04-05T12:59:53.864Z]   Randomness: 7b1de65f18e2407d0c11478af8b79b2688f635c9a8ef4a5bbcd3ddc8f9b18b3b
 [2026-04-05T12:59:53.864Z]   Signature : 9705a8f5e6068254f767be592f143822...
 [2026-04-05T12:59:53.864Z]   Endpoint  : https://drand.cloudflare.com/public/5998646
+[2026-04-05T13:01:05.300Z] PRE-COMPROMISO GENERADO
+[2026-04-05T13:01:05.300Z]   Sorteo  : El Chancho de bronce (el-chancho-de-bronce)
+[2026-04-05T13:01:05.300Z]   Hora VET: 08:00 AM — UTC: 2026-04-05T12:00:00.000Z
+[2026-04-05T13:01:05.300Z]   Ronda drand comprometida: 5998646
+[2026-04-05T13:01:05.300Z]   Participantes: 0
+[2026-04-05T13:01:05.300Z]   Hash SHA-256 participantes: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+[2026-04-05T13:01:05.300Z]   Draw ID: el-chancho-de-bronce:20260405:08
+[2026-04-05T13:01:05.300Z]   Chain entry index: 30
+[2026-04-05T13:01:05.300Z]   Chain entry hash : 6c00903f385707f0ce9c80ba2776c8f49a600573a8c71467d206799548997da9
+[2026-04-05T13:01:05.300Z]   Tickets hash    : cb2f4a95199754c4b2b141e1eb91e33023b7eb9487293da2751c6b00267aef56
+[2026-04-05T13:01:05.300Z]   Total tickets   : 0
+[2026-04-05T13:01:05.300Z]   Seed commit index: 32
+[2026-04-05T13:01:05.300Z]   Seed hash       : ab141994b4d91f6d805574beec6cab8ff84af171d9281dd6f6df5d0a73b4b33e
+[2026-04-05T13:01:05.304Z] INICIO EJECUCIÓN SORTEO
+[2026-04-05T13:01:05.304Z]   Sorteo  : El Chancho de bronce (el-chancho-de-bronce)
+[2026-04-05T13:01:05.304Z]   Hora VET: 08:00 AM — UTC: 2026-04-05T12:00:00.000Z
+[2026-04-05T13:01:05.304Z]   Ronda drand comprometida: 5998646
+[2026-04-05T13:01:05.767Z] BEACON drand OBTENIDO
+[2026-04-05T13:01:05.767Z]   Ronda     : 5998646
+[2026-04-05T13:01:05.767Z]   Randomness: 7b1de65f18e2407d0c11478af8b79b2688f635c9a8ef4a5bbcd3ddc8f9b18b3b
+[2026-04-05T13:01:05.767Z]   Signature : 9705a8f5e6068254f767be592f143822...
+[2026-04-05T13:01:05.767Z]   Endpoint  : https://drand.cloudflare.com/public/5998646
+[2026-04-05T13:01:05.775Z] CÁLCULO GANADOR
+[2026-04-05T13:01:05.775Z]   Total números  : 38
+[2026-04-05T13:01:05.775Z]   Randomness base: 7b1de65f18e2407d0c11478af8b79b2688f635c9a8ef4a5bbcd3ddc8f9b18b3b
+[2026-04-05T13:01:05.775Z]   Randomness sorteo: d8ae1720b323fab1e6d0fb072677ad755c55c5f7752aeb179634b070dc511bfb
+[2026-04-05T13:01:05.775Z]   Precompromiso hash: 7f3f9185f8c1001ca834b2c521e8f0fd2b28d850607c94cf0b65aa1516c816c1
+[2026-04-05T13:01:05.775Z]   Seed reveal hash : ab141994b4d91f6d805574beec6cab8ff84af171d9281dd6f6df5d0a73b4b33e
+[2026-04-05T13:01:05.775Z]   Draw ID         : el-chancho-de-bronce:20260405:08
+[2026-04-05T13:01:05.775Z]   Protocolo       : 3.0.0
+[2026-04-05T13:01:05.775Z]   Pool entry id   : NO_APLICA
+[2026-04-05T13:01:05.775Z]   Pool entry hash : NO_APLICA
+[2026-04-05T13:01:05.775Z]   Pool chain hash : NO_APLICA
+[2026-04-05T13:01:05.775Z]   Local hex       : NO_APLICA
+[2026-04-05T13:01:05.775Z]   QRNG fuente    : NO_APLICA
+[2026-04-05T13:01:05.775Z]   QRNG hex       : NO_APLICA
+[2026-04-05T13:01:05.775Z]   QRNG color     : NO_APLICA
+[2026-04-05T13:01:05.775Z]   BTC altura     : NO_APLICA
+[2026-04-05T13:01:05.775Z]   BTC block hash : NO_APLICA
+[2026-04-05T13:01:05.775Z]   NIST pulse     : NO_APLICA
+[2026-04-05T13:01:05.775Z]   NIST hex       : NO_APLICA
+[2026-04-05T13:01:05.775Z]   Entropía final : SHA-256({seed_reveal,ticket_set_hash,precompromiso_hash,drand_randomness,round_drand,hash_participantes})
+[2026-04-05T13:01:05.775Z]   Operación      : rejection_sampling(domain=LOTTERY-V3.0, N=38) = índice 6
+[2026-04-05T13:01:05.775Z]   Rejection      : intento=0 hash=982b8cfaf9ccea7e...
+[2026-04-05T13:01:05.775Z]   Número ganador : 06 (Embudo)
+[2026-04-05T13:01:05.775Z]   Participantes  : 0
+[2026-04-05T13:01:05.775Z]   Ganadores      : NINGUNO (número no jugado)
+[2026-04-05T13:01:05.789Z] SORTEO COMPLETADO
+[2026-04-05T13:01:05.789Z]   Número ganador: 06 (Embudo)
+[2026-04-05T13:01:05.789Z]   Ganadores      : NINGUNO
+[2026-04-05T13:01:05.789Z]   Seed reveal idx: 33
+[2026-04-05T13:01:05.789Z]   Chain entry index: 34
+[2026-04-05T13:01:05.789Z]   Chain entry hash : 9b5cdc35544399f368865ff3fcbe521fd6e900f915bc509207991a5d6d5ab78d
+[2026-04-05T13:01:05.789Z]   Archivos creados: resultado.json, participantes.json, entropy_entry.json, software_info.json, verificar.js, audit.log
