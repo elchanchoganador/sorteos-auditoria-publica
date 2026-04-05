@@ -972,10 +972,22 @@
 
       const params = new URLSearchParams(window.location.search);
       const drawIdParam = params.get('draw_id');
+      const autoVerifyParam = params.get('autoverify');
       if (drawIdParam) {
         els.drawIdInput.value = drawIdParam;
         try {
           syncSelectionFromDrawId();
+          const shouldAutoVerify = autoVerifyParam !== '0' && autoVerifyParam !== 'false';
+          if (shouldAutoVerify) {
+            loadPublishedBundle()
+              .then(() => verifyAll())
+              .catch((error) => {
+                els.headline.textContent = 'Error cargando publicación.';
+                setSummary([{ text: 'Carga fallida', className: 'bad' }]);
+                renderChecks([{ title: 'Autoverificación', status: 'bad', message: error.message }]);
+                els.meta.textContent = error.stack || error.message;
+              });
+          }
         } catch {
           // ignorar query inválida
         }
