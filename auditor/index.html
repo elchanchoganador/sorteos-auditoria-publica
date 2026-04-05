@@ -539,8 +539,10 @@
           <button id="quickVerifyBtn">Cargar y verificar</button>
         </div>
       </div>
-      <div class="links-box" id="publicLinks">Selecciona un sorteo o pega un <code>codigo_tecnico</code> para ver enlaces directos a los archivos públicos.</div>
-      <div class="summary quick-summary" id="quickSummary"></div>
+      <div class="links-box" id="publicLinks">
+        <div id="publicLinksContent">Selecciona un sorteo o pega un <code>codigo_tecnico</code> para ver enlaces directos a los archivos públicos.</div>
+        <div class="summary quick-summary" id="quickSummary"></div>
+      </div>
     </section>
     </div>
 
@@ -621,7 +623,6 @@
     </div>
     </div>
 
-    <div class="summary" id="summary"></div>
     <div class="story" id="story">Cuando cargues un resultado final, aquí aparecerá una explicación legible del número ganador verificado con los datos de auditoría.</div>
 
     <section class="results">
@@ -690,6 +691,7 @@
     const els = {
       summary: document.getElementById('summary'),
       quickSummary: document.getElementById('quickSummary'),
+      publicLinksContent: document.getElementById('publicLinksContent'),
       checks: document.getElementById('checks'),
       headline: document.getElementById('headline'),
       meta: document.getElementById('meta'),
@@ -722,7 +724,7 @@
 
     function setSummary(items) {
       const html = items.map((item) => `<span class="pill ${item.className || ''}">${item.text}</span>`).join('');
-      els.summary.innerHTML = html;
+      if (els.summary) els.summary.innerHTML = html;
       if (els.quickSummary) els.quickSummary.innerHTML = html;
     }
 
@@ -753,8 +755,8 @@
         text: 'Pulsa <strong>Cargar y verificar</strong> y deja que el sistema haga la comprobacion por ti.',
       },
       {
-        targetId: 'quickSummary',
-        text: 'Mira este <strong>resumen debajo de los archivos</strong>: aqui veras en segundos si todo quedo OK o si hay alertas.',
+        targetId: 'publicLinks',
+        text: 'Revisa este bloque: aqui veras <strong>los archivos cargados</strong> y el <strong>resumen de respuesta</strong> para confirmar que la carga y la validacion se completaron.',
       },
       {
         targetId: 'checks',
@@ -850,6 +852,12 @@
       const handCenterOffset = 92;
       let pointerY = targetCenterY - handCenterOffset;
       pointerY = Math.max(8, Math.min(vh - pointerH - 8, pointerY));
+
+      // Ajuste fino para pasos 3 y 4: alinear mejor cuadro de ayuda con mano y objetivo.
+      if (tutorialIndex === 2 || tutorialIndex === 3) {
+        cardTop = Math.max(14, Math.min(vh - cardH - 12, targetRect.top - cardH - 24));
+        pointerY = Math.max(8, Math.min(vh - pointerH - 8, targetRect.top + 6));
+      }
 
       els.tutorialCard.classList.remove('arrow-left', 'arrow-right', 'arrow-top', 'arrow-bottom');
       els.tutorialCard.classList.add(pointerAtRightOfTarget ? 'arrow-right' : 'arrow-left');
@@ -1066,7 +1074,9 @@
     function updatePublicLinks() {
       const { fecha, hora, slug } = getPublishedSelection();
       if (!fecha || !hora || !slug) {
-        els.publicLinks.innerHTML = 'Selecciona un sorteo o pega un <code>codigo_tecnico</code> para ver enlaces directos a los archivos públicos.';
+        if (els.publicLinksContent) {
+          els.publicLinksContent.innerHTML = 'Selecciona un sorteo o pega un <code>codigo_tecnico</code> para ver enlaces directos a los archivos públicos.';
+        }
         return;
       }
       const { relativeBase, rawBase } = buildPublishedBase(fecha, hora, slug);
@@ -1079,10 +1089,21 @@
         'resultado.json',
         'verificar.js',
       ];
-      els.publicLinks.innerHTML = [
+      if (!els.publicLinksContent) return;
+      els.publicLinksContent.innerHTML = [
         `<strong>Sorteo:</strong> ${nombreSorteo} | <strong>Fecha:</strong> ${fecha} | <strong>Hora:</strong> ${hora}:00 VET`,
         ...files.map((file) => `<a href="${rawBase}/${file}" target="_blank" rel="noopener noreferrer">${file}</a>`),
       ].join('<br>');
+    }
+
+    async function runQuickVerificationFlow() {
+      const drawIdValue = String(els.drawIdInput.value || '').trim();
+      if (!drawIdValue) {
+        throw new Error('Debes ingresar un codigo tecnico para ejecutar la verificacion rapida.');
+      }
+      syncSelectionFromDrawId();
+      await loadPublishedBundle();
+      await verifyAll();
     }
 
     async function loadFile(inputId, targetKey, parser = 'json') {
@@ -1488,13 +1509,7 @@
 
     document.getElementById('quickVerifyBtn').addEventListener('click', () => {
       try {
-        const drawIdValue = String(els.drawIdInput.value || '').trim();
-        if (!drawIdValue) {
-          throw new Error('Debes ingresar un codigo tecnico para ejecutar la verificacion rapida.');
-        }
-        syncSelectionFromDrawId();
-        loadPublishedBundle()
-          .then(() => verifyAll())
+        runQuickVerificationFlow()
           .then(() => {
             if (els.tutorialModal.classList.contains('open') && tutorialIndex === 1) {
               tutorialIndex = 2;
@@ -1535,6 +1550,20 @@
         }
         tutorialIndex = 1;
         renderTutorialStep();
+        return;
+      }
+      if (tutorialIndex === 1) {
+        runQuickVerificationFlow()
+          .then(() => {
+            tutorialIndex = 2;
+            renderTutorialStep();
+          })
+          .catch((error) => {
+            els.headline.textContent = 'Error cargando publicación.';
+            setSummary([{ text: 'Carga fallida', className: 'bad' }]);
+            renderChecks([{ title: 'Carga rápida', status: 'bad', message: error.message }]);
+            els.meta.textContent = error.stack || error.message;
+          });
         return;
       }
       if (tutorialIndex >= tutorialSteps.length - 1) {
