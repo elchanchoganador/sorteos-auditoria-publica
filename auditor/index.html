@@ -217,13 +217,6 @@
         font-size: .94rem;
         max-height: min(46vh, 280px);
       }
-      .tutorial-data-preview {
-        max-height: 150px;
-        padding: 8px;
-      }
-      .tutorial-data-preview-headline {
-        font-size: .88rem;
-      }
       .tutorial-actions {
         justify-content: center;
         gap: 6px;
@@ -244,9 +237,6 @@
       }
       #tutorialStepBody {
         max-height: min(38vh, 230px);
-      }
-      .tutorial-data-preview {
-        max-height: 124px;
       }
       .tutorial-actions {
         display: grid;
@@ -272,9 +262,6 @@
       #tutorialStepBody {
         max-height: min(32vh, 180px);
         font-size: .92rem;
-      }
-      .tutorial-data-preview {
-        max-height: 104px;
       }
       .tutorial-step-meta {
         margin-bottom: 6px;
@@ -543,56 +530,6 @@
     }
     #tutorialStepBody p {
       margin: 0 0 8px;
-    }
-    .tutorial-data-preview {
-      display: none;
-      margin-top: 10px;
-      border: 1px solid #c9d7f4;
-      background: #f5f9ff;
-      border-radius: 12px;
-      padding: 10px;
-      max-height: 190px;
-      overflow: auto;
-    }
-    .tutorial-data-preview-title {
-      margin: 0 0 6px;
-      font-size: .84rem;
-      font-weight: 700;
-      color: #1d4f9e;
-      text-transform: uppercase;
-      letter-spacing: .02em;
-    }
-    .tutorial-data-preview-headline {
-      font-size: .92rem;
-      line-height: 1.3;
-      color: #223451;
-      margin-bottom: 8px;
-    }
-    .tutorial-data-preview-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 8px;
-    }
-    .tutorial-data-pill {
-      border-radius: 999px;
-      border: 1px solid #bdd0f6;
-      background: #fff;
-      font-size: .8rem;
-      padding: 4px 8px;
-      line-height: 1.1;
-      color: #1f2d42;
-      font-weight: 700;
-    }
-    .tutorial-data-preview-list {
-      margin: 0;
-      padding-left: 16px;
-      color: #284466;
-      font-size: .86rem;
-      line-height: 1.25;
-    }
-    .tutorial-data-preview-list li + li {
-      margin-top: 4px;
     }
     .tutorial-copy-token {
       display: inline-block;
@@ -932,18 +869,18 @@
           <div>
             <label for="horaPublicada">Hora</label>
             <select id="horaPublicada">
-              <option value="08">08</option>
-              <option value="09">09</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
-              <option value="13">13</option>
-              <option value="14">14</option>
-              <option value="15">15</option>
-              <option value="16">16</option>
-              <option value="17">17</option>
-              <option value="18">18</option>
-              <option value="19">19</option>
+              <option value="08">08 AM</option>
+              <option value="09">09 AM</option>
+              <option value="10">10 AM</option>
+              <option value="11">11 AM</option>
+              <option value="12">12 PM</option>
+              <option value="13">01 PM</option>
+              <option value="14">02 PM</option>
+              <option value="15">03 PM</option>
+              <option value="16">04 PM</option>
+              <option value="17">05 PM</option>
+              <option value="18">06 PM</option>
+              <option value="19">07 PM</option>
             </select>
           </div>
           <div>
@@ -1023,7 +960,6 @@
   <div id="tutorialModal" class="tutorial-modal" aria-hidden="true">
     <div class="tutorial-backdrop" id="tutorialBackdrop"></div>
     <div class="tutorial-pointer" id="tutorialPointer" aria-hidden="true">
-      <img class="tutorial-pig tutorial-pig-image" src="../images/elchanchoganador.png" alt="" onerror="this.style.display='none'">
       <img class="tutorial-hand tutorial-hand-image" src="../images/mickey-mouse-hand.svg" alt="" onerror="this.style.display='none'">
     </div>
     <div class="tutorial-card" role="dialog" aria-modal="true" aria-label="Tutorial guiado">
@@ -1032,7 +968,6 @@
           <span class="tutorial-help-label">AYUDA</span>
           <p class="tutorial-step-meta" id="tutorialStepMeta">Paso 1 de 1</p>
           <div id="tutorialStepBody"></div>
-          <div id="tutorialStepDataPreview" class="tutorial-data-preview" aria-live="polite"></div>
           <div class="tutorial-actions">
             <button class="secondary" id="tutorialPrevBtn" type="button">Anterior</button>
             <button id="tutorialNextBtn" type="button">Siguiente</button>
@@ -1085,7 +1020,6 @@
       tutorialCloseBtn: document.getElementById('tutorialCloseBtn'),
       tutorialStepMeta: document.getElementById('tutorialStepMeta'),
       tutorialStepBody: document.getElementById('tutorialStepBody'),
-      tutorialStepDataPreview: document.getElementById('tutorialStepDataPreview'),
     };
 
     const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main';
@@ -1238,59 +1172,6 @@
       if (window.innerWidth <= 760) {
         els.quickOutput.scrollIntoView({ behavior: 'auto', block: 'start' });
       }
-    }
-
-    function escapeHtml(text) {
-      return String(text || '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
-
-    function renderTutorialDataPreview(stepKind) {
-      const preview = els.tutorialStepDataPreview;
-      if (!preview) return;
-
-      if (stepKind !== 'output') {
-        preview.style.display = 'none';
-        preview.innerHTML = '';
-        return;
-      }
-
-      const headline = String(els.headline?.textContent || '').trim();
-      const pills = Array.from((els.quickSummary || els.summary)?.querySelectorAll('.pill') || [])
-        .map((node) => String(node.textContent || '').trim())
-        .filter(Boolean)
-        .slice(0, 4);
-      const checks = Array.from(els.checks?.querySelectorAll('.check strong') || [])
-        .map((node) => String(node.textContent || '').trim())
-        .filter(Boolean)
-        .slice(0, 3);
-
-      const safeHeadline = headline
-        ? escapeHtml(headline)
-        : 'Aun no hay resultado cargado para mostrar.';
-
-      let html = '';
-      html += '<p class="tutorial-data-preview-title">Datos resaltados</p>';
-      html += `<div class="tutorial-data-preview-headline">${safeHeadline}</div>`;
-
-      if (pills.length) {
-        html += '<div class="tutorial-data-preview-pills">';
-        html += pills.map((pill) => `<span class="tutorial-data-pill">${escapeHtml(pill)}</span>`).join('');
-        html += '</div>';
-      }
-
-      if (checks.length) {
-        html += '<ul class="tutorial-data-preview-list">';
-        html += checks.map((item) => `<li>${escapeHtml(item)}</li>`).join('');
-        html += '</ul>';
-      }
-
-      preview.innerHTML = html;
-      preview.style.display = 'block';
     }
 
     function positionTutorialOverlay() {
@@ -1656,7 +1537,6 @@
       els.tutorialStepMeta.textContent = `Paso ${tutorialIndex + 1} de ${tutorialSteps.length}`;
       const stepText = typeof step.text === 'function' ? step.text() : step.text;
       els.tutorialStepBody.innerHTML = stepText;
-      renderTutorialDataPreview(stepKind);
       if (els.checks) {
         els.checks.classList.toggle('tutorial-tooltips-active', stepKind === 'checks');
       }
