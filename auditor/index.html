@@ -913,8 +913,9 @@
       const step = tutorialSteps[tutorialIndex] || {};
       const layout = getTutorialLayoutProfile(step, vw);
       const targetRect = tutorialActiveTarget?.getBoundingClientRect();
-      const pointerW = 116;
-      const pointerH = 170;
+      const isHandOnlyStep = tutorialIndex === 1 || tutorialIndex === 2;
+      const pointerW = isHandOnlyStep ? 96 : 116;
+      const pointerH = isHandOnlyStep ? 96 : 170;
       const safe = layout.safe;
       const minTop = layout.minTop;
 
@@ -1021,7 +1022,7 @@
       }
 
       if (isButtonStep) {
-        // Paso 2: solo mano apuntando directo al botón "Cargar y verificar".
+        // Paso 2: mano al lado de "Cargar y verificar", apuntando al centro del botón.
         cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetCenterX - (cardW / 2)));
         cardTop = Math.max(minTop, targetRect.top - cardH - 24);
 
@@ -1029,7 +1030,7 @@
         pointerX = canPlaceOnRight
           ? (targetRect.right + 10)
           : (targetRect.left - pointerW - 10);
-        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetCenterY - 84));
+        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetCenterY - (pointerH / 2)));
         forcedHandLeft = canPlaceOnRight;
         forcedHandDown = false;
         if (els.tutorialHand) {
