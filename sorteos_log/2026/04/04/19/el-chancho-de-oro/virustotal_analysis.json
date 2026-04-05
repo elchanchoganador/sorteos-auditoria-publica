@@ -1,0 +1,34 @@
+{
+  "carpeta": "./sorteos_log/2026/04/04/19/el-chancho-de-oro",
+  "fecha_analisis": "2026-04-05T00:00:11.072Z",
+  "archivos": [
+    {
+      "archivo": "resultado.json",
+      "ruta": "sorteos_log/2026/04/04/19/el-chancho-de-oro/resultado.json",
+      "hash": "fba7c166c1bd6acf2275ca682136152aa98e60f02e439b1afbd1828174331914",
+      "tamaño": 6769,
+      "timestamp": "2026-04-05T00:00:11.075Z",
+      "virustotal": {
+        "hash": "fba7c166c1bd6acf2275ca682136152aa98e60f02e439b1afbd1828174331914",
+        "estado": "sin_api_key",
+        "razon": "VIRUSTOTAL_API_KEY no configurado. El link_vt es público y verificable en el navegador.",
+        "link_vt": "https://www.virustotal.com/gui/file/fba7c166c1bd6acf2275ca682136152aa98e60f02e439b1afbd1828174331914",
+        "timestamp": "2026-04-05T00:00:11.075Z"
+      }
+    },
+    {
+      "archivo": "pre_compromiso.json",
+      "ruta": "sorteos_log/2026/04/04/19/el-chancho-de-oro/pre_compromiso.json",
+      "hash": "5db382fdd58ae68e79e99e0ff55f32161aa34a90c6dd378d3cf482e75d1d29ca",
+      "tamaño": 5664,
+      "timestamp": "2026-04-05T00:00:11.076Z",
+      "virustotal": {
+        "hash": "5db382fdd58ae68e79e99e0ff55f32161aa34a90c6dd378d3cf482e75d1d29ca",
+        "estado": "sin_api_key",
+        "razon": "VIRUSTOTAL_API_KEY no configurado. El link_vt es público y verificable en el navegador.",
+        "link_vt": "https://www.virustotal.com/gui/file/5db382fdd58ae68e79e99e0ff55f32161aa34a90c6dd378d3cf482e75d1d29ca",
+        "timestamp": "2026-04-05T00:00:11.076Z"
+      }
+    }
+  ]
+}

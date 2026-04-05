@@ -1,0 +1,34 @@
+{
+  "carpeta": "./sorteos_log/2026/04/04/18/el-chancho-de-bronce",
+  "fecha_analisis": "2026-04-05T00:00:10.843Z",
+  "archivos": [
+    {
+      "archivo": "resultado.json",
+      "ruta": "sorteos_log/2026/04/04/18/el-chancho-de-bronce/resultado.json",
+      "hash": "82a7e053d007b72376713c851c31911ac03590b0388578617fd69bb10e22cacc",
+      "tamaño": 6786,
+      "timestamp": "2026-04-05T00:00:10.845Z",
+      "virustotal": {
+        "hash": "82a7e053d007b72376713c851c31911ac03590b0388578617fd69bb10e22cacc",
+        "estado": "sin_api_key",
+        "razon": "VIRUSTOTAL_API_KEY no configurado. El link_vt es público y verificable en el navegador.",
+        "link_vt": "https://www.virustotal.com/gui/file/82a7e053d007b72376713c851c31911ac03590b0388578617fd69bb10e22cacc",
+        "timestamp": "2026-04-05T00:00:10.845Z"
+      }
+    },
+    {
+      "archivo": "pre_compromiso.json",
+      "ruta": "sorteos_log/2026/04/04/18/el-chancho-de-bronce/pre_compromiso.json",
+      "hash": "a9b8bd974a97b730955a8a1dc429f5ba590762bb5c5dba991796077654a1b80d",
+      "tamaño": 5679,
+      "timestamp": "2026-04-05T00:00:10.846Z",
+      "virustotal": {
+        "hash": "a9b8bd974a97b730955a8a1dc429f5ba590762bb5c5dba991796077654a1b80d",
+        "estado": "sin_api_key",
+        "razon": "VIRUSTOTAL_API_KEY no configurado. El link_vt es público y verificable en el navegador.",
+        "link_vt": "https://www.virustotal.com/gui/file/a9b8bd974a97b730955a8a1dc429f5ba590762bb5c5dba991796077654a1b80d",
+        "timestamp": "2026-04-05T00:00:10.846Z"
+      }
+    }
+  ]
+}
