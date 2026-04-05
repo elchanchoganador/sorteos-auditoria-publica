@@ -460,15 +460,21 @@
       display: none;
     }
     .tutorial-modal[data-step-kind="input"] .tutorial-pointer {
-      display: block;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
     }
     .tutorial-modal[data-step-kind="input"] .tutorial-pointer .tutorial-pig {
       display: block;
     }
+    .tutorial-modal[data-step-kind="input"] .tutorial-hand {
+      display: block;
+      margin-top: -24px;
+    }
     .tutorial-modal[data-step-kind="button"] .tutorial-pointer {
       display: none;
     }
-    .tutorial-modal[data-step-kind="input"] .tutorial-hand,
     .tutorial-modal[data-step-kind="button"] .tutorial-hand {
       display: none;
     }
@@ -902,8 +908,8 @@
       const step = tutorialSteps[tutorialIndex] || {};
       const layout = getTutorialLayoutProfile(step, vw);
       const targetRect = tutorialActiveTarget?.getBoundingClientRect();
-      const pointerW = (layout.kind === 'button' || layout.kind === 'input') ? 108 : 96;
-      const pointerH = (layout.kind === 'button' || layout.kind === 'input') ? 108 : 96;
+      const pointerW = layout.kind === 'input' ? 116 : ((layout.kind === 'button') ? 108 : 96);
+      const pointerH = layout.kind === 'input' ? 170 : ((layout.kind === 'button') ? 108 : 96);
       const safe = layout.safe;
       const minTop = layout.minTop;
 
@@ -990,11 +996,11 @@
       if (isInputStep) {
         // Paso 1: globo arriba del input y chancho a la derecha del globo.
         cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetRect.left));
-        cardTop = Math.max(minTop, targetRect.top - cardH - 34);
+        cardTop = Math.max(minTop, targetRect.top - cardH - 52);
 
         pointerAtRightOfTarget = true;
-        pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 14);
-        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, cardTop + 26));
+        pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 18);
+        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, cardTop + 18));
         if (els.tutorialHand) {
           els.tutorialHand.classList.add('point-left');
           els.tutorialHand.classList.remove('point-down');
