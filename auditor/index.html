@@ -996,11 +996,13 @@
       if (isInputStep) {
         // Paso 1: globo arriba del input y chancho a la derecha del globo.
         cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetRect.left));
-        cardTop = Math.max(minTop, targetRect.top - cardH - 52);
+        cardTop = Math.max(minTop, targetRect.top - cardH - 72);
 
         pointerAtRightOfTarget = true;
         pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 18);
-        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, cardTop + 18));
+        // Alinea la mano con el centro del input para que apunte de forma directa.
+        const inputHandCenterOffset = 132;
+        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetCenterY - inputHandCenterOffset));
         if (els.tutorialHand) {
           els.tutorialHand.classList.add('point-left');
           els.tutorialHand.classList.remove('point-down');
@@ -1059,18 +1061,24 @@
       }
 
       if (els.tutorialHand) {
-        // Orienta la mano según la posición real del objetivo resaltado.
-        const handCenterX = pointerX + (pointerW / 2);
-        const handCenterY = pointerY + (pointerH / 2);
-        const dx = targetCenterX - handCenterX;
-        const dy = targetCenterY - handCenterY;
-
-        els.tutorialHand.classList.remove('point-left', 'point-down');
-        if (Math.abs(dy) > (Math.abs(dx) * 0.85) && dy > 0) {
-          els.tutorialHand.classList.add('point-down');
-        }
-        if (dx < 0) {
+        if (isInputStep) {
+          // En el paso 1 se fija la orientación para señalar el input.
           els.tutorialHand.classList.add('point-left');
+          els.tutorialHand.classList.remove('point-down');
+        } else {
+          // Orienta la mano según la posición real del objetivo resaltado.
+          const handCenterX = pointerX + (pointerW / 2);
+          const handCenterY = pointerY + (pointerH / 2);
+          const dx = targetCenterX - handCenterX;
+          const dy = targetCenterY - handCenterY;
+
+          els.tutorialHand.classList.remove('point-left', 'point-down');
+          if (Math.abs(dy) > (Math.abs(dx) * 0.85) && dy > 0) {
+            els.tutorialHand.classList.add('point-down');
+          }
+          if (dx < 0) {
+            els.tutorialHand.classList.add('point-left');
+          }
         }
       }
 
