@@ -2,6 +2,8 @@
 
 Repositorio público de evidencia verificable de sorteos.
 
+Estado actual: desarrollo/pruebas. Cada proceso y artefacto se valida de forma exhaustiva para preparación de auditorías formales.
+
 ## Contenido
 
 - `sorteos_log/YYYY/MM/DD/HH/<sorteo>/` con evidencia del sorteo:

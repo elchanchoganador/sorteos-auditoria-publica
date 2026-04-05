@@ -2,10 +2,12 @@
 
 Registro público de cambios relevantes para auditoría y verificación de sorteos.
 
+Nota: las publicaciones actuales corresponden a entorno de pruebas/desarrollo controlado.
+
 ## [v2026.04.04] - 2026-04-04
 
 ### Added
-- Publicación de evidencia verificable para los sorteos del día 2026-04-04.
+- Publicación de evidencia verificable para los sorteos del día 2026-04-04 (entorno de pruebas).
 - Publicación de reportes de integridad de archivos (`virustotal_analysis.json`, `virustotal_scan.json`) donde aplique.
 - Publicación de índice diario anonimizado de participaciones (`participants_YYYY-MM-DD.json`) con `id_jugada`.
 
@@ -15,7 +17,7 @@ Registro público de cambios relevantes para auditoría y verificación de sorte
 ## [v2026.04.03] - 2026-04-03
 
 ### Added
-- Publicación de evidencia verificable para los sorteos del día 2026-04-03.
+- Publicación de evidencia verificable para los sorteos del día 2026-04-03 (entorno de pruebas).
 - Publicación de claves públicas diarias para verificación de recibos.
 
 ### Fixed
