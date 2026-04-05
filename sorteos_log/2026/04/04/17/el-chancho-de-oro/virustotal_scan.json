@@ -1,5 +1,5 @@
 {
-  "fecha_escaneo": "2026-04-05T01:43:06.157Z",
+  "fecha_escaneo": "2026-04-05T01:48:12.956Z",
   "sorteo": "el-chancho-de-oro:2026-04-04:17",
   "repositorio_github": "https://github.com/elchanchoganador/sorteos-auditoria-publica",
   "nota": "Cada link_vt permite verificar el archivo directamente en VirusTotal sin necesidad de instalar nada.",
@@ -11,7 +11,7 @@
       "url": "https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main/sorteos_log/2026/04/04/17/el-chancho-de-oro/resultado.json",
       "estado": "skipped",
       "razon": "VIRUSTOTAL_API_KEY no configurado",
-      "timestamp": "2026-04-05T01:43:06.157Z"
+      "timestamp": "2026-04-05T01:48:12.956Z"
     },
     {
       "nombre": "pre_compromiso.json",
@@ -20,7 +20,7 @@
       "url": "https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main/sorteos_log/2026/04/04/17/el-chancho-de-oro/pre_compromiso.json",
       "estado": "skipped",
       "razon": "VIRUSTOTAL_API_KEY no configurado",
-      "timestamp": "2026-04-05T01:43:06.157Z"
+      "timestamp": "2026-04-05T01:48:12.956Z"
     },
     {
       "nombre": "tickets_snapshot.json",
@@ -29,7 +29,7 @@
       "url": "https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main/sorteos_log/2026/04/04/17/el-chancho-de-oro/tickets_snapshot.json",
       "estado": "skipped",
       "razon": "VIRUSTOTAL_API_KEY no configurado",
-      "timestamp": "2026-04-05T01:43:06.157Z"
+      "timestamp": "2026-04-05T01:48:12.956Z"
     },
     {
       "nombre": "virustotal_analysis.json",
@@ -38,7 +38,7 @@
       "url": "https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main/sorteos_log/2026/04/04/17/el-chancho-de-oro/virustotal_analysis.json",
       "estado": "skipped",
       "razon": "VIRUSTOTAL_API_KEY no configurado",
-      "timestamp": "2026-04-05T01:43:06.157Z"
+      "timestamp": "2026-04-05T01:48:12.956Z"
     }
   ],
   "archivos_infraestructura": [
@@ -49,7 +49,7 @@
       "url": "https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main/scripts/verificar_resultado.js",
       "estado": "skipped",
       "razon": "VIRUSTOTAL_API_KEY no configurado",
-      "timestamp": "2026-04-05T01:43:06.157Z"
+      "timestamp": "2026-04-05T01:48:12.956Z"
     },
     {
       "nombre": "scripts/verificar_recibo_ticket_publico.js",
@@ -58,7 +58,7 @@
       "url": "https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main/scripts/verificar_recibo_ticket_publico.js",
       "estado": "skipped",
       "razon": "VIRUSTOTAL_API_KEY no configurado",
-      "timestamp": "2026-04-05T01:43:06.157Z"
+      "timestamp": "2026-04-05T01:48:12.956Z"
     },
     {
       "nombre": "auditor/index.html",
@@ -67,7 +67,7 @@
       "url": "https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main/auditor/index.html",
       "estado": "skipped",
       "razon": "VIRUSTOTAL_API_KEY no configurado",
-      "timestamp": "2026-04-05T01:43:06.157Z"
+      "timestamp": "2026-04-05T01:48:12.956Z"
     },
     {
       "nombre": "ticket_keys/2026/04/04/public_keys.json",
@@ -76,7 +76,7 @@
       "url": "https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main/ticket_keys/2026/04/04/public_keys.json",
       "estado": "skipped",
       "razon": "VIRUSTOTAL_API_KEY no configurado",
-      "timestamp": "2026-04-05T01:43:06.157Z"
+      "timestamp": "2026-04-05T01:48:12.956Z"
     }
   ]
 }
