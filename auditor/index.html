@@ -217,6 +217,9 @@
         font-size: .94rem;
         max-height: min(46vh, 280px);
       }
+      .tutorial-step-inline-form {
+        padding: 8px;
+      }
       .tutorial-actions {
         justify-content: center;
         gap: 6px;
@@ -237,6 +240,9 @@
       }
       #tutorialStepBody {
         max-height: min(38vh, 230px);
+      }
+      .tutorial-step-inline-form {
+        gap: 6px;
       }
       .tutorial-actions {
         display: grid;
@@ -554,6 +560,34 @@
       font-weight: 700;
       font-size: .9rem;
       min-height: 1em;
+    }
+    .tutorial-step-inline-form {
+      display: none;
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid #d9e2f3;
+      border-radius: 12px;
+      background: #f8fbff;
+      gap: 8px;
+    }
+    .tutorial-step-inline-form.is-visible {
+      display: grid;
+    }
+    .tutorial-step-inline-form label {
+      margin-bottom: 4px;
+      font-size: .9rem;
+    }
+    .tutorial-step-inline-form input[type="text"] {
+      width: 100%;
+    }
+    .tutorial-step-inline-actions {
+      display: flex;
+      align-items: end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .tutorial-step-inline-actions button {
+      width: 100%;
     }
     .tutorial-actions {
       display: flex;
@@ -968,6 +1002,15 @@
           <span class="tutorial-help-label">AYUDA</span>
           <p class="tutorial-step-meta" id="tutorialStepMeta">Paso 1 de 1</p>
           <div id="tutorialStepBody"></div>
+          <div class="tutorial-step-inline-form" id="tutorialStepInlineForm">
+            <div>
+              <label for="tutorialInlineDrawId">Codigo tecnico del sorteo</label>
+              <input id="tutorialInlineDrawId" type="text" placeholder="Ej: el-chancho-de-oro:20260404:19">
+            </div>
+            <div class="tutorial-step-inline-actions">
+              <button id="tutorialInlineVerifyBtn" type="button">Cargar y verificar</button>
+            </div>
+          </div>
           <div class="tutorial-actions">
             <button class="secondary" id="tutorialPrevBtn" type="button">Anterior</button>
             <button id="tutorialNextBtn" type="button">Siguiente</button>
@@ -1020,6 +1063,9 @@
       tutorialCloseBtn: document.getElementById('tutorialCloseBtn'),
       tutorialStepMeta: document.getElementById('tutorialStepMeta'),
       tutorialStepBody: document.getElementById('tutorialStepBody'),
+      tutorialStepInlineForm: document.getElementById('tutorialStepInlineForm'),
+      tutorialInlineDrawId: document.getElementById('tutorialInlineDrawId'),
+      tutorialInlineVerifyBtn: document.getElementById('tutorialInlineVerifyBtn'),
     };
 
     const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main';
@@ -1174,6 +1220,15 @@
       }
     }
 
+    function syncTutorialInlineForm(stepKind) {
+      if (!els.tutorialStepInlineForm || !els.tutorialInlineDrawId) return;
+      const showInline = stepKind === 'input';
+      els.tutorialStepInlineForm.classList.toggle('is-visible', showInline);
+      if (showInline) {
+        els.tutorialInlineDrawId.value = String(els.drawIdInput?.value || '').trim();
+      }
+    }
+
     function positionTutorialOverlay() {
       if (!els.tutorialModal.classList.contains('open')) return;
       if (!els.tutorialCard || !els.tutorialPointer) return;
@@ -1219,7 +1274,9 @@
         if (isCompactViewport) {
           cardW = Math.min(vw - 24, Math.max(300, Math.round(vw * 0.92)));
         } else {
-          cardW = Math.min(vw - 24, layout.cardMaxWidth);
+          const stepInputMax = Math.min(vw - 24, 531);
+          const stepInputMin = Math.min(vw - 24, 443);
+          cardW = Math.max(stepInputMin, stepInputMax);
         }
       }
 
@@ -1304,8 +1361,8 @@
             els.tutorialHand.classList.remove('point-down');
           }
         } else {
-          cardLeft = Math.max(safe, Math.min(vw - cardW - safe, (vw - cardW) / 2));
-          cardTop = minTop;
+          cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetRect.left - 4));
+          cardTop = Math.max(minTop, targetRect.top - cardH - 22);
 
           const canPlaceOnRight = (vw - targetRect.right) >= (pointerW + safe + 10);
           pointerX = canPlaceOnRight
@@ -1537,6 +1594,7 @@
       els.tutorialStepMeta.textContent = `Paso ${tutorialIndex + 1} de ${tutorialSteps.length}`;
       const stepText = typeof step.text === 'function' ? step.text() : step.text;
       els.tutorialStepBody.innerHTML = stepText;
+      syncTutorialInlineForm(stepKind);
       if (els.checks) {
         els.checks.classList.toggle('tutorial-tooltips-active', stepKind === 'checks');
       }
@@ -2242,6 +2300,20 @@
     }, { passive: true });
 
     els.drawIdInput.addEventListener('input', maybeAdvanceTutorialByDrawId);
+
+    if (els.tutorialInlineDrawId) {
+      els.tutorialInlineDrawId.addEventListener('input', () => {
+        const value = String(els.tutorialInlineDrawId.value || '');
+        els.drawIdInput.value = value;
+        maybeAdvanceTutorialByDrawId();
+      });
+    }
+
+    if (els.tutorialInlineVerifyBtn) {
+      els.tutorialInlineVerifyBtn.addEventListener('click', () => {
+        els.quickVerifyBtn.click();
+      });
+    }
 
     ['fechaPublicada', 'horaPublicada', 'slugPublicado'].forEach((id) => {
       document.getElementById(id).addEventListener('change', updatePublicLinks);
