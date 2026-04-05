@@ -401,6 +401,25 @@
       display: flex;
       gap: 8px;
       margin-bottom: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .mode-zip-date {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: 6px;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: .92rem;
+    }
+    .mode-zip-date input[type="date"] {
+      min-width: 170px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: #fff;
+      color: var(--text);
     }
     .mode-btn {
       border: 1px solid var(--border);
@@ -605,6 +624,9 @@
       <button class="mode-btn" data-mode="manual">Verificación manual</button>
       <button class="mode-btn secondary" id="downloadTodayZipBtn" type="button">Descargar ZIP de hoy</button>
       <button class="mode-btn secondary" id="downloadByDateZipBtn" type="button">ZIP por fecha</button>
+      <label class="mode-zip-date" for="downloadZipDateInput">Fecha ZIP:
+        <input id="downloadZipDateInput" type="date">
+      </label>
     </div>
 
     <div id="mode-rapida" class="mode-panel active">
@@ -791,6 +813,7 @@
       quickOutput: document.getElementById('quickOutput'),
       downloadTodayZipBtn: document.getElementById('downloadTodayZipBtn'),
       downloadByDateZipBtn: document.getElementById('downloadByDateZipBtn'),
+      downloadZipDateInput: document.getElementById('downloadZipDateInput'),
       openTutorialBtn: document.getElementById('openTutorialBtn'),
       tutorialModal: document.getElementById('tutorialModal'),
       tutorialCard: document.querySelector('.tutorial-card'),
@@ -1279,9 +1302,9 @@ function escapeHtml(text) {
     }
 
     function getSelectedPublishedDate() {
-      const value = String(document.getElementById('fechaPublicada')?.value || '').trim();
+      const value = String(els.downloadZipDateInput?.value || document.getElementById('fechaPublicada')?.value || '').trim();
       if (!value) {
-        throw new Error('Debes seleccionar una fecha en "Cargar Desde Publicación" para generar el ZIP por fecha.');
+        throw new Error('Debes seleccionar una fecha para generar el ZIP por fecha.');
       }
       return value;
     }
@@ -1867,11 +1890,26 @@ function escapeHtml(text) {
       document.getElementById(id).addEventListener('change', updatePublicLinks);
     });
 
+    if (els.downloadZipDateInput) {
+      els.downloadZipDateInput.addEventListener('change', () => {
+        const value = String(els.downloadZipDateInput.value || '').trim();
+        if (value) document.getElementById('fechaPublicada').value = value;
+        updatePublicLinks();
+      });
+    }
+
+    document.getElementById('fechaPublicada').addEventListener('change', () => {
+      if (els.downloadZipDateInput) {
+        els.downloadZipDateInput.value = document.getElementById('fechaPublicada').value;
+      }
+    });
+
     // Fecha por defecto = hoy en VET (UTC-4)
     (function setDefaultDate() {
       const hoy = getTodayVETDateString();
       document.getElementById('buscarFecha').value = hoy;
       document.getElementById('fechaPublicada').value = hoy;
+      if (els.downloadZipDateInput) els.downloadZipDateInput.value = hoy;
       updatePublicLinks();
 
       const params = new URLSearchParams(window.location.search);
