@@ -356,12 +356,8 @@
       object-fit: contain;
       filter: drop-shadow(0 8px 14px rgba(0,0,0,.2));
     }
-    .tutorial-modal[data-step-kind="input"] .tutorial-card-mascot,
     .tutorial-modal[data-step-kind="button"] .tutorial-card-mascot {
       display: block;
-    }
-    .tutorial-modal[data-step-kind="input"] .tutorial-card-mascot {
-      display: none;
     }
     
     
@@ -468,6 +464,9 @@
     }
     .tutorial-modal[data-step-kind="input"] .tutorial-pointer .tutorial-pig {
       display: block;
+    }
+    .tutorial-modal[data-step-kind="button"] .tutorial-pointer {
+      display: none;
     }
     .tutorial-modal[data-step-kind="input"] .tutorial-hand,
     .tutorial-modal[data-step-kind="button"] .tutorial-hand {
@@ -696,7 +695,7 @@
   <div id="tutorialModal" class="tutorial-modal" aria-hidden="true">
     <div class="tutorial-backdrop" id="tutorialBackdrop"></div>
     <div class="tutorial-pointer" id="tutorialPointer" aria-hidden="true">
-       
+      <img class="tutorial-pig" src="../images/elchanchoganador.png" alt="" onerror="this.style.display='none'">
       <img class="tutorial-hand" src="../images/mickey-mouse-hand.svg" alt="" onerror="this.style.display='none'">
     </div>
     <div class="tutorial-card" role="dialog" aria-modal="true" aria-label="Tutorial guiado">
@@ -917,6 +916,8 @@
           els.tutorialHand.classList.remove('point-left', 'point-down');
         }
         els.tutorialCard.style.width = '';
+        els.tutorialCard.style.minWidth = '';
+        els.tutorialCard.style.maxWidth = '';
         els.tutorialCard.style.left = `${Math.max(safe, (vw - layout.cardMaxWidth) / 2)}px`;
         els.tutorialCard.style.top = `${minTop}px`;
         els.tutorialPointer.style.left = `${Math.max(safe, vw - pointerW - safe)}px`;
@@ -933,6 +934,8 @@
       }
 
       els.tutorialCard.style.width = `${cardW}px`;
+  els.tutorialCard.style.minWidth = `${cardW}px`;
+  els.tutorialCard.style.maxWidth = `${cardW}px`;
       const cardH = Math.min(420, Math.max(140, els.tutorialCard.offsetHeight || 280));
 
       let cardLeft = Math.max(safe, targetCenterX - (cardW / 2));
@@ -987,7 +990,7 @@
       if (isInputStep) {
         // Paso 1: globo arriba del input y chancho a la derecha del globo.
         cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetRect.left));
-        cardTop = Math.max(minTop, targetRect.top - cardH - 22);
+        cardTop = Math.max(minTop, targetRect.top - cardH - 34);
 
         pointerAtRightOfTarget = true;
         pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 14);
