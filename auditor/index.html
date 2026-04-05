@@ -495,13 +495,11 @@
       margin-top: -12px;
     }
     .tutorial-pig-step-3 {
-      width: 112px;
-      height: 112px;
-      z-index: 5;
+      display: none;
     }
     .tutorial-hand-step-3 {
-      margin-top: 4px;
-      z-index: 2;
+      margin-top: 0;
+      z-index: 5;
     }
     .tutorial-check-explain {
       margin-top: 8px;
@@ -1029,14 +1027,14 @@
         cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetCenterX - (cardW / 2)));
         cardTop = Math.max(minTop, targetRect.top - cardH - 24);
 
-        const canPlaceOnRight = (vw - targetRect.right) >= (pointerW + safe + 10);
+        const canPlaceOnRight = (vw - targetRect.right) >= (pointerW + safe + 12);
         pointerX = canPlaceOnRight
           ? (targetRect.right + 12)
           : (targetRect.left - pointerW - 12);
         const buttonHandCenterOffset = 72;
         pointerY = Math.max(
           minTop,
-          Math.min(vh - pointerH - safe, Math.max(cardTop + cardH - 8, targetCenterY - buttonHandCenterOffset)),
+          Math.min(vh - pointerH - safe, Math.max(cardTop + cardH + 8, targetCenterY - buttonHandCenterOffset)),
         );
         forcedHandLeft = canPlaceOnRight;
         forcedHandDown = false;
@@ -1058,11 +1056,11 @@
         cardLeft = safe;
         cardTop = minTop;
         if (isOutputStep) {
-          // Paso 3: acerca el globo al bloque validado y evita solape chancho/mano.
+          // Paso 3: globo cerca del bloque y solo mano apuntando al contenido.
           cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetRect.left + 8));
-          cardTop = Math.max(minTop, targetRect.top - cardH - 18);
+          cardTop = Math.max(minTop, targetRect.top - cardH - 12);
           pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 14);
-          pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, cardTop + 30));
+          pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetRect.top - pointerH - 8));
         } else {
           pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 18);
           pointerY = Math.max(
