@@ -469,10 +469,10 @@
       --hand-transform: scaleX(-1) rotate(5deg);
     }
     .tutorial-hand.point-down {
-      --hand-transform: rotate(-92deg);
+      --hand-transform: rotate(92deg);
     }
     .tutorial-hand.point-down.point-left {
-      --hand-transform: scaleX(-1) rotate(-92deg);
+      --hand-transform: scaleX(-1) rotate(92deg);
     }
     .tutorial-check-explain {
       margin-top: 8px;
@@ -970,7 +970,10 @@
         cardTop = Math.max(minTop, targetRect.top - cardH - 18);
 
         pointerX = Math.max(safe, Math.min(vw - pointerW - safe, targetCenterX - (pointerW / 2)));
-        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetRect.top - pointerH - 8));
+        pointerY = Math.max(
+          minTop,
+          Math.min(vh - pointerH - safe, Math.max(cardTop + cardH + 6, targetRect.top - pointerH - 8)),
+        );
         if (els.tutorialHand) {
           els.tutorialHand.classList.remove('point-left');
           els.tutorialHand.classList.add('point-down');
