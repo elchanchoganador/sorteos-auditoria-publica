@@ -293,9 +293,9 @@
 
     <section class="helper">
       <h2>Verificación Rápida</h2>
-      <p>Pega el <code>draw_id</code> o selecciona fecha, hora y sorteo. Luego pulsa <strong>Cargar y verificar</strong>.</p>
+      <p>Pega el <code>draw_id</code> o selecciona fecha, hora y nombre del sorteo. Luego pulsa <strong>Cargar y verificar</strong>.</p>
       <div class="steps">
-        <div class="step"><strong>1.</strong> Identifica el draw: <code>slug:YYYYMMDD:HH</code></div>
+        <div class="step"><strong>1.</strong> Identifica el draw: <code>id_sorteo:YYYYMMDD:HH</code></div>
         <div class="step"><strong>2.</strong> Carga automáticamente los archivos públicos</div>
         <div class="step"><strong>3.</strong> Revisa resultado, hashes y consistencia</div>
       </div>
@@ -341,9 +341,9 @@
           <div>
             <label for="slugPublicado">Sorteo</label>
             <select id="slugPublicado">
-              <option value="el-chancho-de-bronce">el-chancho-de-bronce</option>
-              <option value="el-chancho-de-plata">el-chancho-de-plata</option>
-              <option value="el-chancho-de-oro">el-chancho-de-oro</option>
+              <option value="el-chancho-de-bronce">El Chancho de Bronce</option>
+              <option value="el-chancho-de-plata">El Chancho de Plata</option>
+              <option value="el-chancho-de-oro">El Chancho de Oro</option>
             </select>
           </div>
         </div>
@@ -482,6 +482,16 @@
       }
     }
 
+    const SORTEO_LABELS = {
+      'el-chancho-de-bronce': 'El Chancho de Bronce',
+      'el-chancho-de-plata': 'El Chancho de Plata',
+      'el-chancho-de-oro': 'El Chancho de Oro',
+    };
+
+    function obtenerNombreSorteo(slug) {
+      return SORTEO_LABELS[String(slug || '')] || String(slug || 'Sorteo');
+    }
+
     function getPublishedSelection() {
       return {
         fecha: document.getElementById('fechaPublicada').value,
@@ -514,7 +524,7 @@
     function syncSelectionFromDrawId() {
       const parsed = parseDrawId(els.drawIdInput.value);
       if (!parsed) {
-        throw new Error('draw_id inválido. Usa el formato slug:YYYYMMDD:HH');
+        throw new Error('draw_id inválido. Usa el formato id_sorteo:YYYYMMDD:HH');
       }
       document.getElementById('fechaPublicada').value = parsed.fecha;
       document.getElementById('horaPublicada').value = parsed.hora;
@@ -530,6 +540,7 @@
         return;
       }
       const { relativeBase, rawBase } = buildPublishedBase(fecha, hora, slug);
+      const nombreSorteo = obtenerNombreSorteo(slug);
       const files = [
         'pre_compromiso.json',
         'tickets_commit.json',
@@ -539,7 +550,7 @@
         'verificar.js',
       ];
       els.publicLinks.innerHTML = [
-        `<strong>Ruta del sorteo:</strong> ${relativeBase}`,
+        `<strong>Sorteo:</strong> ${nombreSorteo} | <strong>Fecha:</strong> ${fecha} | <strong>Hora:</strong> ${hora}:00 VET`,
         ...files.map((file) => `<a href="${rawBase}/${file}" target="_blank" rel="noopener noreferrer">${file}</a>`),
       ].join('<br>');
     }
@@ -858,7 +869,7 @@
       const html = matches.map(({ sorteo, participante }) => {
         const gano = participante.gano;
         const numero = String(participante.numero || '').padStart(2, '0');
-        const nombreSorteo = sorteo.sorteo.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+        const nombreSorteo = obtenerNombreSorteo(sorteo.sorteo);
         const gaineroNumero = String(sorteo.numero_ganador || '').padStart(2, '0');
         let badge = '';
         if (gano) {
