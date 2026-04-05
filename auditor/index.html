@@ -450,17 +450,17 @@
       transform-origin: center;
     }
     .tutorial-pig {
-      width: 104px;
-      height: 104px;
+      width: 124px;
+      height: 124px;
       object-fit: contain;
       filter: drop-shadow(0 8px 14px rgba(0,0,0,.28));
       z-index: 2;
     }
     .tutorial-hand {
-      width: 84px;
-      height: 84px;
+      width: 96px;
+      height: 96px;
       object-fit: contain;
-      margin-top: -36px;
+      margin-top: -44px;
       transform-origin: 62% 35%;
       --hand-transform: rotate(-34deg);
       animation: tutorialHandPoint 1.1s ease-in-out infinite;
@@ -468,6 +468,12 @@
     }
     .tutorial-hand.point-left {
       --hand-transform: scaleX(-1) rotate(-34deg);
+    }
+    .tutorial-hand.point-down {
+      --hand-transform: rotate(-92deg);
+    }
+    .tutorial-hand.point-down.point-left {
+      --hand-transform: scaleX(-1) rotate(-92deg);
     }
     .tutorial-check-explain {
       margin-top: 8px;
@@ -826,16 +832,19 @@
       const vw = window.innerWidth;
       const vh = window.innerHeight;
       const targetRect = tutorialActiveTarget?.getBoundingClientRect();
-      const pointerW = 96;
-      const pointerH = 132;
+      const pointerW = 132;
+      const pointerH = 176;
+      const safe = 20;
 
       if (!targetRect) {
         els.tutorialCard.classList.remove('arrow-left', 'arrow-right', 'arrow-top', 'arrow-bottom');
         els.tutorialCard.classList.add('arrow-right');
-        if (els.tutorialHand) els.tutorialHand.classList.remove('point-left');
-        els.tutorialCard.style.left = `${Math.max(12, (vw - 540) / 2)}px`;
+        if (els.tutorialHand) {
+          els.tutorialHand.classList.remove('point-left', 'point-down');
+        }
+        els.tutorialCard.style.left = `${Math.max(safe, (vw - 540) / 2)}px`;
         els.tutorialCard.style.top = '20px';
-        els.tutorialPointer.style.left = `${Math.max(12, vw - 120)}px`;
+        els.tutorialPointer.style.left = `${Math.max(safe, vw - pointerW - safe)}px`;
         els.tutorialPointer.style.top = '36px';
         return;
       }
@@ -845,14 +854,14 @@
       const targetCenterX = targetRect.left + (targetRect.width / 2);
       const targetCenterY = targetRect.top + (targetRect.height / 2);
 
-      let cardLeft = Math.max(12, targetCenterX - (cardW / 2));
-      if (cardLeft + cardW > vw - 12) cardLeft = vw - cardW - 12;
+      let cardLeft = Math.max(safe, targetCenterX - (cardW / 2));
+      if (cardLeft + cardW > vw - safe) cardLeft = vw - cardW - safe;
 
       let cardTop = targetRect.top - cardH - 18;
-      if (cardTop < 14) {
-        cardTop = Math.min(vh - cardH - 12, targetRect.bottom + 18);
+      if (cardTop < safe) {
+        cardTop = Math.min(vh - cardH - safe, targetRect.bottom + 18);
       }
-      cardTop = Math.max(14, cardTop);
+      cardTop = Math.max(safe, cardTop);
 
       els.tutorialCard.style.left = `${cardLeft}px`;
       els.tutorialCard.style.top = `${cardTop}px`;
@@ -862,18 +871,46 @@
       if (pointerAtRightOfTarget && (vw - targetRect.right) < (pointerW + 10)) pointerAtRightOfTarget = false;
       if (!pointerAtRightOfTarget && targetRect.left < (pointerW + 10)) pointerAtRightOfTarget = true;
 
-      let pointerX = pointerAtRightOfTarget ? (targetRect.right + 10) : (targetRect.left - pointerW - 10);
-      pointerX = Math.max(8, Math.min(vw - pointerW - 8, pointerX));
+      const placePointerAbove = targetCenterY > (vh * 0.55);
 
-      // Alinea la mano (parte inferior del puntero) al centro del elemento objetivo.
-      const handCenterOffset = 92;
-      let pointerY = targetCenterY - handCenterOffset;
-      pointerY = Math.max(8, Math.min(vh - pointerH - 8, pointerY));
+      let pointerX;
+      let pointerY;
+
+      if (placePointerAbove) {
+        pointerX = targetCenterX - (pointerW / 2);
+        pointerY = targetRect.top - pointerH - 10;
+
+        // Si no hay espacio arriba, vuelve al modo lateral.
+        if (pointerY < safe) {
+          pointerX = pointerAtRightOfTarget ? (targetRect.right + 10) : (targetRect.left - pointerW - 10);
+          const handCenterOffsetFallback = 112;
+          pointerY = targetCenterY - handCenterOffsetFallback;
+          if (els.tutorialHand) els.tutorialHand.classList.remove('point-down');
+        } else {
+          const idealCardTop = pointerY - cardH - 12;
+          cardTop = Math.max(safe, idealCardTop);
+          cardTop = Math.min(vh - cardH - safe, cardTop);
+          els.tutorialCard.style.top = `${cardTop}px`;
+          if (els.tutorialHand) els.tutorialHand.classList.add('point-down');
+        }
+      } else {
+        pointerX = pointerAtRightOfTarget ? (targetRect.right + 10) : (targetRect.left - pointerW - 10);
+        // Alinea la mano (parte inferior del puntero) al centro del elemento objetivo.
+        const handCenterOffset = 112;
+        pointerY = targetCenterY - handCenterOffset;
+        if (els.tutorialHand) els.tutorialHand.classList.remove('point-down');
+      }
+
+      pointerX = Math.max(safe, Math.min(vw - pointerW - safe, pointerX));
+      pointerY = Math.max(safe, Math.min(vh - pointerH - safe, pointerY));
 
       // Ajuste fino para pasos 3 y 4: alinear mejor cuadro de ayuda con mano y objetivo.
       if (tutorialIndex === 2 || tutorialIndex === 3) {
-        cardTop = Math.max(14, Math.min(vh - cardH - 12, targetRect.top - cardH - 24));
-        pointerY = Math.max(8, Math.min(vh - pointerH - 8, targetRect.top + 6));
+        cardTop = Math.max(safe, Math.min(vh - cardH - safe, targetRect.top - cardH - 26));
+        els.tutorialCard.style.top = `${cardTop}px`;
+        if (!placePointerAbove) {
+          pointerY = Math.max(safe, Math.min(vh - pointerH - safe, targetRect.top + 4));
+        }
       }
 
       els.tutorialCard.classList.remove('arrow-left', 'arrow-right', 'arrow-top', 'arrow-bottom');
