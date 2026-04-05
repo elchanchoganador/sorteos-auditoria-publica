@@ -403,6 +403,10 @@
       background: rgba(8, 13, 27, .72);
       backdrop-filter: blur(2px);
     }
+    .tutorial-modal[data-step-kind="output"] .tutorial-backdrop {
+      background: rgba(8, 13, 27, .72);
+      backdrop-filter: blur(2px);
+    }
     .tutorial-card {
       position: fixed;
       z-index: 10001;
@@ -557,6 +561,9 @@
     }
     .tutorial-modal[data-step-kind="checks"] #quickOutput .check div {
       color: #2d2d2d;
+    }
+    .tutorial-modal[data-step-kind="checks"] #quickOutput .check strong {
+      color: #155a2f;
     }
     .tutorial-modal .tutorial-hand {
       display: block;
@@ -1031,7 +1038,7 @@
       const step = tutorialSteps[tutorialIndex] || {};
       const layout = getTutorialLayoutProfile(step, vw);
       const targetRect = tutorialActiveTarget?.getBoundingClientRect();
-      const isHandOnlyStep = tutorialIndex === 1 || tutorialIndex === 2;
+      const isHandOnlyStep = ['button', 'output', 'checks', 'meta'].includes(layout.kind);
       const pointerW = isHandOnlyStep ? 96 : 116;
       const pointerH = isHandOnlyStep ? 96 : 170;
       const safe = layout.safe;
