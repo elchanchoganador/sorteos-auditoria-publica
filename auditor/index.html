@@ -493,6 +493,12 @@
       height: 88px;
       margin-top: 0;
     }
+    .tutorial-hand-step-2.point-left {
+      --hand-transform: scaleX(-1) rotate(22deg);
+    }
+    .tutorial-hand-step-2:not(.point-left) {
+      --hand-transform: rotate(22deg);
+    }
     .tutorial-pig-step-3 {
       display: none;
     }
@@ -1030,12 +1036,13 @@
         cardLeft = Math.max(safe, Math.min(vw - cardW - safe, buttonCenterX - (cardW / 2)));
         cardTop = Math.max(minTop, buttonRect.top - cardH - 24);
 
-        const canPlaceOnRight = (vw - buttonRect.right) >= (pointerW + safe + 10);
+        const sideGap = 14;
+        const canPlaceOnRight = (vw - buttonRect.right) >= (pointerW + safe + sideGap);
         pointerX = canPlaceOnRight
-          ? (buttonRect.right + 10)
-          : (buttonRect.left - pointerW - 10);
+          ? (buttonRect.right + sideGap)
+          : (buttonRect.left - pointerW - sideGap);
         // Ancla la mano al centro vertical del botón objetivo.
-        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, buttonCenterY - (pointerH / 2)));
+        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, buttonCenterY - (pointerH / 2) + 14));
         forcedHandLeft = canPlaceOnRight;
         forcedHandDown = false;
         if (els.tutorialHand) {
