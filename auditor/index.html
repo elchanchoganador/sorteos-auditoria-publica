@@ -149,6 +149,57 @@
     }
     .check:last-child { border-bottom: 0; }
     .check strong { display: block; margin-bottom: 4px; }
+    .check-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .check-help {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid #c8b795;
+      background: #f7eddc;
+      color: #7b5a23;
+      font-size: .78rem;
+      font-weight: 700;
+      align-items: center;
+      justify-content: center;
+      cursor: help;
+      position: relative;
+      flex: 0 0 auto;
+    }
+    .checks.tutorial-tooltips-active .check-help {
+      display: inline-flex;
+    }
+    .check-help::after {
+      content: attr(data-tip);
+      position: absolute;
+      left: calc(100% + 8px);
+      top: 50%;
+      transform: translateY(-50%);
+      min-width: 220px;
+      max-width: 320px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid #d5ddec;
+      background: #fff;
+      color: #3b2d1f;
+      box-shadow: 0 10px 24px rgba(5,18,46,.16);
+      font-size: .82rem;
+      line-height: 1.28;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .15s ease;
+      z-index: 20;
+      white-space: normal;
+    }
+    .check-help:hover::after,
+    .check-help:focus-visible::after {
+      opacity: 1;
+    }
     code, pre {
       font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
       font-size: .92rem;
@@ -460,6 +511,9 @@
       flex-direction: column;
       align-items: center;
       gap: 0;
+    }
+    .tutorial-modal[data-step-kind="checks"] .tutorial-pointer {
+      display: none;
     }
     .tutorial-modal .tutorial-hand {
       display: block;
@@ -907,6 +961,7 @@
     function closeTutorialModal() {
       els.tutorialModal.classList.remove('open');
       els.tutorialModal.setAttribute('aria-hidden', 'true');
+      if (els.checks) els.checks.classList.remove('tutorial-tooltips-active');
       clearTutorialHighlights();
     }
 
@@ -1171,6 +1226,9 @@
       els.tutorialStepMeta.textContent = `Paso ${tutorialIndex + 1} de ${tutorialSteps.length}`;
       const stepText = typeof step.text === 'function' ? step.text() : step.text;
       els.tutorialStepBody.innerHTML = stepText;
+      if (els.checks) {
+        els.checks.classList.toggle('tutorial-tooltips-active', stepKind === 'checks');
+      }
       wireTutorialCopyActions();
       applyTutorialHighlightById(step.targetId);
       window.requestAnimationFrame(() => positionTutorialOverlay());
@@ -1181,26 +1239,42 @@
     }
 
     function buildTutorialChecksExplanationHtml() {
-      const checks = tutorialChecksSnapshot.length > 0
-        ? tutorialChecksSnapshot.slice(0, 6)
-        : [
-          { title: 'Consistencia del código técnico', status: 'warn' },
-          { title: 'Hash de participantes', status: 'warn' },
-          { title: 'Huella digital del archivo de boletos', status: 'warn' },
-        ];
-
-      const explain = checks.map((check) => {
-        const statusLabel = check.status === 'ok'
-          ? 'VERDE: paso aprobado'
-          : (check.status === 'bad' ? 'ROJO: inconsistencia detectada' : 'AMARILLO: revisar advertencia');
-        return `<div class="tutorial-check-item ${check.status}"><strong>${escapeHtml(check.title)}</strong><br>${statusLabel}</div>`;
-      }).join('');
-
       return [
-        '<p>Abre el <strong>detalle</strong> para ver cada validacion de integridad paso a paso. En esta lista:</p>',
-        '<p><strong>Verde</strong> significa que paso la prueba, <strong>rojo</strong> significa que fallo y hay que revisar.</p>',
-        `<div class="tutorial-check-explain">${explain}</div>`,
+        '<p>En este paso usa los iconos <strong>?</strong> junto a cada validación para ver qué significa cada control.</p>',
+        '<p>Verde: pasó la prueba. Rojo: inconsistencia. Amarillo: advertencia.</p>',
       ].join('');
+    }
+
+    function getCheckTooltip(title) {
+      const t = String(title || '').toLowerCase();
+      if (t.includes('consistencia del código técnico') || t.includes('consistencia del codigo tecnico')) {
+        return 'Verifica que precompromiso, compromiso y snapshot pertenezcan al mismo sorteo.';
+      }
+      if (t.includes('hash de participantes')) {
+        return 'Comprueba que el hash publicado de participantes coincide con el texto canónico.';
+      }
+      if (t.includes('huella digital del archivo de boletos')) {
+        return 'Valida que la huella SHA-256 del archivo de boletos coincide con la publicada.';
+      }
+      if (t.includes('compromiso del conjunto de boletos')) {
+        return 'Revisa que el hash compromiso coincida entre precompromiso, compromiso y archivo de boletos.';
+      }
+      if (t.includes('conteo de tickets')) {
+        return 'Confirma que el total de tickets coincide en todos los archivos del sorteo.';
+      }
+      if (t.includes('resultado asociado al mismo sorteo')) {
+        return 'Asegura que resultado.json corresponde al mismo código técnico del sorteo auditado.';
+      }
+      if (t.includes('participantes entre precompromiso y resultado')) {
+        return 'Compara el hash de participantes entre precompromiso y resultado.';
+      }
+      if (t.includes('hash de semilla final')) {
+        return 'Verifica que el hash de semilla final coincide con su concatenado publicado.';
+      }
+      if (t.includes('número ganador vs índice') || t.includes('numero ganador vs indice')) {
+        return 'Comprueba que el índice ganador apunta al mismo número ganador publicado.';
+      }
+      return 'Control de integridad para confirmar consistencia del sorteo.';
     }
 
     function wireTutorialCopyActions() {
@@ -1263,7 +1337,10 @@
       tutorialChecksSnapshot = Array.isArray(checks) ? checks.slice() : [];
       els.checks.innerHTML = checks.map((check) => `
         <div class="check">
-          <strong class="${check.status}">${check.title}</strong>
+          <div class="check-title-row">
+            <strong class="${check.status}">${check.title}</strong>
+            <span class="check-help" tabindex="0" data-tip="${escapeHtml(getCheckTooltip(check.title))}">?</span>
+          </div>
           <div>${check.message}</div>
         </div>
       `).join('');
