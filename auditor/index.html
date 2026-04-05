@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Auditor Publico de Sorteos</title>
+  <link rel="icon" href="https://avatars.githubusercontent.com/u/255641549?v=4">
   <style>
     :root {
       --bg: #f5f1e7;
@@ -31,6 +32,20 @@
       max-width: 1120px;
       margin: 0 auto;
       padding: 28px 18px 40px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+    .brand img {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-2);
+      object-fit: cover;
+      box-shadow: 0 8px 18px rgba(28,20,13,.15);
     }
     h1 {
       margin: 0 0 10px;
@@ -263,7 +278,10 @@
 </head>
 <body>
   <div class="wrap">
-    <h1>Auditor Publico de Sorteos</h1>
+    <div class="brand">
+      <img src="https://avatars.githubusercontent.com/u/255641549?v=4" alt="Logo El Chancho Ganador">
+      <h1>Auditor Publico de Sorteos</h1>
+    </div>
     <p class="lead">Verifica la integridad de cualquier sorteo o búscate por tu identificador de jugada (id_jugada) sin exponer usuarios de Discord.</p>
 
     <div class="tabs">
