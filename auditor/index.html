@@ -611,11 +611,12 @@
     @media (max-width: 760px) {
       .tutorial-modal[data-step-kind="output"] #quickOutput,
       .tutorial-modal[data-step-kind="checks"] #quickOutput {
-        max-height: min(62vh, calc(100vh - var(--tutorial-card-space, 250px)));
+        margin-top: max(10px, calc(var(--tutorial-card-space, 250px) + 8px));
+        max-height: min(56vh, calc(100vh - var(--tutorial-card-space, 250px) - 12px));
         overflow: auto;
         overscroll-behavior: contain;
-        padding: 10px 10px max(14px, calc(var(--tutorial-occluded-bottom, 220px) + 8px));
-        scroll-padding-bottom: calc(var(--tutorial-occluded-bottom, 220px) + 8px);
+        padding: 10px 10px 14px;
+        scroll-padding-bottom: 14px;
       }
       .tutorial-modal[data-step-kind="output"] #quickOutput #headline,
       .tutorial-modal[data-step-kind="checks"] #quickOutput #headline {
@@ -1211,7 +1212,6 @@
         const maxCardHByViewport = Math.max(220, vh - minTop - safe - (isCompactViewport ? 8 : 16));
         const cardH = Math.min(maxCardHByViewport, Math.min(420, measuredCardH));
         els.tutorialModal.style.setProperty('--tutorial-card-space', `${Math.round(cardH + minTop + 18)}px`);
-        els.tutorialModal.style.setProperty('--tutorial-occluded-bottom', `${Math.round(cardH + safe + 10)}px`);
 
       let cardLeft = Math.max(safe, targetCenterX - (cardW / 2));
       if (cardLeft + cardW > vw - safe) cardLeft = vw - cardW - safe;
@@ -1364,9 +1364,9 @@
         cardTop = minTop;
 
         if (isCompactViewport && (isOutputStep || isChecksStep)) {
-          // En celular, coloca la tarjeta abajo para no tapar el bloque resaltado.
+          // En celular, coloca la tarjeta arriba y deja el bloque de salida debajo.
           cardLeft = Math.max(safe, Math.min(vw - cardW - safe, (vw - cardW) / 2));
-          cardTop = Math.max(minTop, vh - cardH - safe);
+          cardTop = minTop;
         }
         if (isOutputStep) {
           // Paso 3: mano pegada al borde superior de quickOutput, sin chancho.
@@ -1378,7 +1378,7 @@
           pointerX = Math.max(safe, Math.min(vw - pointerW - safe, outputRect.right - pointerW - 4));
           pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, outputRect.top - pointerH + 14));
           if (isCompactViewport) {
-            pointerY = Math.max(minTop, Math.min(cardTop - pointerH - 6, pointerY));
+            pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, Math.max(cardTop + cardH - 10, pointerY)));
           }
         } else if (isChecksStep) {
           // Paso 4: coloca la ayuda cerca del bloque y mano visible apuntando hacia abajo.
@@ -1390,7 +1390,7 @@
           pointerX = Math.max(safe, Math.min(vw - pointerW - safe, checksRect.right - pointerW + 2));
           pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, checksRect.top - pointerH + 24));
           if (isCompactViewport) {
-            pointerY = Math.max(minTop, Math.min(cardTop - pointerH - 6, pointerY));
+            pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, Math.max(cardTop + cardH - 10, pointerY)));
           }
         } else {
           pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 18);
