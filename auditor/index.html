@@ -926,6 +926,8 @@
       if (pointerAtRightOfTarget && (vw - targetRect.right) < (pointerW + 10)) pointerAtRightOfTarget = false;
       if (!pointerAtRightOfTarget && targetRect.left < (pointerW + 10)) pointerAtRightOfTarget = true;
       const usesPinnedSideLayout = layout.pinCardTopLeft;
+      const isInputStep = layout.kind === 'input';
+      const isButtonStep = layout.kind === 'button';
 
       const placePointerAbove = layout.forcePointerAboveTarget || targetCenterY > (vh * 0.55);
 
@@ -956,6 +958,37 @@
         if (els.tutorialHand) els.tutorialHand.classList.remove('point-down');
       }
 
+      if (isInputStep) {
+        // Paso con input: globo arriba del input y mano apuntando lateralmente al input.
+        cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetRect.left));
+        cardTop = Math.max(minTop, targetRect.top - cardH - 16);
+
+        pointerAtRightOfTarget = true;
+        pointerX = Math.min(vw - pointerW - safe, targetRect.right + 14);
+        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetCenterY - 162));
+        if (els.tutorialHand) {
+          els.tutorialHand.classList.add('point-left');
+          els.tutorialHand.classList.remove('point-down');
+        }
+      }
+
+      if (isButtonStep) {
+        // Paso de botón: globo cerca del botón y puntero pegado al botón, no lejos del contenido.
+        cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetCenterX - (cardW / 2)));
+        cardTop = Math.max(minTop, targetRect.bottom + 16);
+
+        const canPlaceLeft = targetRect.left > (pointerW + 20);
+        pointerAtRightOfTarget = !canPlaceLeft;
+        pointerX = canPlaceLeft
+          ? (targetRect.left - pointerW - 14)
+          : Math.min(vw - pointerW - safe, targetRect.right + 14);
+        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetCenterY - 162));
+        if (els.tutorialHand) {
+          els.tutorialHand.classList.toggle('point-left', !canPlaceLeft);
+          els.tutorialHand.classList.remove('point-down');
+        }
+      }
+
       pointerX = Math.max(safe, Math.min(vw - pointerW - safe, pointerX));
       pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, pointerY));
 
@@ -972,12 +1005,14 @@
       }
 
       if (usesPinnedSideLayout) {
-        // Card anchored to top-left; pig placed to the right of the card; hand points down.
+        // Pasos de salida/validación: globo a la izquierda y puntero al lado apuntando hacia abajo al bloque.
         cardLeft = safe;
         cardTop = minTop;
-        // Pig starts just to the right of the card bubble.
-        pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 12);
-        pointerY = cardTop + 8;
+        pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 18);
+        pointerY = Math.max(
+          minTop,
+          Math.min(vh - pointerH - safe, Math.max(cardTop + cardH + 6, targetRect.top - 38)),
+        );
         if (els.tutorialHand) {
           els.tutorialHand.classList.remove('point-left');
           els.tutorialHand.classList.add('point-down');
