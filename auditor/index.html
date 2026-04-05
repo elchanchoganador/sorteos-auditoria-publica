@@ -1030,12 +1030,15 @@
         pointerX = canPlaceOnRight
           ? (targetRect.right + 10)
           : (targetRect.left - pointerW - 10);
-        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetCenterY - (pointerH / 2)));
+        // Mantén la mano fuera del modal: siempre debajo del globo y cerca del botón real.
+        const besideButtonY = targetRect.top - pointerH + 22;
+        const belowCardY = cardTop + cardH + 8;
+        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, Math.max(besideButtonY, belowCardY)));
         forcedHandLeft = canPlaceOnRight;
-        forcedHandDown = false;
+        forcedHandDown = true;
         if (els.tutorialHand) {
           els.tutorialHand.classList.toggle('point-left', canPlaceOnRight);
-          els.tutorialHand.classList.remove('point-down');
+          els.tutorialHand.classList.add('point-down');
         }
       }
 
