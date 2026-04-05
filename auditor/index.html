@@ -1023,15 +1023,19 @@
 
       if (isButtonStep) {
         // Paso 2: mano al lado de "Cargar y verificar", apuntando al centro del botón.
-        cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetCenterX - (cardW / 2)));
-        cardTop = Math.max(minTop, targetRect.top - cardH - 24);
+        const buttonRect = document.getElementById('quickVerifyBtn')?.getBoundingClientRect() || targetRect;
+        const buttonCenterX = buttonRect.left + (buttonRect.width / 2);
+        const buttonCenterY = buttonRect.top + (buttonRect.height / 2);
 
-        const canPlaceOnRight = (vw - targetRect.right) >= (pointerW + safe + 10);
+        cardLeft = Math.max(safe, Math.min(vw - cardW - safe, buttonCenterX - (cardW / 2)));
+        cardTop = Math.max(minTop, buttonRect.top - cardH - 24);
+
+        const canPlaceOnRight = (vw - buttonRect.right) >= (pointerW + safe + 10);
         pointerX = canPlaceOnRight
-          ? (targetRect.right + 10)
-          : (targetRect.left - pointerW - 10);
+          ? (buttonRect.right + 10)
+          : (buttonRect.left - pointerW - 10);
         // Ancla la mano al centro vertical del botón objetivo.
-        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetCenterY - (pointerH / 2)));
+        pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, buttonCenterY - (pointerH / 2)));
         forcedHandLeft = canPlaceOnRight;
         forcedHandDown = false;
         if (els.tutorialHand) {
@@ -1053,10 +1057,11 @@
         cardTop = minTop;
         if (isOutputStep) {
           // Paso 3: mano pegada al borde superior de quickOutput, sin chancho.
-          cardLeft = Math.max(safe, Math.min(vw - cardW - safe, targetRect.left + 8));
-          cardTop = Math.max(minTop, targetRect.top - cardH - 12);
-          pointerX = Math.max(safe, Math.min(vw - pointerW - safe, targetRect.right - pointerW - 6));
-          pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, targetRect.top - pointerH + 26));
+          const outputRect = document.getElementById('quickOutput')?.getBoundingClientRect() || targetRect;
+          cardLeft = Math.max(safe, Math.min(vw - cardW - safe, outputRect.left + 8));
+          cardTop = Math.max(minTop, outputRect.top - cardH - 14);
+          pointerX = Math.max(safe, Math.min(vw - pointerW - safe, outputRect.right - pointerW - 4));
+          pointerY = Math.max(minTop, Math.min(vh - pointerH - safe, outputRect.top - pointerH + 14));
         } else {
           pointerX = Math.min(vw - pointerW - safe, cardLeft + cardW + 18);
           pointerY = Math.max(
