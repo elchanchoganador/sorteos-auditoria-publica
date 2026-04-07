@@ -1,0 +1,75 @@
+{
+  "version": "1.0.0",
+  "tipo": "PRE_COMPROMISO",
+  "descripcion": "Compromiso criptográfico publicado ANTES del cierre del sorteo. Garantiza que el resultado no puede ser manipulado después de este momento.",
+  "empresa": {
+    "nombre": "El Chancho Ganador C.A.",
+    "rif": "J-506703866"
+  },
+  "sorteo": {
+    "id": 2,
+    "titulo": "El Chancho de Plata",
+    "slug": "el-chancho-de-plata",
+    "tipo_evento": "donacion",
+    "certificacion_conalot": "no"
+  },
+  "horario": {
+    "fecha_vet": "2026-04-02",
+    "hora_vet": "04:00 PM",
+    "hora24_vet": 16,
+    "fecha_utc": "2026-04-02T20:00:00.000Z",
+    "zona": "VET (UTC-4) — Venezuela Standard Time"
+  },
+  "aleatoriedad": {
+    "fuente": "Híbrida: drand + clima global + Fibonacci",
+    "red": "drand default G1, unchained, período 30 s",
+    "endpoints": [
+      "https://drand.cloudflare.com/public/5990966",
+      "https://api.drand.sh/public/5990966"
+    ],
+    "ronda_comprometida": 5990966,
+    "timestamp_publicacion_ronda_utc": "2026-04-02T20:00:00.000Z",
+    "clima": {
+      "fuente": "Open-Meteo current_weather (snapshot tomado al ejecutar el sorteo)",
+      "ciudades": [
+        {
+          "nombre": "Caracas",
+          "lat": 10.5,
+          "lon": -66.9167
+        },
+        {
+          "nombre": "Bogota",
+          "lat": 4.711,
+          "lon": -74.0721
+        },
+        {
+          "nombre": "Madrid",
+          "lat": 40.4168,
+          "lon": -3.7038
+        },
+        {
+          "nombre": "Tokyo",
+          "lat": 35.6762,
+          "lon": 139.6503
+        },
+        {
+          "nombre": "Sydney",
+          "lat": -33.8688,
+          "lon": 151.2093
+        }
+      ]
+    },
+    "nota": "La entropía final mezcla drand, hash de participantes, snapshot climático global y transformación Fibonacci."
+  },
+  "participantes": {
+    "total": 0,
+    "hash_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "algoritmo_hash": "SHA-256(\"usuario|numero|timestamp_jugada\" por participante, ordenado por timestamp asc)",
+    "texto_hasheado": "",
+    "lista": []
+  },
+  "algoritmo_seleccion": "1. Se obtiene drand.randomness de la ronda 5990966\n2. randomness_sorteo = SHA-256(drand.randomness|contexto_sorteo)\n3. Se calcula fib_hex = FibonacciTransform(randomness_sorteo)\n4. Se toma snapshot climático global y hash_clima = SHA-256(snapshot)\n5. semilla_final = SHA-256(randomness_sorteo|hash_participantes|hash_clima|fib_hex|round|contexto_sorteo)\n5. idx = BigInt(\"0x\" + semilla_final) % 38\n6. numeroGanador = numeros[idx]",
+  "estado": "COMPROMETIDO_PREVIO_AL_SORTEO",
+  "timestamp_generacion": "2026-04-02T19:40:06.716Z",
+  "instrucciones_verificacion": "Una vez realizado el sorteo, ejecuta:\n  node verificar.js\nO manualmente:\n  1. Descarga la ronda drand: https://drand.cloudflare.com/public/5990966\n  2. Verifica hash de participantes (SHA-256 del campo \"texto_hasheado\")\n  3. Ejecuta fórmula híbrida documentada en resultado.json/verificar.js"
+}

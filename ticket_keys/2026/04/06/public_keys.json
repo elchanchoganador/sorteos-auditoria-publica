@@ -1,0 +1,39 @@
+{
+  "schema_version": "2.0",
+  "date_ref": "2026-04-06",
+  "total_keys": 4,
+  "keys": [
+    {
+      "key_ref": "af23a7a390fbef46aaceecbc",
+      "scope": "system",
+      "valid_on": "2026-04-06",
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAqrIPIi+8FHfMYrV0ZrwvTyXMzUPdg5ETxm+KmDSOCTc=\n-----END PUBLIC KEY-----\n",
+      "key_fingerprint": "bbae9f501f0629f2a07ec69ff6866813367147bb415459fd95073c36b272e4aa",
+      "issued_at": "2026-04-06T04:05:00.001Z"
+    },
+    {
+      "key_ref": "c1212cc502fcf2349ea588f2",
+      "scope": "member",
+      "valid_on": "2026-04-06",
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA7m5BYOK+jqW07kZ5cY3Wutkuuaiq1Thiq3HELo1AxpU=\n-----END PUBLIC KEY-----\n",
+      "key_fingerprint": "4c1d5e0337f0458c774e936b93448f489ce1c78f632c869ebbc68264940592bb",
+      "issued_at": "2026-04-06T04:05:00.011Z"
+    },
+    {
+      "key_ref": "028893f290a895c65e34f12f",
+      "scope": "member",
+      "valid_on": "2026-04-06",
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEArCYHnT6XDb+PAp0yEB7utvOb+tNoGMw2vCtzgUe8FBw=\n-----END PUBLIC KEY-----\n",
+      "key_fingerprint": "16d41af45c84f41f05c5d0ad6037ede08c0a3fc968c2d69dc05ae7ec2f036b6a",
+      "issued_at": "2026-04-06T04:05:00.016Z"
+    },
+    {
+      "key_ref": "4db91553984e364028e0addd",
+      "scope": "member",
+      "valid_on": "2026-04-06",
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAvXdgnG13k9NjV5SG9mBSoRQ+c150bC826ysNyAW7Yx4=\n-----END PUBLIC KEY-----\n",
+      "key_fingerprint": "be06f780beedfc55c78556cc1a40877d722f698487fe729054f9327c80f1e922",
+      "issued_at": "2026-04-06T04:05:00.021Z"
+    }
+  ]
+}

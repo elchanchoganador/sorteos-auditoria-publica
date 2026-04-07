@@ -1,0 +1,152 @@
+{
+  "schema_version": "2.0",
+  "date_ref": "2026-04-06",
+  "generated_at_utc": "2026-04-07T01:00:29.350Z",
+  "note": "Usa el reference_code de tu recibo para validar tu participación en entries.",
+  "draws": [
+    {
+      "draw_ref": "el-chancho-de-bronce:20260406:12",
+      "draw_channel": "el-chancho-de-bronce",
+      "draw_slot": "12",
+      "winning_pick": "26",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-bronce:20260406:13",
+      "draw_channel": "el-chancho-de-bronce",
+      "draw_slot": "13",
+      "winning_pick": "15",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-bronce:20260406:14",
+      "draw_channel": "el-chancho-de-bronce",
+      "draw_slot": "14",
+      "winning_pick": "01",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-bronce:20260406:15",
+      "draw_channel": "el-chancho-de-bronce",
+      "draw_slot": "15",
+      "winning_pick": "34",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-bronce:20260406:16",
+      "draw_channel": "el-chancho-de-bronce",
+      "draw_slot": "16",
+      "winning_pick": "20",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-bronce:20260406:17",
+      "draw_channel": "el-chancho-de-bronce",
+      "draw_slot": "17",
+      "winning_pick": "02",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-plata:20260406:12",
+      "draw_channel": "el-chancho-de-plata",
+      "draw_slot": "12",
+      "winning_pick": "24",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-plata:20260406:13",
+      "draw_channel": "el-chancho-de-plata",
+      "draw_slot": "13",
+      "winning_pick": "17",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-plata:20260406:14",
+      "draw_channel": "el-chancho-de-plata",
+      "draw_slot": "14",
+      "winning_pick": "29",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-plata:20260406:15",
+      "draw_channel": "el-chancho-de-plata",
+      "draw_slot": "15",
+      "winning_pick": "12",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-plata:20260406:16",
+      "draw_channel": "el-chancho-de-plata",
+      "draw_slot": "16",
+      "winning_pick": "26",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-plata:20260406:17",
+      "draw_channel": "el-chancho-de-plata",
+      "draw_slot": "17",
+      "winning_pick": "17",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-oro:20260406:12",
+      "draw_channel": "el-chancho-de-oro",
+      "draw_slot": "12",
+      "winning_pick": "08",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-oro:20260406:13",
+      "draw_channel": "el-chancho-de-oro",
+      "draw_slot": "13",
+      "winning_pick": "14",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-oro:20260406:14",
+      "draw_channel": "el-chancho-de-oro",
+      "draw_slot": "14",
+      "winning_pick": "28",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-oro:20260406:15",
+      "draw_channel": "el-chancho-de-oro",
+      "draw_slot": "15",
+      "winning_pick": "26",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-oro:20260406:16",
+      "draw_channel": "el-chancho-de-oro",
+      "draw_slot": "16",
+      "winning_pick": "07",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-oro:20260406:17",
+      "draw_channel": "el-chancho-de-oro",
+      "draw_slot": "17",
+      "winning_pick": "24",
+      "entries_total": 0,
+      "entries": []
+    }
+  ]
+}

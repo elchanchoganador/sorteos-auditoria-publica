@@ -1,0 +1,40 @@
+{
+  "schema_version": "2.0",
+  "date_ref": "2026-04-03",
+  "generated_at_utc": "2026-04-05T18:41:28.569Z",
+  "note": "Usa el reference_code de tu recibo para validar tu participación en entries.",
+  "draws": [
+    {
+      "draw_ref": "el-chancho-de-bronce:20260403:11",
+      "draw_channel": "el-chancho-de-bronce",
+      "draw_slot": "11",
+      "winning_pick": "09",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-bronce:20260403:15",
+      "draw_channel": "el-chancho-de-bronce",
+      "draw_slot": "15",
+      "winning_pick": "09",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-plata:20260403:15",
+      "draw_channel": "el-chancho-de-plata",
+      "draw_slot": "15",
+      "winning_pick": "20",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-oro:20260403:15",
+      "draw_channel": "el-chancho-de-oro",
+      "draw_slot": "15",
+      "winning_pick": "10",
+      "entries_total": 0,
+      "entries": []
+    }
+  ]
+}

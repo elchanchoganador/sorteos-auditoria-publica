@@ -1,0 +1,169 @@
+{
+  "version": "1.0.0",
+  "tipo": "RESULTADO_FINAL",
+  "descripcion": "Resultado del sorteo verificable públicamente. Puede reproducirse de forma independiente con node verificar.js",
+  "empresa": {
+    "nombre": "El Chancho Ganador C.A.",
+    "rif": "J-506703866"
+  },
+  "sorteo": {
+    "id": 3,
+    "titulo": "El Chancho de Oro",
+    "slug": "el-chancho-de-oro",
+    "tipo_evento": "donacion",
+    "certificacion_conalot": "no"
+  },
+  "horario": {
+    "fecha_vet": "2026-04-02",
+    "hora_vet": "03:00 PM",
+    "hora24_vet": 15,
+    "fecha_utc": "2026-04-02T19:00:00.000Z",
+    "zona": "VET (UTC-4) — Venezuela Standard Time"
+  },
+  "drand": {
+    "fuente": "drand League of Entropy",
+    "red": "default G1, unchained, período 30 s",
+    "ronda": 5990846,
+    "randomness": "119714007cd6a41c28cfb922cdea54cda69b871e6198ffc4d877d0348e4f004e",
+    "signature": "aba5e47827399563b0f3897f213053442a280e210164ff8c093281f771b8972a69aa4ef282ca5f5d3a3829137b7710ce005bcad17df899fab2dcd32016783cfafa28f8e233e417dfd78e71974c5ca2efefd19e47f41469bba10551e30f8d75bb",
+    "previous_signature": "96c633dd2032f9d61aa0ad9012556b6b786cdc49dc160af0e611549dad28be74b0ed06d9e0077a42f6b3be816e72f3d709a9a290f549efebde1b54f0176d06c68baa39ff70da1b03b97da5467fee0004290e3a75421cee8b57e93f11f26a7609",
+    "endpoint_usado": "https://drand.cloudflare.com/public/5990846",
+    "endpoints_alternos": [
+      "https://api.drand.sh/public/5990846"
+    ]
+  },
+  "entropia": {
+    "metodo": "hibrida_drand_clima_fibonacci",
+    "contexto_sorteo": "el-chancho-de-oro|2026-04-02|03:00 PM",
+    "drand_randomness_base": "119714007cd6a41c28cfb922cdea54cda69b871e6198ffc4d877d0348e4f004e",
+    "randomness_sorteo": "89b9db921f6fcc5d4924edf1faf0112f9afddd112e618f1dca1922e049751a58",
+    "hash_participantes": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "clima": {
+      "fuente": "Open-Meteo current_weather (multi-ciudad global)",
+      "hash_sha256": "fd7dcd14728a9ffa3de0ef89cda44671f052000506661a758dd5056e06aecbbb",
+      "texto_hasheado": "Caracas|10.5|-66.9167|25|10.1|3|2026-04-02T19:00\nBogota|4.711|-74.0721|16|12.6|80|2026-04-02T19:00\nMadrid|40.4168|-3.7038|13.7|14|0|2026-04-02T19:00\nTokyo|35.6762|139.6503|6.5|4|0|2026-04-02T19:00\nSydney|-33.8688|151.2093|15.7|3.7|45|2026-04-02T19:00",
+      "snapshot_ciudades": [
+        {
+          "nombre": "Caracas",
+          "lat": 10.5,
+          "lon": -66.9167,
+          "temperatura_c": 25,
+          "viento_kmh": 10.1,
+          "weathercode": 3,
+          "observado_en": "2026-04-02T19:00",
+          "fuente": "https://api.open-meteo.com/v1/forecast?latitude=10.5&longitude=-66.9167&current_weather=true&timezone=UTC"
+        },
+        {
+          "nombre": "Bogota",
+          "lat": 4.711,
+          "lon": -74.0721,
+          "temperatura_c": 16,
+          "viento_kmh": 12.6,
+          "weathercode": 80,
+          "observado_en": "2026-04-02T19:00",
+          "fuente": "https://api.open-meteo.com/v1/forecast?latitude=4.711&longitude=-74.0721&current_weather=true&timezone=UTC"
+        },
+        {
+          "nombre": "Madrid",
+          "lat": 40.4168,
+          "lon": -3.7038,
+          "temperatura_c": 13.7,
+          "viento_kmh": 14,
+          "weathercode": 0,
+          "observado_en": "2026-04-02T19:00",
+          "fuente": "https://api.open-meteo.com/v1/forecast?latitude=40.4168&longitude=-3.7038&current_weather=true&timezone=UTC"
+        },
+        {
+          "nombre": "Tokyo",
+          "lat": 35.6762,
+          "lon": 139.6503,
+          "temperatura_c": 6.5,
+          "viento_kmh": 4,
+          "weathercode": 0,
+          "observado_en": "2026-04-02T19:00",
+          "fuente": "https://api.open-meteo.com/v1/forecast?latitude=35.6762&longitude=139.6503&current_weather=true&timezone=UTC"
+        },
+        {
+          "nombre": "Sydney",
+          "lat": -33.8688,
+          "lon": 151.2093,
+          "temperatura_c": 15.7,
+          "viento_kmh": 3.7,
+          "weathercode": 45,
+          "observado_en": "2026-04-02T19:00",
+          "fuente": "https://api.open-meteo.com/v1/forecast?latitude=-33.8688&longitude=151.2093&current_weather=true&timezone=UTC"
+        }
+      ]
+    },
+    "transformacion_fibonacci": {
+      "n": 361,
+      "resultado_hex": "02c074dbe8e679013c5fb6f6fc3e29b292e0fd4fe3d6fb4e2b66a77fc7c248f1"
+    },
+    "semilla_final": {
+      "concatenado": "89b9db921f6fcc5d4924edf1faf0112f9afddd112e618f1dca1922e049751a58|e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855|fd7dcd14728a9ffa3de0ef89cda44671f052000506661a758dd5056e06aecbbb|02c074dbe8e679013c5fb6f6fc3e29b292e0fd4fe3d6fb4e2b66a77fc7c248f1|5990846|el-chancho-de-oro|2026-04-02|03:00 PM",
+      "hash_sha256": "d4ac64622797501de940a736d3e5154ef88f572b8ee1f5a0ade77d92028925b6"
+    }
+  },
+  "participantes": {
+    "total": 0,
+    "hash_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "algoritmo_hash": "SHA-256(\"usuario|numero|timestamp_jugada\" por participante, ordenado por timestamp asc)",
+    "texto_hasheado": "",
+    "lista": []
+  },
+  "calculo": {
+    "algoritmo": "idx = BigInt(\"0x\" + entropia.semilla_final.hash_sha256) % numeros.length",
+    "total_numeros": 38,
+    "todos_numeros": [
+      "00",
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+      "06",
+      "07",
+      "08",
+      "09",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "20",
+      "21",
+      "22",
+      "23",
+      "24",
+      "25",
+      "26",
+      "27",
+      "28",
+      "29",
+      "30",
+      "31",
+      "32",
+      "33",
+      "34",
+      "35",
+      "36",
+      "37"
+    ],
+    "indice_ganador": 18
+  },
+  "resultado": {
+    "numero_ganador": "18",
+    "producto_ganador": "Silla",
+    "ganadores": [],
+    "total_ganadores": 0
+  },
+  "estado": "RESULTADO_FINAL_VERIFICABLE",
+  "timestamp_resultado": "2026-04-02T19:05:12.219Z",
+  "verificable": true,
+  "nota_verificacion": "Para verificar este resultado de forma independiente:\n  node verificar.js\n  O visita: https://drand.cloudflare.com/public/5990846"
+}

@@ -1,42 +1,39 @@
 {
-  "valid_date": "2026-04-05",
-  "total": 4,
-  "public_keys": [
+  "schema_version": "2.0",
+  "date_ref": "2026-04-05",
+  "total_keys": 4,
+  "keys": [
     {
-      "key_id": "global:global:2026-04-05",
-      "signer_type": "global",
-      "signer_subject_id": "global",
-      "valid_date": "2026-04-05",
-      "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA6okM5eRgZlaFmEej9YKtbxvGO0FlVkoFwz4BHKe2gnc=\n-----END PUBLIC KEY-----\n",
-      "public_key_fingerprint": "74c2d78c7f50f871cd3f50d1fa4cf73db31a1fb2d33788e18c7c721de824010a",
-      "created_at": "2026-04-05T04:05:00.000Z"
+      "key_ref": "258e7825a3726e9dfe0f407b",
+      "scope": "system",
+      "valid_on": "2026-04-05",
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA6okM5eRgZlaFmEej9YKtbxvGO0FlVkoFwz4BHKe2gnc=\n-----END PUBLIC KEY-----\n",
+      "key_fingerprint": "74c2d78c7f50f871cd3f50d1fa4cf73db31a1fb2d33788e18c7c721de824010a",
+      "issued_at": "2026-04-05T04:05:00.000Z"
     },
     {
-      "key_id": "usuario:633830727766769684:2026-04-05",
-      "signer_type": "usuario",
-      "signer_subject_id": "633830727766769684",
-      "valid_date": "2026-04-05",
-      "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAab8MPJW3vMBwHwpjKlrKI1xC6iJubV5M9OWhnDrJNVE=\n-----END PUBLIC KEY-----\n",
-      "public_key_fingerprint": "10b62fb306d93fe5bb92f9e5db3bfddfdf1ed0e7db049dec1d2b4f365a4acc0c",
-      "created_at": "2026-04-05T04:05:00.020Z"
+      "key_ref": "fc61eb1974a3e9775911ebe5",
+      "scope": "member",
+      "valid_on": "2026-04-05",
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAab8MPJW3vMBwHwpjKlrKI1xC6iJubV5M9OWhnDrJNVE=\n-----END PUBLIC KEY-----\n",
+      "key_fingerprint": "10b62fb306d93fe5bb92f9e5db3bfddfdf1ed0e7db049dec1d2b4f365a4acc0c",
+      "issued_at": "2026-04-05T04:05:00.020Z"
     },
     {
-      "key_id": "usuario:aaa_first:2026-04-05",
-      "signer_type": "usuario",
-      "signer_subject_id": "aaa_first",
-      "valid_date": "2026-04-05",
-      "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAJuagad5qR1vjbaANKVe+HCaoKBk5+pIdqfUYjnJjNFI=\n-----END PUBLIC KEY-----\n",
-      "public_key_fingerprint": "20e6b7f3ff4c70a9abe62ff5dcaa50727a4259a3663afc86d881fd72865fc47d",
-      "created_at": "2026-04-05T04:05:00.025Z"
+      "key_ref": "6e5fc07b2ce7f22283b6658f",
+      "scope": "member",
+      "valid_on": "2026-04-05",
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAJuagad5qR1vjbaANKVe+HCaoKBk5+pIdqfUYjnJjNFI=\n-----END PUBLIC KEY-----\n",
+      "key_fingerprint": "20e6b7f3ff4c70a9abe62ff5dcaa50727a4259a3663afc86d881fd72865fc47d",
+      "issued_at": "2026-04-05T04:05:00.025Z"
     },
     {
-      "key_id": "usuario:mmm_mid:2026-04-05",
-      "signer_type": "usuario",
-      "signer_subject_id": "mmm_mid",
-      "valid_date": "2026-04-05",
-      "public_key_pem": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAxpRdQ0z/GtsiUXCjZLDfGkYMmK5UBk+gXJ6NbWppO1M=\n-----END PUBLIC KEY-----\n",
-      "public_key_fingerprint": "db20d66cdf930522d6bd21a0fcb82424cc06f21d2fd41139afb6c60fc60e4579",
-      "created_at": "2026-04-05T04:05:00.030Z"
+      "key_ref": "57cc5d359a3016ef76739ec0",
+      "scope": "member",
+      "valid_on": "2026-04-05",
+      "public_key": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAxpRdQ0z/GtsiUXCjZLDfGkYMmK5UBk+gXJ6NbWppO1M=\n-----END PUBLIC KEY-----\n",
+      "key_fingerprint": "db20d66cdf930522d6bd21a0fcb82424cc06f21d2fd41139afb6c60fc60e4579",
+      "issued_at": "2026-04-05T04:05:00.030Z"
     }
   ]
 }

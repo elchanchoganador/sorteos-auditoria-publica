@@ -8,6 +8,12 @@ function calculateTicketHash(drawId, userId, choice) {
   return crypto.createHash('sha256').update(canonical, 'utf8').digest('hex');
 }
 
+function calculatePublicKeyRef(keyId) {
+  const clean = String(keyId || '').trim();
+  if (!clean) return '';
+  return crypto.createHash('sha256').update(clean, 'utf8').digest('hex').slice(0, 24);
+}
+
 async function main() {
   const receiptPathArg = process.argv[2];
   const keyIndexPathArg = process.argv[3];
@@ -36,14 +42,21 @@ async function main() {
     process.exit(3);
   }
 
-  const publicKeys = Array.isArray(keyIndex?.public_keys) ? keyIndex.public_keys : [];
-  const keyEntry = publicKeys.find((entry) => String(entry?.key_id || entry?.keyId || '') === keyId);
-  if (!keyEntry?.public_key_pem && !keyEntry?.publicKeyPem) {
+  const publicKeys = Array.isArray(keyIndex?.public_keys)
+    ? keyIndex.public_keys
+    : (Array.isArray(keyIndex?.keys) ? keyIndex.keys : []);
+  const keyRefFromReceipt = calculatePublicKeyRef(keyId);
+  const keyEntry = publicKeys.find((entry) => {
+    const rawRef = String(entry?.key_id || entry?.keyId || entry?.key_ref || '').trim();
+    if (!rawRef) return false;
+    return rawRef === keyId || rawRef === keyRefFromReceipt;
+  });
+  if (!keyEntry?.public_key_pem && !keyEntry?.publicKeyPem && !keyEntry?.public_key) {
     console.error(`INVALIDO no existe clave pública para key_id=${keyId}`);
     process.exit(4);
   }
 
-  const publicKeyPem = String(keyEntry.public_key_pem || keyEntry.publicKeyPem);
+  const publicKeyPem = String(keyEntry.public_key_pem || keyEntry.publicKeyPem || keyEntry.public_key);
   const signature = String(receipt?.signature || '');
   if (!signature) {
     console.error('INVALIDO recibo sin firma');

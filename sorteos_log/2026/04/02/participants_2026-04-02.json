@@ -1,0 +1,176 @@
+{
+  "schema_version": "2.0",
+  "date_ref": "2026-04-02",
+  "generated_at_utc": "2026-04-05T18:41:28.396Z",
+  "note": "Usa el reference_code de tu recibo para validar tu participación en entries.",
+  "draws": [
+    {
+      "draw_ref": "el-chancho-de-bronce:20260402:13",
+      "draw_channel": "el-chancho-de-bronce",
+      "draw_slot": "13",
+      "winning_pick": "31",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-bronce:20260402:14",
+      "draw_channel": "el-chancho-de-bronce",
+      "draw_slot": "14",
+      "winning_pick": "19",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-bronce:20260402:15",
+      "draw_channel": "el-chancho-de-bronce",
+      "draw_slot": "15",
+      "winning_pick": "09",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-bronce:20260402:16",
+      "draw_channel": "el-chancho-de-bronce",
+      "draw_slot": "16",
+      "winning_pick": "26",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-bronce:20260402:17",
+      "draw_channel": "el-chancho-de-bronce",
+      "draw_slot": "17",
+      "winning_pick": "17",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-bronce:20260402:18",
+      "draw_channel": "el-chancho-de-bronce",
+      "draw_slot": "18",
+      "winning_pick": "17",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-bronce:20260402:19",
+      "draw_channel": "el-chancho-de-bronce",
+      "draw_slot": "19",
+      "winning_pick": "04",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-plata:20260402:13",
+      "draw_channel": "el-chancho-de-plata",
+      "draw_slot": "13",
+      "winning_pick": "31",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-plata:20260402:14",
+      "draw_channel": "el-chancho-de-plata",
+      "draw_slot": "14",
+      "winning_pick": "32",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-plata:20260402:15",
+      "draw_channel": "el-chancho-de-plata",
+      "draw_slot": "15",
+      "winning_pick": "14",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-plata:20260402:16",
+      "draw_channel": "el-chancho-de-plata",
+      "draw_slot": "16",
+      "winning_pick": "32",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-plata:20260402:17",
+      "draw_channel": "el-chancho-de-plata",
+      "draw_slot": "17",
+      "winning_pick": "37",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-plata:20260402:18",
+      "draw_channel": "el-chancho-de-plata",
+      "draw_slot": "18",
+      "winning_pick": "26",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-plata:20260402:19",
+      "draw_channel": "el-chancho-de-plata",
+      "draw_slot": "19",
+      "winning_pick": "05",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-oro:20260402:13",
+      "draw_channel": "el-chancho-de-oro",
+      "draw_slot": "13",
+      "winning_pick": "31",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-oro:20260402:14",
+      "draw_channel": "el-chancho-de-oro",
+      "draw_slot": "14",
+      "winning_pick": "05",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-oro:20260402:15",
+      "draw_channel": "el-chancho-de-oro",
+      "draw_slot": "15",
+      "winning_pick": "18",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-oro:20260402:16",
+      "draw_channel": "el-chancho-de-oro",
+      "draw_slot": "16",
+      "winning_pick": "31",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-oro:20260402:17",
+      "draw_channel": "el-chancho-de-oro",
+      "draw_slot": "17",
+      "winning_pick": "08",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-oro:20260402:18",
+      "draw_channel": "el-chancho-de-oro",
+      "draw_slot": "18",
+      "winning_pick": "36",
+      "entries_total": 0,
+      "entries": []
+    },
+    {
+      "draw_ref": "el-chancho-de-oro:20260402:19",
+      "draw_channel": "el-chancho-de-oro",
+      "draw_slot": "19",
+      "winning_pick": "09",
+      "entries_total": 0,
+      "entries": []
+    }
+  ]
+}

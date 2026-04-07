@@ -1,0 +1,158 @@
+{
+  "version": "1.0.0",
+  "tipo": "RESULTADO_FINAL",
+  "descripcion": "Resultado del sorteo verificable públicamente. Puede reproducirse de forma independiente con node verificar.js",
+  "empresa": {
+    "nombre": "El Chancho Ganador C.A.",
+    "rif": "J-506703866"
+  },
+  "sorteo": {
+    "id": 1,
+    "titulo": "El Chancho de bronce",
+    "slug": "el-chancho-de-bronce",
+    "tipo_evento": "gratuito",
+    "certificacion_conalot": "no"
+  },
+  "horario": {
+    "fecha_vet": "2026-04-06",
+    "hora_vet": "04:00 PM",
+    "hora24_vet": 16,
+    "fecha_utc": "2026-04-06T20:00:00.000Z",
+    "zona": "VET (UTC-4) — Venezuela Standard Time"
+  },
+  "draw_id": "el-chancho-de-bronce:20260406:16",
+  "drand": {
+    "fuente": "drand League of Entropy",
+    "red": "drand-mainnet-g1-unchained-30s",
+    "network_id": "drand-mainnet-g1-unchained-30s",
+    "ronda": 6002486,
+    "randomness": "43edba7194485284d203da847fc657cacd834558b448eaebaffcad1e52c99749",
+    "signature": "877a051a48f3d7e1c10c2331d33707cc4e2661ef02890b8cd501169a845970077fb200277f998e60fbef6e1b01eba58a10635c710ae51b8cdf85f0c2ec51bf7c6192f2428d603b24785f294a1bf785d828fbe6c634899c7e6a7724fd81bd7209",
+    "previous_signature": "91a882431dcfbcb908fe407536b3d3cff54878bb13604bb4cff13c1410dc513ddf64061a87ab72b9df3b46e352b379770e52ec2521f4d69455a155906b75afb06614672f75692dfdee19e838aafa5736047b7528cb52a7341430b5f2e19539a7",
+    "endpoint_usado": "https://drand.cloudflare.com/public/6002486",
+    "endpoints_alternos": [
+      "https://api.drand.sh/public/6002486"
+    ]
+  },
+  "entropia": {
+    "metodo": "commit_reveal_precommit_beacon_hashparticipantes",
+    "commit_reveal": {
+      "enabled": true,
+      "seed_reveal": "47b8fbe4614752783eede18ea5c6a6afdebec0af6ead4032cb7bf503144648a8",
+      "seed_hash_sha256": "42571fb9b7ea54f4625389b1e3f76a3ca62fb9c3417cd473796566b8f1981e40",
+      "committed_seed_hash_sha256": "42571fb9b7ea54f4625389b1e3f76a3ca62fb9c3417cd473796566b8f1981e40",
+      "hash_match": true,
+      "reveal_chain_entry_index": 396
+    },
+    "precompromiso_hash": "04b509cedbafacedcbdfbe482ea2942db116ef8e6f7185bf11c1e2e255cb6827",
+    "ticket_set_hash": "4db15d9fe67f3ac5f1ecce0213f986f93a2c86034235b1aaff1cec08595d5696",
+    "total_tickets": 0,
+    "tickets_snapshot": {
+      "file": "tickets_draw.json",
+      "hash_sha256_file_bytes": "4db15d9fe67f3ac5f1ecce0213f986f93a2c86034235b1aaff1cec08595d5696"
+    },
+    "contexto_sorteo": "el-chancho-de-bronce|2026-04-06|04:00 PM",
+    "drand_randomness_base": "43edba7194485284d203da847fc657cacd834558b448eaebaffcad1e52c99749",
+    "randomness_sorteo": "2d29b36db6b6c106b62a7f649bbb3badf28b8a0beec87df85326afc52b3b4d53",
+    "hash_participantes": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pool": null,
+    "local": null,
+    "clima": null,
+    "qrng": null,
+    "bitcoin": null,
+    "nist": null,
+    "transformacion_fibonacci": null,
+    "semilla_final": {
+      "serializacion": "canonical_kv_len_v1_utf8",
+      "concatenado": "domain_tag:12:LOTTERY-V3.0\nseed_reveal:64:47b8fbe4614752783eede18ea5c6a6afdebec0af6ead4032cb7bf503144648a8\nticket_set_hash:64:4db15d9fe67f3ac5f1ecce0213f986f93a2c86034235b1aaff1cec08595d5696\nprecompromiso_hash:64:04b509cedbafacedcbdfbe482ea2942db116ef8e6f7185bf11c1e2e255cb6827\ndrand_randomness:64:43edba7194485284d203da847fc657cacd834558b448eaebaffcad1e52c99749\nround_drand:7:6002486\nhash_participantes:64:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hash_sha256": "760066206681eb34f756093cd2b19d7eaf514bd4ca261141cedcda2fbe367a09"
+    }
+  },
+  "participantes": {
+    "total": 0,
+    "hash_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "algoritmo_hash": "SHA-256(\"usuario|numero|timestamp_jugada\" por participante, ordenado por SHA-256(ticket) asc)",
+    "orden": "sort_asc(SHA-256(\"usuario|numero|timestamp_jugada\"))",
+    "canonicalizacion_timestamp": "timestamp_jugada => unix_epoch_ms (string)",
+    "texto_hasheado": "",
+    "lista": []
+  },
+  "calculo": {
+    "algoritmo": "idx = BigInt(\"0x\" + entropia.semilla_final.hash_sha256) % numeros.length",
+    "algoritmo_version": "3.0.0",
+    "seleccion": "single-winner",
+    "sesgo": "eliminado_por_rejection_sampling_en_v3",
+    "total_numeros": 38,
+    "todos_numeros": [
+      "00",
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+      "06",
+      "07",
+      "08",
+      "09",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "20",
+      "21",
+      "22",
+      "23",
+      "24",
+      "25",
+      "26",
+      "27",
+      "28",
+      "29",
+      "30",
+      "31",
+      "32",
+      "33",
+      "34",
+      "35",
+      "36",
+      "37"
+    ],
+    "indice_ganador": 20,
+    "rejection_sampling": {
+      "intento": 0,
+      "hash_intento": "e5fc3d60d6b3d73003cfe6ff7f497566013c5cc2ee5ae099c41fd912867130d0",
+      "limite_hex": "fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0"
+    }
+  },
+  "resultado_canonico_v3": {
+    "payload": {
+      "draw_id": "el-chancho-de-bronce:20260406:16",
+      "algoritmo_version": "3.0.0",
+      "participantes_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "drand_round": 6002486,
+      "seed": "760066206681eb34f756093cd2b19d7eaf514bd4ca261141cedcda2fbe367a09",
+      "winner_index": 20,
+      "winner_number": "20",
+      "winner_ticket": null
+    },
+    "payload_canonico": "draw_id:32:el-chancho-de-bronce:20260406:16\nalgoritmo_version:5:3.0.0\nparticipantes_hash:64:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\ndrand_round:7:6002486\nseed:64:760066206681eb34f756093cd2b19d7eaf514bd4ca261141cedcda2fbe367a09\nwinner_index:2:20\nwinner_number:2:20\nwinner_ticket:0:",
+    "hash_sha256": "9e18ec8e10e7fd52c38b18391eca7f54df37bbc16e5e5f003d28cd1e26811c7a",
+    "firma": null
+  },
+  "resultado": {
+    "numero_ganador": "20",
+    "producto_ganador": "Taza con plato",
+    "ganadores": [],
+    "total_ganadores": 0
+  },
+  "estado": "RESULTADO_FINAL_VERIFICABLE",
+  "timestamp_resultado": "2026-04-06T20:38:57.328Z",
+  "verificable": true,
+  "nota_verificacion": "Para verificar este resultado de forma independiente:\n  node verificar.js\n  O visita: https://drand.cloudflare.com/public/6002486\n  Nota: commit-reveal activo. Debe cumplirse SHA-256(seed_reveal) == seed_hash comprometido en pre_compromiso.\n  Nota: el sorteo consume una entrada de un pool local precargado para no depender de APIs externas en tiempo real.\n  Nota: en v3.1, ANU es solo evidencia audit-only (analisis estadistico/deteccion de anomalias/independencia) y no participa en la semilla.\n  Nota: NIST Beacon se conserva con su pulseIndex y outputValue para verificación pública posterior."
+}

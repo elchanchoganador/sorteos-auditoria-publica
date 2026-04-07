@@ -1,0 +1,45 @@
+{
+  "version": "1.0.0",
+  "tipo": "PRE_COMPROMISO",
+  "descripcion": "Compromiso criptográfico publicado ANTES del cierre del sorteo. Garantiza que el resultado no puede ser manipulado después de este momento.",
+  "empresa": {
+    "nombre": "El Chancho Ganador C.A.",
+    "rif": "J-506703866"
+  },
+  "sorteo": {
+    "id": 2,
+    "titulo": "El Chancho de Plata",
+    "slug": "el-chancho-de-plata",
+    "tipo_evento": "donacion",
+    "certificacion_conalot": "no"
+  },
+  "horario": {
+    "fecha_vet": "2026-04-02",
+    "hora_vet": "01:00 PM",
+    "hora24_vet": 13,
+    "fecha_utc": "2026-04-02T17:00:00.000Z",
+    "zona": "VET (UTC-4) — Venezuela Standard Time"
+  },
+  "aleatoriedad": {
+    "fuente": "drand League of Entropy",
+    "red": "default G1, unchained, período 30 s",
+    "endpoints": [
+      "https://drand.cloudflare.com/public/5990606",
+      "https://api.drand.sh/public/5990606"
+    ],
+    "ronda_comprometida": 5990606,
+    "timestamp_publicacion_ronda_utc": "2026-04-02T17:00:00.000Z",
+    "nota": "La ronda se publica EXACTAMENTE al momento del sorteo. Nadie puede conocer su valor antes de esa hora."
+  },
+  "participantes": {
+    "total": 0,
+    "hash_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "algoritmo_hash": "SHA-256(\"usuario|numero|timestamp_jugada\" por participante, ordenado por timestamp asc)",
+    "texto_hasheado": "",
+    "lista": []
+  },
+  "algoritmo_seleccion": "1. Se obtiene: randomness = beacon drand ronda 5990606\n2. idx = BigInt(\"0x\" + randomness) % ? (total de números del sorteo)\n3. numeroGanador = numeros[idx]",
+  "estado": "COMPROMETIDO_PREVIO_AL_SORTEO",
+  "timestamp_generacion": "2026-04-02T16:40:48.822Z",
+  "instrucciones_verificacion": "Una vez realizado el sorteo, ejecuta:\n  node verificar.js\nO manualmente:\n  1. Descarga la ronda drand: https://drand.cloudflare.com/public/5990606\n  2. Verifica el hash de participantes (SHA-256 del campo \"texto_hasheado\")\n  3. Aplica: BigInt(\"0x\" + randomness) % 38 = índice ganador"
+}
