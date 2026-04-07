@@ -1,0 +1,82 @@
+{
+  "fecha_escaneo": "2026-04-07T01:00:31.969Z",
+  "sorteo": "el-chancho-de-plata:2026-04-06:16",
+  "repositorio_github": "https://github.com/elchanchoganador/sorteos-auditoria-publica",
+  "nota": "Cada link_vt permite verificar el archivo directamente en VirusTotal sin necesidad de instalar nada.",
+  "archivos_sorteo": [
+    {
+      "nombre": "resultado.json",
+      "descripcion": "Resultado oficial del sorteo",
+      "url_github": "https://github.com/elchanchoganador/sorteos-auditoria-publica/blob/main/sorteos_log/2026/04/06/16/el-chancho-de-plata/resultado.json",
+      "url": "https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main/sorteos_log/2026/04/06/16/el-chancho-de-plata/resultado.json",
+      "estado": "skipped",
+      "razon": "VIRUSTOTAL_API_KEY no configurado",
+      "timestamp": "2026-04-07T01:00:31.969Z"
+    },
+    {
+      "nombre": "pre_compromiso.json",
+      "descripcion": "Compromiso criptográfico previo al sorteo",
+      "url_github": "https://github.com/elchanchoganador/sorteos-auditoria-publica/blob/main/sorteos_log/2026/04/06/16/el-chancho-de-plata/pre_compromiso.json",
+      "url": "https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main/sorteos_log/2026/04/06/16/el-chancho-de-plata/pre_compromiso.json",
+      "estado": "skipped",
+      "razon": "VIRUSTOTAL_API_KEY no configurado",
+      "timestamp": "2026-04-07T01:00:31.969Z"
+    },
+    {
+      "nombre": "tickets_snapshot.json",
+      "descripcion": "Snapshot de participantes registrados",
+      "url_github": "https://github.com/elchanchoganador/sorteos-auditoria-publica/blob/main/sorteos_log/2026/04/06/16/el-chancho-de-plata/tickets_snapshot.json",
+      "url": "https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main/sorteos_log/2026/04/06/16/el-chancho-de-plata/tickets_snapshot.json",
+      "estado": "skipped",
+      "razon": "VIRUSTOTAL_API_KEY no configurado",
+      "timestamp": "2026-04-07T01:00:31.969Z"
+    },
+    {
+      "nombre": "virustotal_analysis.json",
+      "descripcion": "Análisis de integridad local post-sorteo",
+      "url_github": "https://github.com/elchanchoganador/sorteos-auditoria-publica/blob/main/sorteos_log/2026/04/06/16/el-chancho-de-plata/virustotal_analysis.json",
+      "url": "https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main/sorteos_log/2026/04/06/16/el-chancho-de-plata/virustotal_analysis.json",
+      "estado": "skipped",
+      "razon": "VIRUSTOTAL_API_KEY no configurado",
+      "timestamp": "2026-04-07T01:00:31.969Z"
+    }
+  ],
+  "archivos_infraestructura": [
+    {
+      "nombre": "scripts/verificar_resultado.js",
+      "descripcion": "Script de verificación criptográfica",
+      "url_github": "https://github.com/elchanchoganador/sorteos-auditoria-publica/blob/main/scripts/verificar_resultado.js",
+      "url": "https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main/scripts/verificar_resultado.js",
+      "estado": "skipped",
+      "razon": "VIRUSTOTAL_API_KEY no configurado",
+      "timestamp": "2026-04-07T01:00:31.969Z"
+    },
+    {
+      "nombre": "scripts/verificar_recibo_ticket_publico.js",
+      "descripcion": "Script de verificación de tickets",
+      "url_github": "https://github.com/elchanchoganador/sorteos-auditoria-publica/blob/main/scripts/verificar_recibo_ticket_publico.js",
+      "url": "https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main/scripts/verificar_recibo_ticket_publico.js",
+      "estado": "skipped",
+      "razon": "VIRUSTOTAL_API_KEY no configurado",
+      "timestamp": "2026-04-07T01:00:31.969Z"
+    },
+    {
+      "nombre": "auditor/index.html",
+      "descripcion": "Interfaz web de auditoría",
+      "url_github": "https://github.com/elchanchoganador/sorteos-auditoria-publica/blob/main/auditor/index.html",
+      "url": "https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main/auditor/index.html",
+      "estado": "skipped",
+      "razon": "VIRUSTOTAL_API_KEY no configurado",
+      "timestamp": "2026-04-07T01:00:31.969Z"
+    },
+    {
+      "nombre": "ticket_keys/2026/04/06/public_keys.json",
+      "descripcion": "Claves públicas de firma del día",
+      "url_github": "https://github.com/elchanchoganador/sorteos-auditoria-publica/blob/main/ticket_keys/2026/04/06/public_keys.json",
+      "url": "https://raw.githubusercontent.com/elchanchoganador/sorteos-auditoria-publica/main/ticket_keys/2026/04/06/public_keys.json",
+      "estado": "skipped",
+      "razon": "VIRUSTOTAL_API_KEY no configurado",
+      "timestamp": "2026-04-07T01:00:31.969Z"
+    }
+  ]
+}
