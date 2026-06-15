@@ -1,0 +1,11 @@
+# Este repositorio publica solo herramientas de verificación.
+# La evidencia de cada sorteo se publica por separado (otro repo, ZIP o enlace del operador).
+
+sorteos_log/
+ticket_keys/
+
+# Secretos y entorno local
+.env
+.env.*
+*.pem
+*private*key*

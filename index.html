@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verificación de sorteos | El Chancho Ganador</title>
+  <link rel="icon" href="https://avatars.githubusercontent.com/u/255641549?v=4">
+  <style>
+    :root { --ink:#21170f; --muted:#6e604f; --brand:#8f1d14; --gold:#d8a03a; --panel:#fffaf2; --line:#deceb8; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Georgia,serif; color:var(--ink);
+      background:linear-gradient(180deg,#f8f3ea,#f3efe6); min-height:100vh; }
+    .wrap { max-width:720px; margin:0 auto; padding:32px 18px; }
+    h1 { font-size:clamp(1.6rem,4vw,2.2rem); margin:0 0 8px; }
+    p { color:var(--muted); line-height:1.5; }
+    .panel { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:18px; margin-top:16px; }
+    .btn { display:inline-block; margin:8px 8px 0 0; padding:11px 16px; border-radius:999px;
+      font-weight:700; text-decoration:none; color:#fff; background:var(--brand); }
+    .btn.soft { background:#efe4d4; color:var(--ink); }
+    img { width:64px; height:64px; border-radius:50%; border:2px solid var(--gold); }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <img src="https://avatars.githubusercontent.com/u/255641549?v=4" alt="">
+    <h1>Verificación de sorteos</h1>
+    <p>Herramientas abiertas de <em>La Gran Carrera</em>. Obtén los archivos JSON del sorteo y verifícalos aquí o con Node.js.</p>
+    <div class="panel">
+      <a class="btn" href="auditor/index.html">Auditor web</a>
+      <a class="btn soft" href="SOLICITUD_CONALOT_DOSSIER.html">Dossier CONALOT</a>
+      <a class="btn soft" href="https://verificatuticket.com" rel="noopener">Verificar ticket</a>
+    </div>
+    <div class="panel">
+      <strong>Terminal</strong>
+      <pre style="margin:8px 0 0;overflow:auto;font-size:.85rem;">node scripts/verificar_resultado.js /ruta/carpeta-sorteo
+node scripts/verificar_recibo_ticket_publico.js recibo.json public_keys.json</pre>
+    </div>
+  </main>
+</body>
+</html>
