@@ -108,12 +108,10 @@
     <p>Repositorio de herramientas abiertas (sin datos de sorteos):</p>
     <p><strong>https://github.com/elchanchoganador/sorteos-auditoria-publica</strong></p>
     <ul class="small">
-      <li><code>auditor/index.html</code> — verificador interactivo (cargar archivos de evidencia)</li>
-      <li><code>scripts/verificar_resultado.js</code> — verificación criptográfica por terminal</li>
-      <li><code>scripts/verificar_recibo_ticket_publico.js</code> — validación de recibos firmados</li>
-      <li><code>VIRUSTOTAL_INTEGRATION.html</code> — interpretación de reportes VirusTotal en evidencia de sorteos</li>
-      <li><code>README.md</code> — descripción del sistema y uso de las herramientas</li>
-      <li><code>index.html</code> — portal de entrada</li>
+      <li><code>index.html</code> — verificador principal (cargar archivo <code>verificacion-sorteo.txt</code>)</li>
+      <li><code>auditor/index.html</code> — verificador avanzado con archivos JSON de evidencia</li>
+      <li><code>VIRUSTOTAL_INTEGRATION.html</code> — interpretación de reportes VirusTotal</li>
+      <li><code>README.md</code> — instrucciones de uso (solo HTML, sin Node.js)</li>
     </ul>
     <p class="small">La evidencia de cada sorteo (JSON, hashes, claves del día) se publica por el operador en canal separado.</p>
     <p class="small">Verificación de tickets: <strong>https://verificatuticket.com</strong> · Web: <strong>https://elchanchoganador.com</strong></p>

@@ -3,40 +3,245 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Verificación de sorteos | El Chancho Ganador</title>
+  <title>Verificar sorteo | El Chancho Ganador</title>
   <link rel="icon" href="https://avatars.githubusercontent.com/u/255641549?v=4">
   <style>
-    :root { --ink:#21170f; --muted:#6e604f; --brand:#8f1d14; --gold:#d8a03a; --panel:#fffaf2; --line:#deceb8; }
+    :root {
+      --ink:#21170f; --muted:#6e604f; --brand:#8f1d14; --gold:#d8a03a;
+      --panel:#fffaf2; --line:#deceb8; --ok:#17683a; --bad:#8f1d14; --warn:#8a6300;
+    }
     * { box-sizing:border-box; }
-    body { margin:0; font-family:Georgia,serif; color:var(--ink);
-      background:linear-gradient(180deg,#f8f3ea,#f3efe6); min-height:100vh; }
-    .wrap { max-width:720px; margin:0 auto; padding:32px 18px; }
-    h1 { font-size:clamp(1.6rem,4vw,2.2rem); margin:0 0 8px; }
-    p { color:var(--muted); line-height:1.5; }
-    .panel { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:18px; margin-top:16px; }
-    .btn { display:inline-block; margin:8px 8px 0 0; padding:11px 16px; border-radius:999px;
-      font-weight:700; text-decoration:none; color:#fff; background:var(--brand); }
-    .btn.soft { background:#efe4d4; color:var(--ink); }
-    img { width:64px; height:64px; border-radius:50%; border:2px solid var(--gold); }
+    body {
+      margin:0; font-family:Georgia,'Times New Roman',serif; color:var(--ink);
+      background:linear-gradient(180deg,#f8f3ea,#f3efe6); min-height:100vh;
+    }
+    .wrap { max-width:920px; margin:0 auto; padding:28px 16px 48px; }
+    h1 { margin:0 0 6px; font-size:clamp(1.6rem,4vw,2.3rem); }
+    .lead { color:var(--muted); margin:0 0 18px; line-height:1.5; }
+    .panel {
+      background:var(--panel); border:1px solid var(--line); border-radius:16px;
+      padding:16px; margin-top:14px; box-shadow:0 8px 22px rgba(33,23,15,.05);
+    }
+    label { display:block; font-weight:700; margin:0 0 6px; }
+    textarea, input[type="file"] {
+      width:100%; border:1px solid var(--line); border-radius:12px;
+      padding:10px 12px; font:inherit; background:#fff;
+    }
+    textarea { min-height:160px; font-family:ui-monospace,monospace; font-size:.82rem; }
+    .actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .btn {
+      border:0; border-radius:999px; padding:11px 16px; font-weight:700;
+      cursor:pointer; font-family:inherit; text-decoration:none; display:inline-block;
+    }
+    .btn-primary { background:var(--brand); color:#fff; }
+    .btn-soft { background:#efe4d4; color:var(--ink); }
+    .checks { display:grid; gap:8px; margin-top:14px; }
+    .check {
+      padding:10px 12px; border-radius:12px; border:1px solid var(--line);
+      background:#fff; font-size:.92rem;
+    }
+    .check.ok { border-color:#9bd3ad; color:var(--ok); }
+    .check.bad { border-color:#e4b1b1; color:var(--bad); }
+    .check.warn { border-color:#e7d3a8; color:var(--warn); }
+    dl {
+      display:grid; grid-template-columns:minmax(140px,34%) 1fr; gap:6px 10px;
+      margin:0; font-size:.92rem;
+    }
+    dt { color:var(--muted); }
+    dd { margin:0; word-break:break-all; font-family:ui-monospace,monospace; font-size:.8rem; }
+    .hash-full { font-size:.78rem; line-height:1.45; }
+    .nav { margin-top:16px; }
   </style>
 </head>
 <body>
   <main class="wrap">
-    <img src="https://avatars.githubusercontent.com/u/255641549?v=4" alt="">
-    <h1>Verificación de sorteos</h1>
-    <p>Herramientas abiertas de <em>La Gran Carrera</em>. Obtén los archivos JSON del sorteo y verifícalos aquí o con Node.js.</p>
-    <div class="panel">
-      <a class="btn" href="auditor/index.html">Auditor web</a>
-      <a class="btn soft" href="SOLICITUD_CONALOT_DOSSIER.html">Dossier CONALOT</a>
-      <a class="btn soft" href="VIRUSTOTAL_INTEGRATION.html">VirusTotal</a>
-      <a class="btn soft" href="README.md">Documentación</a>
-      <a class="btn soft" href="https://verificatuticket.com" rel="noopener">Verificar ticket</a>
-    </div>
-    <div class="panel">
-      <strong>Terminal</strong>
-      <pre style="margin:8px 0 0;overflow:auto;font-size:.85rem;">node scripts/verificar_resultado.js /ruta/carpeta-sorteo
-node scripts/verificar_recibo_ticket_publico.js recibo.json public_keys.json</pre>
-    </div>
+    <h1>Verificar un sorteo</h1>
+    <p class="lead">
+      Cargue el archivo <strong>verificacion-sorteo.txt</strong> descargado desde
+      <a href="https://elchanchoganador.com">elchanchoganador.com</a> (botón en la página del auditor)
+      o pegue su contenido aquí. Todo se comprueba en su navegador, sin instalar nada.
+    </p>
+
+    <section class="panel">
+      <label for="fileInput">Cargar archivo de verificación</label>
+      <input id="fileInput" type="file" accept=".txt,text/plain">
+      <div class="actions">
+        <button type="button" class="btn btn-primary" id="btnVerify">Comprobar datos</button>
+        <button type="button" class="btn btn-soft" id="btnClear">Limpiar</button>
+      </div>
+      <label for="rawInput" style="margin-top:14px;">O pegar contenido línea por línea</label>
+      <textarea id="rawInput" placeholder="# verificacion-sorteo-v1&#10;producto=La Gran Carrera&#10;fecha=2026-06-15&#10;..."></textarea>
+    </section>
+
+    <section class="panel" id="summaryPanel" hidden>
+      <h2 style="margin:0 0 10px;font-size:1.1rem;">Datos del sorteo</h2>
+      <dl id="summaryDl"></dl>
+    </section>
+
+    <section class="panel" id="checksPanel" hidden>
+      <h2 style="margin:0 0 10px;font-size:1.1rem;">Resultado de la comprobación</h2>
+      <div class="checks" id="checks"></div>
+    </section>
+
+    <nav class="nav actions">
+      <a class="btn btn-soft" href="auditor/index.html">Auditor avanzado (archivos JSON)</a>
+      <a class="btn btn-soft" href="VIRUSTOTAL_INTEGRATION.html">VirusTotal</a>
+      <a class="btn btn-soft" href="SOLICITUD_CONALOT_DOSSIER.html">Dossier CONALOT</a>
+      <a class="btn btn-soft" href="README.md">Ayuda</a>
+    </nav>
   </main>
+
+  <script>
+    const AUDIT_REPO = 'https://github.com/elchanchoganador/sorteos-auditoria-publica';
+
+    function parseExportText(text) {
+      const data = {};
+      for (const line of String(text || '').split(/\r?\n/)) {
+        const t = line.trim();
+        if (!t || t.startsWith('#')) continue;
+        const i = t.indexOf('=');
+        if (i < 1) continue;
+        const key = t.slice(0, i).trim().toLowerCase();
+        data[key] = t.slice(i + 1).trim();
+      }
+      return data;
+    }
+
+    function buildHashPayload(drawId, winningNumber) {
+      const winning = String(winningNumber || '').trim().padStart(2, '0');
+      return `${Number(drawId)}:${JSON.stringify([winning])}`;
+    }
+
+    async function sha256Hex(text) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(text)));
+      return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function pushCheck(list, ok, title, msg, warn) {
+      list.push({ ok: warn ? 'warn' : ok ? 'ok' : 'bad', title, msg });
+    }
+
+    function renderSummary(data) {
+      const fields = [
+        ['Producto', data.producto],
+        ['Fecha', data.fecha],
+        ['Hora', data.hora],
+        ['Número ganador', data.numero_ganador],
+        ['Opción', data.opcion],
+        ['Draw ID', data.draw_id],
+        ['Validación', data.validacion_etiqueta || data.validacion],
+        ['Notario', [data.notario_nombre, data.notario_apellido].filter(Boolean).join(' ')],
+        ['RIF notario', data.notario_rif],
+        ['Huella registrada', data.huella_registrada],
+        ['Huella calculada', data.huella_calculada],
+        ['Drand ronda', data.drand_ronda],
+        ['Drand randomness', data.drand_randomness],
+        ['Hash participantes', data.participantes_hash],
+      ];
+      document.getElementById('summaryDl').innerHTML = fields
+        .filter(([, v]) => v)
+        .map(([k, v]) => `<dt>${k}</dt><dd class="hash-full">${escapeHtml(v)}</dd>`)
+        .join('');
+      document.getElementById('summaryPanel').hidden = false;
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    function renderChecks(checks) {
+      const el = document.getElementById('checks');
+      el.innerHTML = checks.map((c) =>
+        `<div class="check ${c.ok}"><strong>${escapeHtml(c.title)}</strong><br>${escapeHtml(c.msg)}</div>`
+      ).join('');
+      document.getElementById('checksPanel').hidden = false;
+    }
+
+    async function runVerification() {
+      const text = document.getElementById('rawInput').value;
+      const data = parseExportText(text);
+      const checks = [];
+
+      if (!data.draw_id && !data.numero_ganador) {
+        pushCheck(checks, false, 'Archivo vacío o inválido', 'Cargue verificacion-sorteo.txt desde elchanchoganador.com');
+        renderChecks(checks);
+        return;
+      }
+
+      renderSummary(data);
+
+      const drawId = data.draw_id;
+      const numero = data.numero_ganador;
+      const expected = String(data.huella_registrada || '').toLowerCase();
+      const payload = buildHashPayload(drawId, numero);
+      const computed = (await sha256Hex(payload)).toLowerCase();
+
+      const hashOk = expected && computed === expected;
+      pushCheck(
+        checks,
+        hashOk,
+        'Huella digital (SHA-256)',
+        hashOk
+          ? 'La huella calculada coincide con la registrada.'
+          : `No coincide. Calculada: ${computed}. Registrada: ${expected || '—'}.`,
+      );
+
+      if (data.huella_calculada) {
+        const exportOk = String(data.huella_calculada).toLowerCase() === computed;
+        pushCheck(
+          checks,
+          exportOk,
+          'Coherencia del archivo exportado',
+          exportOk ? 'La huella del archivo coincide con el recálculo.' : 'El archivo exportado no coincide con el recálculo local.',
+        );
+      }
+
+      if (data.hash_payload && data.hash_payload !== payload) {
+        pushCheck(checks, false, 'Payload de huella', `Esperado ${payload}, en archivo ${data.hash_payload}`);
+      } else if (data.hash_payload) {
+        pushCheck(checks, true, 'Payload de huella', payload);
+      }
+
+      if (data.validacion === 'notary_approved') {
+        pushCheck(checks, true, 'Validación notarial', data.validacion_detalle || 'Sorteo aprobado por notario público.');
+      } else if (data.validacion === 'pending_notary') {
+        pushCheck(checks, false, 'Validación notarial', 'Pendiente de aprobación notarial.', true);
+      } else if (data.validacion) {
+        pushCheck(checks, false, 'Validación notarial', data.validacion_etiqueta || data.validacion, true);
+      }
+
+      if (data.drand_ronda) {
+        pushCheck(checks, true, 'Aleatoriedad pública (drand)', `Ronda ${data.drand_ronda} registrada en el paquete.`);
+      }
+
+      const allOk = checks.every((c) => c.ok === 'ok');
+      pushCheck(
+        checks,
+        allOk,
+        allOk ? 'Verificación completada' : 'Revise las advertencias',
+        allOk
+          ? 'Los datos del sorteo son consistentes con la huella pública.'
+          : 'Hay inconsistencias o datos incompletos. Compare con elchanchoganador.com.',
+        !allOk && checks.some((c) => c.ok === 'warn'),
+      );
+
+      renderChecks(checks);
+    }
+
+    document.getElementById('fileInput').addEventListener('change', async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      document.getElementById('rawInput').value = await file.text();
+      runVerification();
+    });
+
+    document.getElementById('btnVerify').addEventListener('click', runVerification);
+    document.getElementById('btnClear').addEventListener('click', () => {
+      document.getElementById('rawInput').value = '';
+      document.getElementById('fileInput').value = '';
+      document.getElementById('summaryPanel').hidden = true;
+      document.getElementById('checksPanel').hidden = true;
+    });
+  </script>
 </body>
 </html>
