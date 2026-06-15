@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Integridad VirusTotal | El Chancho Ganador</title>
+  <link rel="icon" href="https://avatars.githubusercontent.com/u/255641549?v=4">
+  <style>
+    :root { --ink:#21170f; --muted:#6e604f; --brand:#8f1d14; --gold:#d8a03a; --panel:#fffaf2; --line:#deceb8; --ok:#17683a; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Georgia,serif; color:var(--ink);
+      background:linear-gradient(180deg,#f8f3ea,#f3efe6); min-height:100vh; }
+    .wrap { max-width:800px; margin:0 auto; padding:32px 18px 48px; }
+    h1 { font-size:clamp(1.5rem,4vw,2.1rem); margin:0 0 8px; }
+    h2 { font-size:1.15rem; margin:24px 0 10px; border-bottom:1px solid var(--line); padding-bottom:4px; }
+    p, li { color:var(--muted); line-height:1.55; }
+    .panel { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:18px; margin-top:16px; }
+    table { width:100%; border-collapse:collapse; margin:12px 0; font-size:.95rem; }
+    th, td { border:1px solid var(--line); padding:8px 10px; text-align:left; }
+    th { background:#efe4d4; color:var(--ink); }
+    code { background:#fff; padding:2px 6px; border-radius:4px; font-size:.9em; }
+    .btn { display:inline-block; margin-top:12px; padding:10px 16px; border-radius:999px;
+      font-weight:700; text-decoration:none; color:#fff; background:var(--brand); }
+    .ok { color:var(--ok); font-weight:700; }
+    .note { font-size:.92rem; border-left:3px solid var(--gold); padding-left:12px; margin:16px 0; }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>Integridad de archivos (VirusTotal)</h1>
+    <p>Guía para interpretar la evidencia opcional de VirusTotal que puede acompañar a cada sorteo de <em>La Gran Carrera</em>.</p>
+
+    <div class="panel">
+      <p class="note"><strong>Importante:</strong> estos reportes <em>complementan</em> la verificación criptográfica; no la sustituyen. La validez del resultado se demuestra con <code>pre_compromiso.json</code>, <code>resultado.json</code> y los scripts de este repositorio.</p>
+    </div>
+
+    <h2>Archivos publicados</h2>
+    <p>En la carpeta de evidencia de un sorteo pueden aparecer:</p>
+    <ul>
+      <li><code>virustotal_analysis.json</code></li>
+      <li><code>virustotal_scan.json</code></li>
+    </ul>
+    <p>Son evidencia adicional sobre archivos ya públicos del sorteo (por ejemplo <code>tickets_draw.json</code> o <code>resultado.json</code>).</p>
+
+    <h2>Qué revisar</h2>
+    <table>
+      <thead>
+        <tr><th>Campo</th><th>Descripción</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Hash SHA-256</td><td>Debe coincidir con el archivo auditado</td></tr>
+        <tr><td>Estado del análisis</td><td>Completado, en curso o error</td></tr>
+        <tr><td>Conteos</td><td><code>malicioso</code>, <code>sospechoso</code>, <code>limpio</code></td></tr>
+        <tr><td><code>link_vt</code></td><td>Enlace público de consulta en VirusTotal</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Criterio práctico</h2>
+    <div class="panel">
+      <p><span class="ok">malicioso = 0</span> y <span class="ok">sospechoso = 0</span> → sin señales de riesgo en los motores que reportaron.</p>
+      <p>Cualquier detección positiva → marcar para <strong>revisión manual independiente</strong>. No invalida por sí sola el sorteo si la verificación criptográfica es correcta.</p>
+    </div>
+
+    <h2>Alcance</h2>
+    <ul>
+      <li>La publicación de reportes VirusTotal es <strong>opcional</strong> por sorteo.</li>
+      <li>Cuando existe, aumenta la confianza de que los archivos no fueron alterados maliciosamente en tránsito o almacenamiento.</li>
+      <li>El auditor web puede cargar estos JSON junto con el resto de la evidencia del sorteo.</li>
+    </ul>
+
+    <a class="btn" href="index.html">← Volver al portal</a>
+    <a class="btn" href="auditor/index.html" style="background:#efe4d4;color:var(--ink);margin-left:8px;">Abrir auditor</a>
+  </main>
+</body>
+</html>
